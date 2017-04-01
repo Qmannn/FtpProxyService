@@ -1,0 +1,4 @@
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\bin\Release\UsersLib.dll
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\bin\Release\UsersLib.pdb
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\obj\Release\UsersLib.dll
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\obj\Release\UsersLib.pdb

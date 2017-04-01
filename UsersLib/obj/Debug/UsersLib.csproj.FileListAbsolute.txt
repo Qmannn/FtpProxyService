@@ -1,0 +1,5 @@
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\obj\Debug\UsersLib.csprojResolveAssemblyReference.cache
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\bin\Debug\UsersLib.dll
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\bin\Debug\UsersLib.pdb
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\obj\Debug\UsersLib.dll
+C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\obj\Debug\UsersLib.pdb
