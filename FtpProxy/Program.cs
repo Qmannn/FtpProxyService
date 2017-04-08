@@ -10,9 +10,6 @@ namespace FtpProxy
 
         public static void Main(string[] args)
         {
-
-            var a = ConfigurationManager.AppSettings[ "certificatePath" ];
-
             Logger.InitLogger();
 
             _worker = new FtpProxyWorker( IPAddress.Any, 26000 );

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using UsersLib.Checkers;
@@ -51,11 +53,20 @@ namespace FtpProxy.Service
 
         public Command Execute( Command clientCommand )
         {
-            if ( _serverConnection != null && _serverConnection.IsConnected )
+            try
             {
-                return ExecuteWithRemouteServer( clientCommand );
+                if( _serverConnection != null && _serverConnection.IsConnected )
+                {
+                    return ExecuteWithRemouteServer( clientCommand );
+                }
             }
-
+            catch ( IOException e )
+            {
+                _serverConnection = null;
+                Logger.Log.Info( "Remote server disconnected", e );
+                return new Command( "421 ssss", Encoding.UTF8 );
+            }
+            
             return ExecuteAsServer( clientCommand );
         }
 
@@ -151,16 +162,16 @@ namespace FtpProxy.Service
 
         public void Close()
         {
-            if( _clientConnection.IsConnected )
+            if( _clientConnection != null && _clientConnection.IsConnected )
             {
                 _clientConnection.CloseConnection();
             }
-            if( _serverConnection.IsConnected )
+            if( _serverConnection != null && _serverConnection.IsConnected )
             {
                 _serverConnection.CloseConnection();
             }
         }
-
+        
         #region FTP Commands
 
         private Command User( Command clientCommand )
@@ -192,7 +203,7 @@ namespace FtpProxy.Service
                 return new Command( "503 incorrect command sequence", _clientConnection.Encoding );
             }
 
-            IUserChecker userChecker = CheckersFactory.CreateUserChecker();
+            IUserChecker userChecker = CheckersFactory.CreateDataBaseUserChecker();
             IUserCheckerResult checkerResult = userChecker.Check( _clientConnection.ConnectionData[ ConnectionDataType.User ],
                 _clientConnection.ConnectionData[ ConnectionDataType.Pass ],
                 _clientConnection.ConnectionData[ ConnectionDataType.RemoteSiteIdentifier ] );
@@ -203,7 +214,8 @@ namespace FtpProxy.Service
             }
 
             ServerConnectionBuilder connectionBuilder = new ServerConnectionBuilder(
-                checkerResult.ServerEndPoint,
+                checkerResult.UrlAddress, 
+                checkerResult.Port, 
                 checkerResult.Login,
                 checkerResult.Pass );
 
@@ -238,6 +250,7 @@ namespace FtpProxy.Service
             }
 
             _serverConnection = connectionBuilder.GetResult();
+            _serverConnection.ConnectionClosed += Close;
 
             return responce;
         }
@@ -448,8 +461,14 @@ namespace FtpProxy.Service
 
             _serverDataConnection.CloseConnection();
             Command command = _serverConnection.GetCommand();
-
-            _clientConnection.SendCommand( command );
+            if ( command != null )
+            {
+                _clientConnection.SendCommand( command );
+            }
+            else
+            {
+                int a = 13;
+            }
             _clientDataConnection.CloseConnection();
 
             _dataConnectionType = DataConnectionType.None;
@@ -510,7 +529,7 @@ namespace FtpProxy.Service
         /// </summary>
         private void CheckDataConnectionsAccess()
         {
-            if( _serverDataConnection == null )
+            if( _serverDataConnection == null && _dataConnectionType == DataConnectionType.Passive )
             {
                 Logger.Log.Error( "Data connection with remote server was not established (_serverDataConnection)" );
                 throw new MemberAccessException( "Access to data connection obj before initializing" );
@@ -538,6 +557,21 @@ namespace FtpProxy.Service
             //}
         }
 
+        #endregion
+        
+        #region Static Members
+        /// <summary>
+        /// Закрывает соединение
+        /// </summary>
+        /// <param name="connection">Зыкрываемой соедиение</param>
+        public static void ConnectionCloser( Connection connection )
+        {
+            if( connection == null )
+            {
+                return;
+            }
+            connection.CloseConnection();
+        }
         #endregion
     }
 }

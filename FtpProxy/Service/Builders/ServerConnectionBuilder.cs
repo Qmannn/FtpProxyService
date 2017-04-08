@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Security.Authentication;
 using FtpProxy.Connections;
 using FtpProxy.Entity;
@@ -15,9 +14,9 @@ namespace FtpProxy.Service.Builders
     {
         private readonly Connection _connection;
 
-        public ServerConnectionBuilder( IPEndPoint endPoint, string user, string pass )
+        public ServerConnectionBuilder( string url, int port, string user, string pass )
         {
-            _connection = new Connection( endPoint.Address, endPoint.Port );
+            _connection = new Connection( url, port );
             _connection.ConnectionData[ ConnectionDataType.User ] = user;
             _connection.ConnectionData[ ConnectionDataType.Pass ] = pass;
         }

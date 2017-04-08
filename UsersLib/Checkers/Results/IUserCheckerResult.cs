@@ -5,10 +5,15 @@ namespace UsersLib.Checkers.Results
     public interface IUserCheckerResult
     {
         /// <summary>
-        /// Точка подключения к удаленному серверу
+        /// Адрес подключения к удаленному серверу
         /// </summary>
-        IPEndPoint ServerEndPoint { get; }
-        
+        string UrlAddress { get; }
+
+        /// <summary>
+        /// Порт подключения к удаленному серверу
+        /// </summary>
+        int Port { get; set; }
+
         /// <summary>
         /// Логин подключения к удаленному серверу
         /// </summary>

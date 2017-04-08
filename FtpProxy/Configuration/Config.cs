@@ -13,5 +13,13 @@ namespace FtpProxy.Configuration
         {
             get { return ConfigurationManager.AppSettings[ "certificatePssword" ]; }
         }
+
+        /// <summary>
+        /// Представляет символ-разделитель логина и кода сайта, к которому происходит подключение
+        /// </summary>
+        public static string LoginSeparator
+        {
+            get { return ConfigurationManager.AppSettings[ "userLoginSiteSeparator" ]; }
+        }
     }
 }

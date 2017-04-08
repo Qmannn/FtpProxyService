@@ -8,7 +8,7 @@ namespace FtpProxy.Entity
 {
     public class Command
     {
-        private static Regex _commandFinder = new Regex( @"(\s|^)(\d\d\d)\s" );
+        private static readonly Regex CommandFinder = new Regex( @"(\r\n|^)(\d\d\d)\s" );
 
         private readonly byte[] _bytes;
 
@@ -68,7 +68,7 @@ namespace FtpProxy.Entity
             string command = Encoding.GetString( _bytes );
             string[] commandParts = command.Split( ' ' );
 
-            Match commandName = _commandFinder.Match( command );
+            Match commandName = CommandFinder.Match( command );
             if( String.IsNullOrEmpty( commandName.Value ) || commandName.Groups.Count != 3 )
             {
                 CommandName = commandParts.First().Trim( '\n', '\r' );

@@ -30,7 +30,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -39,15 +47,56 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Checkers\DataBaseUserChecker.cs" />
     <Compile Include="Checkers\IUserChecker.cs" />
     <Compile Include="Checkers\Results\IUserCheckerResult.cs" />
     <Compile Include="Checkers\Results\UserCheckerResult.cs" />
     <Compile Include="Checkers\UserChecker.cs" />
     <Compile Include="Checkers\UserCheckerImpl.cs" />
+    <Compile Include="DbControllers\DbSiteController.cs" />
+    <Compile Include="DbControllers\DbUserController.cs" />
+    <Compile Include="DbControllers\IDbSiteController.cs" />
+    <Compile Include="DbControllers\IDbUserController.cs" />
+    <Compile Include="DbEntity\DbSite.cs" />
+    <Compile Include="DbEntity\DbSiteGroup.cs" />
+    <Compile Include="DbEntity\DbUser.cs" />
+    <Compile Include="DbEntity\DbUserGroup.cs" />
+    <Compile Include="Entity\Site.cs" />
+    <Compile Include="Entity\SiteGroup.cs" />
+    <Compile Include="Entity\User.cs" />
+    <Compile Include="Entity\UserGroup.cs" />
     <Compile Include="Factories\CheckersFactory.cs" />
     <Compile Include="Factories\ICheckersFactory.cs" />
+    <Compile Include="Factories\ISecureFindersFactory.cs" />
+    <Compile Include="Factories\SecureFindersFactory.cs" />
+    <Compile Include="Migrations\201704032006516_InitialCreate.cs" />
+    <Compile Include="Migrations\201704032006516_InitialCreate.Designer.cs">
+      <DependentUpon>201704032006516_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704032102597_rename-table-columns-migration.cs" />
+    <Compile Include="Migrations\201704032102597_rename-table-columns-migration.Designer.cs">
+      <DependentUpon>201704032102597_rename-table-columns-migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DbContextSettings\UserContext.cs" />
+    <Compile Include="Secure\Finders\ISiteSecureDataFinder.cs" />
+    <Compile Include="Secure\Finders\Results\SiteSecureDataFinderResult.cs" />
+    <Compile Include="Secure\Finders\SiteSecureDataFinder.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201704032006516_InitialCreate.resx">
+      <DependentUpon>201704032006516_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704032102597_rename-table-columns-migration.resx">
+      <DependentUpon>201704032102597_rename-table-columns-migration.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

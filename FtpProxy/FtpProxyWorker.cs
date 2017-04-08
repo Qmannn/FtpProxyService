@@ -6,18 +6,17 @@ using System.Threading;
 using FtpProxy.Connections;
 using FtpProxy.Log;
 using FtpProxy.Service.Handlers;
-using log4net;
 
 namespace FtpProxy
 {
     public class FtpProxyWorker
     {
         private TcpListener _listener;
-        private List<Connection> _activeConnections;
+        private List<ClientHandler> _activeHandlers;
 
         private readonly IPEndPoint _localEndPoint;
 
-        private bool _listening = false;
+        private bool _listening;
 
         public FtpProxyWorker( IPAddress ipAddress, int port )
         {
@@ -28,7 +27,7 @@ namespace FtpProxy
             : this( IPAddress.Any, 21 )
         {
         }
-
+        
         public void Start()
         {
             _listener = new TcpListener( _localEndPoint );
@@ -37,7 +36,7 @@ namespace FtpProxy
 
             _listener.Start();
             _listening = true;
-            _activeConnections = new List<Connection>();
+            _activeHandlers = new List<ClientHandler>();
             _listener.BeginAcceptTcpClient( HandleAcceptTcpClient, _listener );
         }
 
@@ -48,9 +47,9 @@ namespace FtpProxy
             _listening = false;
             _listener.Stop();
 
-            foreach ( Connection activeConnection in _activeConnections )
+            foreach( ClientHandler activeHandler in _activeHandlers )
             {
-                activeConnection.CloseConnection();
+                activeHandler.CloseHandler();
             }
         }
 
@@ -64,11 +63,10 @@ namespace FtpProxy
                 Logger.Log.Info( "Client was connected" );
 
                 Connection connection = new Connection( client );
-                _activeConnections.Add( connection );
+                ClientHandler clientHandler = new ClientHandler( connection );
+                _activeHandlers.Add( clientHandler );
 
-                ClientHandler clientHandler = new ClientHandler();
-
-                ThreadPool.QueueUserWorkItem( clientHandler.HandleClient, connection );
+                ThreadPool.QueueUserWorkItem( clientHandler.HandleClient );
             }
         }
     }

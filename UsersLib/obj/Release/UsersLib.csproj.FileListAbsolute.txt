@@ -2,3 +2,12 @@ C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\bin\Rele
 C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\bin\Release\UsersLib.pdb
 C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\obj\Release\UsersLib.dll
 C:\Users\_MakS_\Documents\Visual Studio 2013\Projects\FtpProxy\UsersLib\obj\Release\UsersLib.pdb
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\bin\Release\UsersLib.dll.config
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\bin\Release\EntityFramework.dll
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\bin\Release\EntityFramework.SqlServer.dll
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\bin\Release\EntityFramework.xml
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\bin\Release\EntityFramework.SqlServer.xml
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\obj\Release\UsersLib.csprojResolveAssemblyReference.cache
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\obj\Release\UsersLib.Migrations.InitialCreate.resources
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\obj\Release\UsersLib.Migrations.renametablecolumnsmigration.resources
+C:\Users\_MakS_\documents\visual studio 2013\Projects\FtpProxy\UsersLib\obj\Release\UsersLib.csproj.GenerateResource.Cache

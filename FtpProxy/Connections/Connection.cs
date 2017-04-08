@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Timers;
 using FixedSslLib;
 using FtpProxy.Configuration;
 using FtpProxy.Entity;
@@ -18,7 +18,7 @@ namespace FtpProxy.Connections
         /// <summary>
         /// Размер буфера для чтения и записи команд
         /// </summary>
-        private const int CommandBufferSize = 512;
+        private const int CommandBufferSize = 1024;
 
         /// <summary>
         /// Размер буфера для чтения и записи данных
@@ -31,6 +31,7 @@ namespace FtpProxy.Connections
         public bool DataEncryptionEnabled { get; set; }
 
         private TcpClient _controlClient;
+        private readonly object _controlClientLocker = new object();
 
         private FixedSslStream _sslStream;
         private X509Certificate _certificate;
@@ -39,7 +40,8 @@ namespace FtpProxy.Connections
 
         private readonly IPAddress _ipAddress;
         private readonly int _port;
-
+        private readonly string _urlAddress;
+        
         private Dictionary<ConnectionDataType, string> _connectionData;
         /// <summary>
         /// Данные соединения типа логина, пароля и т.п.
@@ -57,6 +59,8 @@ namespace FtpProxy.Connections
             get { return (Stream) _sslStream ?? _controlStream; }
         }
 
+        private readonly object _activeStreamLocker = new object();
+
         public DataConnectionType DataConnectionType { get; set; }
 
         public ConnectionType ConnectionType { get; private set; }
@@ -65,7 +69,17 @@ namespace FtpProxy.Connections
 
         public IPEndPoint LocalEndPoint
         {
-            get { return (IPEndPoint) _controlClient.Client.LocalEndPoint; }
+            get
+            {
+                lock ( _controlClientLocker )
+                {
+                    if ( _controlClient == null )
+                    {
+                        return null;
+                    }
+                    return (IPEndPoint) _controlClient.Client.LocalEndPoint;
+                }
+            }
         }
 
         public IPAddress IpAddress
@@ -75,24 +89,98 @@ namespace FtpProxy.Connections
 
         public bool DataAvailable
         {
-            get { return _controlStream.DataAvailable; }
+            get
+            {
+                lock ( _controlClientLocker )
+                {
+                    return _controlClient != null && _controlClient.Available > 0;
+                }
+            }
         }
 
         public bool IsConnected
         {
-            get { return _controlClient != null && _controlClient.Connected; }
+            get
+            {
+                lock ( _controlClientLocker )
+                {
+                    if ( _controlClient == null )
+                    {
+                        return false;
+                    }
+                    if ( !_controlClient.Connected )
+                    {
+                        return false;
+                    }
+                    try
+                    {
+
+                        bool part1 = _controlClient.Client.Poll( 1000, SelectMode.SelectRead );
+                        bool part2 = _controlClient.Client.Available == 0;
+                        if ( part1 & part2 )
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                    catch ( SocketException e )
+                    {
+                        Logger.Log.Error( "Control client not connected", e );
+                        return false;
+                    }
+                }
+            }
         }
 
         public User User { get; set; }
 
         public bool IsAuthorized { get; set; }
 
+        #region Events
+
+        private readonly Timer _timer;
+        private const int Interval = 1000;
+
+        private readonly List<ConectionEventHandler> _onCloseHandlers = new List<ConectionEventHandler>();
+        public event ConectionEventHandler ConnectionClosed
+        {
+            add { _onCloseHandlers.Add( value ); }
+            remove { _onCloseHandlers.Remove( value ); }
+        }
+
+        private void TimerTick( object sender, EventArgs e )
+        {
+            if( !IsConnected )
+            {
+                foreach ( var socketEventHandler in _onCloseHandlers )
+                {
+                    socketEventHandler.Invoke();
+                }
+                EventsEnabled = false;
+            }
+        }
+
+        public bool EventsEnabled
+        {
+            set
+            {
+                if( value )
+                    _timer.Start();
+                else
+                    _timer.Stop();
+            }
+        }
+
+        public delegate void ConectionEventHandler();
+
+        #endregion
+
         /// <summary>
         /// Конструктор соединения на основе TcpClient.
         /// </summary>
         /// <param name="client"></param>
         /// <param name="connectionType"></param>
-        public Connection( TcpClient client, ConnectionType connectionType = ConnectionType.Client )
+        public Connection( TcpClient client, ConnectionType connectionType = ConnectionType.Client ) : this()
         {
             _controlClient = client;
             _controlStream = _controlClient.GetStream();
@@ -100,7 +188,7 @@ namespace FtpProxy.Connections
             ConnectionType = connectionType;
         }
 
-        public Connection( IPAddress ipAddress, int port, ConnectionType connectionType = ConnectionType.Server )
+        public Connection( IPAddress ipAddress, int port, ConnectionType connectionType = ConnectionType.Server ) : this()
         {
             _ipAddress = ipAddress;
             _port = port;
@@ -108,14 +196,60 @@ namespace FtpProxy.Connections
             ConnectionType = connectionType;
         }
 
+        public Connection( string urlAddress, int port, ConnectionType connectionType = ConnectionType.Server ) : this()
+        {
+            _urlAddress = urlAddress;
+            _port = port;
+            Encoding = Encoding.UTF8;
+            ConnectionType = connectionType;
+        }
+
+        public Connection()
+        {
+            _timer = new Timer { Interval = Interval };
+            _timer.Elapsed += TimerTick;
+            _timer.Start();
+        }
+
         public void Connect()
         {
-            _controlClient = new TcpClient();
+            lock ( _controlClientLocker )
+            {
+                _controlClient = new TcpClient();
+                if ( _ipAddress != null )
+                {
+                    _controlClient.Connect( _ipAddress, _port );
+                }
+                else if ( !String.IsNullOrEmpty( _urlAddress ) )
+                {
+                    foreach ( IPAddress ipAddress in Dns.GetHostAddresses( _urlAddress ) )
+                    {
+                        //var address = ipAddress.MapToIPv4();
+                        try
+                        {
+                            _controlClient.Connect( ipAddress, _port );
+                        }
+                        catch ( Exception e )
+                        {
+                            Logger.Log.Error(
+                                String.Format( "Не удалось разрешить имя удаленного сервера (DNS) {0}", _urlAddress ), e );
+                        }
+                        if ( IsConnected )
+                        {
+                            break;
+                        }
+                    }
+                }
 
-            _controlClient.Connect( _ipAddress, _port );
-            _controlStream = _controlClient.GetStream();
+                if ( !IsConnected )
+                {
+                    throw new Exception( "Не удалось подключиться к удаленному серверу" );
+                }
 
-            UserChanged = true;
+                _controlStream = _controlClient.GetStream();
+
+                UserChanged = true;
+            }
         }
 
         public IAsyncResult BeginConnect( AsyncCallback callback, object state )
@@ -137,9 +271,7 @@ namespace FtpProxy.Connections
                 byte[] bytes = command.Bytes;
                 while( position < bytes.Length )
                 {
-                    int length = bytes.Length + position > CommandBufferSize
-                        ? CommandBufferSize
-                        : bytes.Length;
+                    int length = Math.Min( bytes.Length - position, CommandBufferSize );
                     AciveStream.Write( bytes, position, length );
                     position += length;
                 }
@@ -160,25 +292,33 @@ namespace FtpProxy.Connections
 
         public Command GetCommand()
         {
+            if ( !IsConnected )
+            {
+                return null;
+            }
+
             byte[] buffer = new byte[CommandBufferSize];
             try
             {
                 using ( MemoryStream ms = new MemoryStream() )
                 {
-                    int count;
-                    while ( ( count = AciveStream.Read( buffer, 0, buffer.Length ) ) > 0 )
+                    lock ( _activeStreamLocker )
                     {
-                        ms.Write( buffer, 0, count );
-                        if ( (char) buffer[ count - 1 ] == '\n'
-                             && (char) buffer[ count - 2 ] == '\r' )
+                        int count;
+                        while ( ( count = AciveStream.Read( buffer, 0, buffer.Length ) ) > 0 )
                         {
-                            if ( ConnectionType == ConnectionType.Client )
+                            ms.Write( buffer, 0, count );
+                            if ( (char) buffer[ count - 1 ] == '\n'
+                                 && (char) buffer[ count - 2 ] == '\r' )
                             {
-                                break;
-                            }
-                            if ( Command.IsFullServerCommand( ms.ToArray(), Encoding ) )
-                            {
-                                break;
+                                if ( ConnectionType == ConnectionType.Client )
+                                {
+                                    break;
+                                }
+                                if ( Command.IsFullServerCommand( ms.ToArray(), Encoding ) )
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -189,53 +329,72 @@ namespace FtpProxy.Connections
             catch ( Exception ex )
             {
                 Logger.Log.Error( ex.Message, ex );
-                throw;
             }
+            return null;
         }
-        
+
         public void SetUpSecureConnectionAsServer()
         {
-            _certificate = new X509Certificate2( Config.CertificatePath, Config.CertificatePassword );
-            _sslStream = new FixedSslStream( _controlStream, true );
-            _sslStream.AuthenticateAsServer( _certificate );
+            _certificate = String.IsNullOrEmpty( Config.CertificatePassword )
+                ? new X509Certificate( Config.CertificatePath )
+                : new X509Certificate( Config.CertificatePath, Config.CertificatePassword );
+
+            lock( _controlClientLocker )
+            {
+                lock( _activeStreamLocker )
+                {
+                    _sslStream = new FixedSslStream( _controlStream, true );
+                    _sslStream.AuthenticateAsServer( _certificate );
+                }
+            }
         }
 
         public void CopyDataTo( Connection targetConnection )
         {
-            //AciveStream.CopyTo( targetConnection.AciveStream, 0 );
-            byte[] buffer = new byte[ DataBufferSize ];
-            int count;
-            while( ( count = AciveStream.Read( buffer, 0, buffer.Length ) ) > 0 )
+            lock( _activeStreamLocker )
             {
-                targetConnection.Write( buffer, 0, count );
+                AciveStream.CopyTo( targetConnection.AciveStream );
             }
-            targetConnection.AciveStream.Flush();
         }
 
         public void CloseConnection()
         {
-            if( _sslStream != null )
+            lock( _activeStreamLocker )
             {
-                _sslStream.Close();
+                if( _sslStream != null )
+                {
+                    _sslStream.Close();
+                }
+                if( _controlStream != null )
+                {
+                    _controlStream.Close();
+                }
+                _sslStream = null;
+                _controlStream = null;
             }
-            if( _controlStream != null )
+
+            lock( _controlClientLocker )
             {
-                _controlStream.Close();
+                if( _controlClient != null )
+                {
+                    _controlClient.Close();
+                }
+                _controlClient = null;  
             }
-            if ( _controlClient != null )
-            {
-                _controlClient.Close();
-            }
-            _sslStream = null;
-            _controlStream = null;
+
             _certificate = null;
-            _controlClient = null;
         }
 
         public void Write( byte[] buffer, int offset, int count )
         {
-            AciveStream.Write( buffer, offset, count );
-            AciveStream.Flush();
+            lock ( _activeStreamLocker )
+            {
+                if ( AciveStream != null )
+                {
+                    AciveStream.Write( buffer, offset, count );
+                    AciveStream.Flush();
+                }
+            }
         }
 
         public void SetUpSecureConnectionAsClient()

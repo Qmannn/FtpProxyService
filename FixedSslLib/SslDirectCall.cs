@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FixedSslLib
 {
-	internal unsafe static class SslDirectCall
+	internal static unsafe class SslDirectCall
 	{
 		public static void CloseNotify (SslStream sslStream)
 		{
