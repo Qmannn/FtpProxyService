@@ -21,11 +21,6 @@ namespace FtpProxy.Connections
         private const int CommandBufferSize = 1024;
 
         /// <summary>
-        /// Размер буфера для чтения и записи данных
-        /// </summary>
-        private const int DataBufferSize = 4096;
-
-        /// <summary>
         /// Флаг, указывающий на то, поддерживает ли соединение шифрование канала данных
         /// </summary>
         public bool DataEncryptionEnabled { get; set; }
@@ -224,7 +219,6 @@ namespace FtpProxy.Connections
                 {
                     foreach ( IPAddress ipAddress in Dns.GetHostAddresses( _urlAddress ) )
                     {
-                        //var address = ipAddress.MapToIPv4();
                         try
                         {
                             _controlClient.Connect( ipAddress, _port );
@@ -359,7 +353,7 @@ namespace FtpProxy.Connections
 
         public void CloseConnection()
         {
-            lock( _activeStreamLocker )
+            try
             {
                 if( _sslStream != null )
                 {
@@ -369,9 +363,13 @@ namespace FtpProxy.Connections
                 {
                     _controlStream.Close();
                 }
-                _sslStream = null;
-                _controlStream = null;
             }
+            catch( Exception )
+            {
+                // ignored
+            }
+            _sslStream = null;
+            _controlStream = null;
 
             lock( _controlClientLocker )
             {

@@ -21,7 +21,8 @@ namespace UsersLib.Secure.Finders
                     {
                         UrlAddress = "127.0.0.1",
                         Login = "max",
-                        Password = "max"
+                        Password = "max",
+                        Port = 55000
                     };
             }
             return null;

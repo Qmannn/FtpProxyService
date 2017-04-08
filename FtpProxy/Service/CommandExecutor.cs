@@ -410,7 +410,6 @@ namespace FtpProxy.Service
 
         private Command Pbsz( Command clientCommand )
         {
-            // TODO разобраться с буффером защиты отличным от нуля
             if ( clientCommand.Args != "0" )
             {
                 return new Command( "501 Server cannot accept argument", _clientConnection.Encoding );
@@ -464,10 +463,6 @@ namespace FtpProxy.Service
             if ( command != null )
             {
                 _clientConnection.SendCommand( command );
-            }
-            else
-            {
-                int a = 13;
             }
             _clientDataConnection.CloseConnection();
 
@@ -557,21 +552,6 @@ namespace FtpProxy.Service
             //}
         }
 
-        #endregion
-        
-        #region Static Members
-        /// <summary>
-        /// Закрывает соединение
-        /// </summary>
-        /// <param name="connection">Зыкрываемой соедиение</param>
-        public static void ConnectionCloser( Connection connection )
-        {
-            if( connection == null )
-            {
-                return;
-            }
-            connection.CloseConnection();
-        }
         #endregion
     }
 }
