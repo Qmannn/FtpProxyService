@@ -1,0 +1,37 @@
+﻿@model UsersLib.Entity.User
+
+@{
+    ViewBag.Title = "Index";
+    List<UsersLib.Entity.User> users = (List<UsersLib.Entity.User>) ViewBag.Users;
+}
+
+<h2>Все пользователи</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Login</td>
+            <td>Имя</td>
+            <td></td>
+        </tr>
+    </thead>
+    @foreach( var user in users )
+    {
+        <tr>
+            <td class="text-left">
+                @Html.DisplayFor( userItem => user.Login )
+            </td>
+            <td class="text-left">
+                @Html.DisplayFor( userItem => user.DisplayName )
+            </td>
+            <td class="text-center">
+                @using( Html.BeginForm( "Edit", "User", FormMethod.Post ) )
+                {
+                    <input name="userId" value="@user.Id" type="hidden" />
+                    <button name="action" class="btn btn-primary">Изменить</button>
+                }
+            </td>
+        </tr>
+    }
+</table>
+

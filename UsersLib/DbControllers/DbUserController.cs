@@ -13,7 +13,8 @@ namespace UsersLib.DbControllers
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
-                return dbContext.Users.Select( item => new User( item ) ).ToList();
+                List<DbUser> dbUsers = dbContext.Users.ToList();
+                return dbUsers.ConvertAll( item => new User( item ) ).ToList();
             }
         }
 

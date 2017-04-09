@@ -9,6 +9,7 @@ namespace UsersLib.DbContextSettings
         public FtpProxyDbContext()
             : base( "DBConnection" )
         {
+            var instance = System.Data.Entity.SqlServer.SqlProviderServices.Instance;
         }
 
         public DbSet<DbUser> Users { get; set; }
