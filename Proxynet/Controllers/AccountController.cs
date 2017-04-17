@@ -1,22 +1,19 @@
 ﻿using Proxynet.Models;
-using Proxynet.Repositories;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
-using System.Linq;
 using System.Security.Claims;
 using System.Web.Mvc;
+using UsersLib.Secure.Auth;
 
 namespace Proxynet.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IAuthenticationManager _auth;
-        private readonly IAccount _accountServices;
 
-        public AccountController( IAuthenticationManager auth, IAccount accountServices )
+        public AccountController( IAuthenticationManager auth )
         {
             _auth = auth;
-            _accountServices = accountServices;
         }
 
         // GET: Account
@@ -35,9 +32,12 @@ namespace Proxynet.Controllers
             if( !ModelState.IsValid )
                 return View();
 
-            if( _accountServices.getUsers().Any( a => a.userName == model.UserName && a.password == model.Password && a.status ) )
+            LdapAuthorizer authorizer = new LdapAuthorizer();
+
+            if ( authorizer.ValidateCredentials( model.UserName, model.Password ) )
             {
-                var identity = new ClaimsIdentity( new[] { new Claim( ClaimTypes.Name, model.UserName ), }, DefaultAuthenticationTypes.ApplicationCookie );
+                var identity = new ClaimsIdentity( new[] { new Claim( ClaimTypes.Name, model.UserName ), },
+                    DefaultAuthenticationTypes.ApplicationCookie );
 
                 _auth.SignIn( new AuthenticationProperties
                 {

@@ -6,6 +6,8 @@
     <title>@ViewBag.Title - FTP Proxy admin UI</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render( "\\BinScripts\\Controllers\\UserController.js" )
+    @Scripts.Render( "\\BinScripts\\main.js" )
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -13,7 +15,7 @@
             @if ( Request.IsAuthenticated )
             {
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink( "Users", "Index", "User" )</li>
+                    <li>@Html.ActionLink( "Пользователи", "Index", "User" )</li>
                 </ul>
             }
             <div class="navbar-collapse collapse">
@@ -28,9 +30,9 @@
             <p>&copy; @DateTime.Now.Year - FTP Proxy admin UI</p>
         </footer>
     </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    @Scripts.Render( "~/bundles/jquery" )
+    @Scripts.Render("~/bundles/scripts")
+    @Scripts.Render( "~/bundles/bootstrap" )
+    @RenderSection( "scripts", required: false )
 </body>
 </html>

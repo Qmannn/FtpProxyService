@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
 using UsersLib.DbEntity;
-using UsersLib.Entity;
 
 namespace UsersLib.DbContextSettings
 {

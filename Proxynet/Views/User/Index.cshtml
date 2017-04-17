@@ -5,6 +5,10 @@
     List<UsersLib.Entity.User> users = (List<UsersLib.Entity.User>) ViewBag.Users;
 }
 
+Б<script>
+     var notifier = null;
+ </script>
+
 <h2>Все пользователи</h2>
 
 <table class="table table-striped">
@@ -33,5 +37,10 @@
             </td>
         </tr>
     }
+    <tr>
+        <td class="alert" onclick="notifier != null ? notifier.addText('132') : notifier = new Notifier(this)">
+            Приветули!
+        </td>
+    </tr>
 </table>
 

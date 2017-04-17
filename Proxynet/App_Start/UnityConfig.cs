@@ -4,7 +4,6 @@ using Unity.Mvc5;
 using Microsoft.Owin.Security;
 using System.Web;
 using System.Diagnostics.CodeAnalysis;
-using Proxynet.Repositories;
 using UsersLib.DbControllers;
 
 namespace Proxynet
@@ -15,14 +14,9 @@ namespace Proxynet
         public static void RegisterComponents()
         {
             var container = new UnityContainer();
-
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
-
-            // e.g. container.RegisterType<ITestService, TestService>();
+            
             container.RegisterType<IAuthenticationManager>(
                 new InjectionFactory( o => HttpContext.Current.GetOwinContext().Authentication ) );
-            container.RegisterType<IAccount, Account>();
 
             // Controllers for working with data base
             container.RegisterType<IDbUserController, DbUserController>( new ContainerControlledLifetimeManager() );

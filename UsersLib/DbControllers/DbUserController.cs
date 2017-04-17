@@ -81,5 +81,14 @@ namespace UsersLib.DbControllers
                 dbContext.SaveChanges();
             }
         }
+
+        public List<UserGroup> GetUserGroups()
+        {
+            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            {
+                List<DbUserGroup> dbUserGroups = dbContext.UserGroups.ToList();
+                return dbUserGroups.ConvertAll( item => new UserGroup( item ) );
+            }
+        }
     }
 }

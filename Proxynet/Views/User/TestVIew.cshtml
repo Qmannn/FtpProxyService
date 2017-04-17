@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewBag.Title = "TestVIew";
+}
+
+<h2>TestVIew</h2>
+<button class="btn btn-danger" id="get-users" onclick="addRow($('#users')[0])">
+    Don't press!
+</button>
+
+<table class="table" id="users">
+    <tr id="row-template">
+        <td>
+            
+        </td>
+        <td>
+            Row number
+        </td>
+        <td>
+            <button class="btn btn-danger" onclick="deleteRow($('#row-template'));">Delete</button>
+        </td>
+    </tr>
+    @for ( int i = 0; i < 10; i++ )
+    {
+        <tr id="row-@i">
+            <td>
+                @i
+            </td>
+            <td>
+                Row number @i
+            </td>
+            <td>
+                <button class="btn btn-danger" onclick="deleteRow($('#row-@i'));">Delete</button>
+            </td>
+        </tr>
+    }
+</table>
+
+<script>
+    function deleteRow(el) {
+        el.remove();
+    };
+
+    function addRow(el) {
+        el.insertRow();
+    }
+</script>

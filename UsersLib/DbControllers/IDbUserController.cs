@@ -11,6 +11,7 @@ namespace UsersLib.DbControllers
         User GetUser( string userLogin );
         List<UserGroup> GetUserGroups( string userLogin );
         List<UserGroup> GetUserGroups( int userId );
+        List<UserGroup> GetUserGroups();
         void SaveUser( User user );
     }
 }
