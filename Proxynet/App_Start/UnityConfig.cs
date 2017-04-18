@@ -13,16 +13,21 @@ namespace Proxynet
     {
         public static void RegisterComponents()
         {
-            var container = new UnityContainer();
-            
+			var container = new UnityContainer();
+
+            // register all your components with the container here
+            // it is NOT necessary to register your controllers
+
+            // e.g. container.RegisterType<ITestService, TestService>();
+
             container.RegisterType<IAuthenticationManager>(
-                new InjectionFactory( o => HttpContext.Current.GetOwinContext().Authentication ) );
+                new InjectionFactory(o => HttpContext.Current.GetOwinContext().Authentication));
 
             // Controllers for working with data base
-            container.RegisterType<IDbUserController, DbUserController>( new ContainerControlledLifetimeManager() );
-            container.RegisterType<IDbSiteController, DbSiteController>( new ContainerControlledLifetimeManager() );
+            container.RegisterType<IDbUserController, DbUserController>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IDbSiteController, DbSiteController>(new ContainerControlledLifetimeManager());
 
-            DependencyResolver.SetResolver( new UnityDependencyResolver( container ) );
+            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
     }
 }

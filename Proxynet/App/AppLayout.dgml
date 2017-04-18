@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="4bcf4407-f451-449a-b17d-23cd7e4fc83f" Category="Category4" Bounds="-340.9771875,-366.453089246295,147.47,141.918782585937" Group="Expanded" Label="Route Configuration" UseManualLocation="True" />
+    <Node Id="94cae580-bb2e-4e5c-8cfd-973471e89573" Bounds="396.47259586213,-423.087628686523,146.47,141.920313525391" Group="Expanded" Label="Page 1" UseManualLocation="True" />
+    <Node Id="App.config" Bounds="-299.360375279753,-447.157010587168,75.894112,25.959232" Label="app.config" UseManualLocation="True" />
+    <Node Id="App.core" Bounds="-294.139751790496,-503.116361173106,65.832168,25.959232" Label="app.core" UseManualLocation="True" />
+    <Node Id="App.module.ts" Category="Application" Bounds="-29.3957754307128,-309.20840577441,83.2015946666667,25.9592319999999" Label="app.module" UseManualLocation="True">
+      <Category Ref="Category4" />
+      <Category Ref="Category5" />
+      <Category Ref="Category6" />
+      <Category Ref="Category8" />
+    </Node>
+    <Node Id="App.routes" Bounds="-305.074826505046,-326.452989246295,76.2305093333333,25.959232" Label="app.routes" UseManualLocation="True" />
+    <Node Id="App.routes.main" Bounds="-319.715946166667,-270.493638660358,104.947517333333,25.959232" Label="app.routes.main" UseManualLocation="True" />
+    <Node Id="App.services" Bounds="-321.376254932292,-154.534106660358,83.9043653333334,25.959232" Label="app.services" UseManualLocation="True" />
+    <Node Id="App.services.navigation" Bounds="-351.615267685384,-98.5747746603577,141.974538666667,25.959232" Label="app.services.navigation" UseManualLocation="True" />
+    <Node Id="ApplicationConfiguration" Category="Category6" Bounds="-349.52998594642,-543.116461173106,176.233333333333,141.918782585937" Group="Expanded" Label="Application Configuration" UseManualLocation="True" />
+    <Node Id="Navigation" Bounds="-356.748235411784,-21.1095273703187,168.958293333333,141.918764" Group="Expanded" Label="Navigation" UseManualLocation="True" />
+    <Node Id="Navigation.controller" Bounds="-336.748235411784,74.8499046296813,128.958293333333,25.959232" Label="navigation.controller" UseManualLocation="True" />
+    <Node Id="Navigation.module" Bounds="-332.790008926432,18.8905726296813,118.476685333333,25.959232" Label="navigation.module" UseManualLocation="True" />
+    <Node Id="NavigationServiceInjectedIntoEachPage" Category="Comment" Bounds="-78.5019982540815,-113.673638824697,244,25.96" Label="Navigation service injected into each page" UseManualLocation="True" />
+    <Node Id="Page0" Bounds="219.498001745918,-425.722424829102,146.47,141.920954394531" Group="Expanded" Label="Page 0" UseManualLocation="True" />
+    <Node Id="Page0.controller" Bounds="239.498001745919,-329.76157043457,106.47,25.96" Label="page0.controller" />
+    <Node Id="Page0.module" Bounds="244.743001745919,-385.722324829102,95.98,25.96" Label="page0.module" />
+    <Node Id="Page1.controller" Bounds="416.47259586213,-327.127415161133,106.47,25.96" Label="page1.controller" UseManualLocation="True" />
+    <Node Id="Page1.module" Bounds="416.956334875801,-383.087528686523,95.98,25.96" Label="page1.module" UseManualLocation="True" />
+    <Node Id="Page2" Bounds="575.471192053536,-427.065320336914,146.47,143.920633959961" Group="Expanded" Label="page 2" UseManualLocation="True" />
+    <Node Id="Page2.controller" Bounds="595.471192053536,-329.104786376953,106.47,25.96" Label="page2.controller" UseManualLocation="True" />
+    <Node Id="Page2.module" Bounds="605.42087345002,-387.065220336914,95.98,25.96" Label="page2.module" UseManualLocation="True" />
+    <Node Id="Page3" Bounds="751.941162756661,-426.164288842773,146.47,141.920405078125" Group="Expanded" Label="Page 3" UseManualLocation="True" />
+    <Node Id="Page3.controller" Bounds="771.941162756661,-330.203983764648,106.47,25.96" Label="page3.controller" UseManualLocation="True" />
+    <Node Id="Page3.module" Bounds="776.457036780098,-386.164188842773,95.98,25.96" Label="page3.module" UseManualLocation="True" />
+    <Node Id="Page4" Bounds="220.00253360627,-253.801419580078,146.47,141.920313525391" Group="Expanded" Label="Page 4" UseManualLocation="True" />
+    <Node Id="Page4.controller" Bounds="240.00253360627,-157.841206054687,106.47,25.96" Label="page4.controller" UseManualLocation="True" />
+    <Node Id="Page4.module" Bounds="245.24753360627,-213.801319580078,95.98,25.96" Label="page4.module" UseManualLocation="True" />
+    <Node Id="Page5" Bounds="397.993439367989,-251.167249047852,146.47,141.920283007813" Group="Expanded" Label="Page 5" UseManualLocation="True" />
+    <Node Id="Page5.controller" Bounds="417.993439367989,-155.207066040039,106.47,25.96" Label="page5.controller" UseManualLocation="True" />
+    <Node Id="Page5.module" Bounds="423.539708899239,-211.167149047852,95.98,25.96" Label="page5.module" UseManualLocation="True" />
+    <Node Id="Page6" Bounds="581.228058508614,-252.65556081543,146.47,141.920290637207" Group="Expanded" Label="Page 6" UseManualLocation="True" />
+    <Node Id="Page6.controller" Bounds="601.228058508614,-156.695370178223,106.47,25.96" Label="page6.controller" UseManualLocation="True" />
+    <Node Id="Page6.module" Bounds="604.888616369942,-212.65546081543,95.98,25.96" Label="page6.module" UseManualLocation="True" />
+    <Node Id="Page7" Bounds="757.698212317208,-254.243817651367,146.47,142.92041270752" Group="Expanded" Label="Page 7" UseManualLocation="True" />
+    <Node Id="Page7.controller" Bounds="777.698212317208,-157.283504943848,106.47,25.96" Label="page7.controller" UseManualLocation="True" />
+    <Node Id="Page7.module" Bounds="781.382116125802,-214.243717651367,95.98,25.96" Label="page7.module" UseManualLocation="True" />
+    <Node Id="Page8" Bounds="221.52304141877,-81.8808692337036,146.47,141.920206713867" Group="Expanded" Label="Page 8" UseManualLocation="True" />
+    <Node Id="Page8.controller" Bounds="241.52304141877,14.0792374801636,106.47,25.96" Label="page8.controller" UseManualLocation="True" />
+    <Node Id="Page8.module" Bounds="247.620206640938,-41.8807692337036,95.98,25.96" Label="page8.module" UseManualLocation="True" />
+    <Node Id="Pages" Category="Category8" Bounds="199.498001745918,-467.065420336914,724.67021057129,547.104857817078" Group="Expanded" UseManualLocation="True" />
+    <Node Id="Services" Category="Category5" Bounds="-376.748235411784,-194.534206660358,208.958293333333,335.343543290039" Group="Expanded" Label="Services" UseManualLocation="True" />
+  </Nodes>
+  <Links>
+    <Link Source="4bcf4407-f451-449a-b17d-23cd7e4fc83f" Target="App.routes" Category="Contains" />
+    <Link Source="4bcf4407-f451-449a-b17d-23cd7e4fc83f" Target="App.routes.main" Category="Contains" />
+    <Link Source="94cae580-bb2e-4e5c-8cfd-973471e89573" Target="Page1.controller" Category="Contains" />
+    <Link Source="94cae580-bb2e-4e5c-8cfd-973471e89573" Target="Page1.module" Category="Contains" />
+    <Link Source="App.module.ts" Target="4bcf4407-f451-449a-b17d-23cd7e4fc83f" Bounds="-184.507218638271,-296.119358425517,155.111441255804,0.408024226770294" />
+    <Link Source="App.module.ts" Target="ApplicationConfiguration" Bounds="-165.726433672896,-410.633309403634,157.744471849667,101.424903120431" />
+    <Link Source="App.module.ts" Target="Pages" Bounds="53.8058172842,-288.45433473493,136.845346633453,25.5739825336787" />
+    <Link Source="App.module.ts" Target="Services" Bounds="-161.254814784233,-283.249174283203,159.752240521471,151.268173305473" />
+    <Link Source="App.routes" Target="App.routes.main" Bounds="-267.131182793629,-300.493757246295,0.106059037205625,21.0002333620007" />
+    <Link Source="App.services" Target="App.services.navigation" Bounds="-280.155167005671,-128.574874660358,0.451847334194326,21.0021821709704" />
+    <Link Source="App.services.navigation" Target="Navigation" Bounds="-279.826968955685,-72.6155422113026,2.62428851272875,42.523105048314" />
+    <Link Source="ApplicationConfiguration" Target="App.config" Category="Contains" />
+    <Link Source="ApplicationConfiguration" Target="App.core" Category="Contains" />
+    <Link Source="Navigation" Target="Navigation.controller" Category="Contains" />
+    <Link Source="Navigation" Target="Navigation.module" Category="Contains" />
+    <Link Source="Navigation.module" Target="Navigation.controller" Bounds="-273.254175867451,44.8498046296813,0.481372558119972,21.0024629996023" />
+    <Link Source="Page0" Target="Page0.controller" Category="Contains" />
+    <Link Source="Page0" Target="Page0.module" Category="Contains" />
+    <Link Source="Page0.module" Target="Page0.controller" Bounds="292.733062744141,-359.761962890625,0,21.0001525878906" />
+    <Link Source="Page1.module" Target="Page1.controller" Bounds="466.050713757637,-357.127528686523,1.78951187301186,21.0325138353751" />
+    <Link Source="Page2" Target="Page2.controller" Category="Contains" />
+    <Link Source="Page2" Target="Page2.module" Category="Contains" />
+    <Link Source="Page2.module" Target="Page2.controller" Bounds="650.487926360484,-361.105220336914,1.8693531056033,23.0299372251084" />
+    <Link Source="Page3" Target="Page3.controller" Category="Contains" />
+    <Link Source="Page3" Target="Page3.module" Category="Contains" />
+    <Link Source="Page3.module" Target="Page3.controller" Bounds="824.616157946874,-360.204188842773,0.273629304102201,21.0009689205388" />
+    <Link Source="Page4" Target="Page4.controller" Category="Contains" />
+    <Link Source="Page4" Target="Page4.module" Category="Contains" />
+    <Link Source="Page4.module" Target="Page4.controller" Bounds="293.23753360627,-187.841319580078,0,21.0001135253906" />
+    <Link Source="Page5" Target="Page5.controller" Category="Contains" />
+    <Link Source="Page5" Target="Page5.module" Category="Contains" />
+    <Link Source="Page5.module" Target="Page5.controller" Bounds="471.34677130476,-185.207149047852,0.113057810436089,21.0002134315966" />
+    <Link Source="Page6" Target="Page6.controller" Category="Contains" />
+    <Link Source="Page6" Target="Page6.module" Category="Contains" />
+    <Link Source="Page6.module" Target="Page6.controller" Bounds="653.246129337233,-186.69546081543,0.594694193864484,21.0036959872648" />
+    <Link Source="Page7" Target="Page7.controller" Category="Contains" />
+    <Link Source="Page7" Target="Page7.module" Category="Contains" />
+    <Link Source="Page7.module" Target="Page7.controller" Bounds="829.727856169619,-188.283717651367,0.603047641757371,22.0035908974432" />
+    <Link Source="Page8" Target="Page8.controller" Category="Contains" />
+    <Link Source="Page8" Target="Page8.module" Category="Contains" />
+    <Link Source="Page8.module" Target="Page8.controller" Bounds="295.092739421477,-15.9207692337036,0.319806332101166,21.0010500616203" />
+    <Link Source="Pages" Target="94cae580-bb2e-4e5c-8cfd-973471e89573" Category="Contains" />
+    <Link Source="Pages" Target="Page0" Category="Contains" />
+    <Link Source="Pages" Target="Page2" Category="Contains" />
+    <Link Source="Pages" Target="Page3" Category="Contains" />
+    <Link Source="Pages" Target="Page4" Category="Contains" />
+    <Link Source="Pages" Target="Page5" Category="Contains" />
+    <Link Source="Pages" Target="Page6" Category="Contains" />
+    <Link Source="Pages" Target="Page7" Category="Contains" />
+    <Link Source="Pages" Target="Page8" Category="Contains" />
+    <Link Source="Services" Target="App.services" Category="Contains" />
+    <Link Source="Services" Target="App.services.navigation" Category="Contains" />
+    <Link Source="Services" Target="Navigation" Category="Contains" />
+    <Link Source="Services" Target="Pages" Bounds="-167.789947509766,-81.6130142211914,358.622604370117,43.0685882568359" />
+  </Links>
+  <Categories>
+    <Category Id="Application" Label="Application" IsTag="True" />
+    <Category Id="Category4" Label="Routing" Background="#FF1BA1E2" IsTag="True" />
+    <Category Id="Category5" Label="Services" Background="#FF9B4F96" IsTag="True" />
+    <Category Id="Category6" Label="Config" Background="#FFA1260D" IsTag="True" />
+    <Category Id="Category8" Label="Pages" Background="#FF44CCCC" IsTag="True" />
+    <Category Id="Comment" Label="Comment" Description="Represents a user defined comment on the diagram" CanBeDataDriven="True" IsProviderRoot="False" NavigationActionLabel="Comments" />
+    <Category Id="Contains" Label="Contains" Description="Whether the source of the link contains the target object" CanBeDataDriven="False" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Contained By" IsContainment="True" OutgoingActionLabel="Contains" />
+  </Categories>
+  <Properties>
+    <Property Id="Background" Label="Background" Description="The background color" DataType="System.Windows.Media.Brush" />
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="CanBeDataDriven" Label="CanBeDataDriven" Description="CanBeDataDriven" DataType="System.Boolean" />
+    <Property Id="CanLinkedNodesBeDataDriven" Label="CanLinkedNodesBeDataDriven" Description="CanLinkedNodesBeDataDriven" DataType="System.Boolean" />
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="Group" Label="Group" Description="Display the node as a group" DataType="Microsoft.VisualStudio.GraphModel.GraphGroupStyle" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="IncomingActionLabel" Label="IncomingActionLabel" Description="IncomingActionLabel" DataType="System.String" />
+    <Property Id="IsContainment" DataType="System.Boolean" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="IsProviderRoot" Label="IsProviderRoot" Description="IsProviderRoot" DataType="System.Boolean" />
+    <Property Id="IsTag" DataType="System.Boolean" />
+    <Property Id="Label" Label="Label" Description="Displayable label of an Annotatable object" DataType="System.String" />
+    <Property Id="NavigationActionLabel" Label="NavigationActionLabel" Description="NavigationActionLabel" DataType="System.String" />
+    <Property Id="OutgoingActionLabel" Label="OutgoingActionLabel" Description="OutgoingActionLabel" DataType="System.String" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="UseManualLocation" DataType="System.Boolean" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+  </Properties>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Category 6" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Category6')" />
+      <Setter Property="Background" Value="#FFA1260D" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Category 5" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Category5')" />
+      <Setter Property="Background" Value="#FF9B4F96" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Category 8" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Category8')" />
+      <Setter Property="Background" Value="#FF44CCCC" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Category 2" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Category2')" />
+      <Setter Property="Background" Value="#FF339933" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Category 4" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Category4')" />
+      <Setter Property="Background" Value="#FF1BA1E2" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Category 1" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Category1')" />
+      <Setter Property="Background" Value="#FFE51400" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Comment" ValueLabel="Has comment">
+      <Condition Expression="HasCategory('Comment')" />
+      <Setter Property="Background" Value="#FFFFFACD" />
+      <Setter Property="Stroke" Value="#FFE5C365" />
+      <Setter Property="StrokeThickness" Value="1" />
+      <Setter Property="NodeRadius" Value="2" />
+      <Setter Property="MaxWidth" Value="250" />
+    </Style>
+  </Styles>
+</DirectedGraph>

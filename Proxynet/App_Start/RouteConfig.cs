@@ -15,6 +15,8 @@ namespace Proxynet
         {
             routes.IgnoreRoute( "{resource}.axd/{*pathInfo}" );
 
+            routes.MapRoute("Users", "User/", new { controller = "User", action = "TestVIew" });
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
