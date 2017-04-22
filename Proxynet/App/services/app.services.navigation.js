@@ -3,51 +3,62 @@ var app;
     var Services;
     (function (Services) {
         'use strict';
-        var Steps = (function () {
-            function Steps() {
-                this.url = [
-                    'User'
-                ];
+        var Page;
+        (function (Page) {
+            Page[Page["UsersList"] = 0] = "UsersList";
+            Page[Page["UserEdit"] = 1] = "UserEdit";
+            Page[Page["TestPage"] = 2] = "TestPage";
+            Page[Page["NotFound"] = 3] = "NotFound";
+        })(Page = Services.Page || (Services.Page = {}));
+        var PageInfo = (function () {
+            function PageInfo(name, url, page, showInBar) {
+                if (showInBar === void 0) { showInBar = false; }
+                this.name = name;
+                this.url = url;
+                this.page = page;
+                this.showInBar = showInBar;
             }
-            Steps.prototype.getRoute = function (step) {
-                return this.url[step];
+            return PageInfo;
+        }());
+        var Pages = (function () {
+            function Pages() {
+                this.pages = new Array();
+                this.pages.push(new PageInfo('Пользователи', '/FtpProxy/users', Page.UsersList, true));
+                this.pages.push(new PageInfo('Тестовая страница', '/FtpProxy/testpage', Page.TestPage, true));
+            }
+            Pages.prototype.getPageInfo = function (page) {
+                var foundedPage = _.find(this.pages, function (pg) {
+                    return pg.page === page;
+                });
+                if (!_.isUndefined(foundedPage)) {
+                    return foundedPage;
+                }
+                else {
+                    return _.find(this.pages, function (pg) {
+                        return pg.page === Page.NotFound;
+                    });
+                }
             };
-            return Steps;
+            Pages.prototype.getPages = function () {
+                return _.clone(this.pages);
+            };
+            return Pages;
         }());
         var NavigationService = (function () {
             function NavigationService($location) {
                 this.location = $location;
-                this.currentStep = 0;
-                this.maxSteps = 1;
-                this.steps = new Steps();
+                this.pages = new Pages();
             }
-            NavigationService.prototype.next = function () {
-                if (this.currentStep === this.maxSteps) {
-                    return;
-                }
-                if (this.currentStep + 1 <= this.maxSteps) {
-                    this.currentStep++;
-                    this.location.path(this.steps.getRoute(this.currentStep));
-                }
+            NavigationService.prototype.setPage = function (page) {
+                var pageInfo = this.pages.getPageInfo(page);
+                this.currentPage = pageInfo.page;
+                this.location.path(pageInfo.url);
             };
-            NavigationService.prototype.previous = function () {
-                if (this.currentStep === 0) {
-                    return;
-                }
-                if (this.currentStep - 1 > -1) {
-                    this.currentStep--;
-                    this.location.path(this.steps.getRoute(this.currentStep));
-                }
+            NavigationService.prototype.getCurrentPage = function () {
+                return this.currentPage;
             };
-            NavigationService.prototype.current = function () {
-                return this.currentStep;
-            };
-            NavigationService.prototype.jump = function (step) {
-                this.currentStep = step;
-                this.location.path(this.steps.getRoute(step));
-            };
-            NavigationService.prototype.setCurrentStep = function (step) {
-                this.currentStep = step;
+            NavigationService.prototype.getAllPages = function () {
+                return this.pages.getPages();
             };
             return NavigationService;
         }());

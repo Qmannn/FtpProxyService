@@ -44,7 +44,7 @@ namespace Proxynet.Controllers
                     IsPersistent = model.RememberMe
                 }, identity );
 
-                return RedirectToAction( "Index", "User" );
+                return RedirectToRoute( "FtpProxy" );
             }
             ModelState.AddModelError( "", "Invalid login attempt." );
             return View( model );

@@ -1,0 +1,10 @@
+﻿<div ng-controller="UserController as ctrl">
+    <h2>Редактирование пользователя {{ctrl.user.name}} #{{ctrl.user.id}}</h2>
+
+    <div class="row">
+        <div class="col-md-2">Имя</div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Имя" ng-model="ctrl.user.name"/>
+        </div>
+    </div>
+</div>

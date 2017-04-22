@@ -1,31 +1,41 @@
 ﻿module app.Navbar {
     "use strict";
+
     interface INavbar {
-        text: string;
+        navigation: Services.INavigationService;
+
+        getPages(): Services.IPageInfo[];
+        setPage(page: Services.Page): void;
+        isCurrentPage(page: Services.Page): boolean;
     }
 
     class Navbar implements INavbar {
-        text: string;
-        private scope: ng.IScope;
-
-        static $inject = ['$scope', 'app.services.resource'];
-
-        constructor(private $scope: ng.IScope, private resourceService: app.Services.IResourceService) {
-            this.text = 'Navbar Controller';
-            $scope.text = 'testTextFromScope';
-            this.scope = $scope;
-            let localThis = this;
-            resourceService.getStrings((data) => {
-                localThis.onUsersLoaded(data);
-            });
-
+        getPages(): Services.IPageInfo[] {
+            var allPages = this.navigation.getAllPages();
+            return _.filter<Services.IPageInfo>(allPages,
+                (pg): boolean => {
+                    return pg.showInBar;
+                });
         }
 
-        private onUsersLoaded(data: any) {
-            console.log(this);
-            console.log(this.$scope);
-            this.scope.text += '!!!' + data[0].DisplayName;
+        setPage(page: Services.Page) {
+            this.navigation.setPage(page);
         }
+
+        isCurrentPage(page: Services.Page): boolean {
+            var currentPage = this.navigation.getCurrentPage();
+            return currentPage === page;
+        }
+
+        navigation: Services.INavigationService;
+
+        static $inject = ['app.services.navigation'];
+
+        constructor(navigation: Services.INavigationService) {
+            this.navigation = navigation;
+        }
+
+
     }
 
     angular.module('app.navbar').controller('app.navbar.Controller', Navbar);

@@ -1,27 +1,46 @@
 ﻿module app.Services {
     'use strict';
+    import IUser = Models.IUser;
+
     export interface IResourceService {
-        getStrings(callBack: Function );
+        getUsers(success: (users: IUser[]) => any, error: (data: any) => any): void;
+        getUser(id: number, success: (users: IUser) => any, error: (data: any) => any): void;
     }
 
     class ResourceService implements IResourceService {
+        
+        private actionHash: ng.resource.IActionHash;
+        private actionHashArray: ng.resource.IActionHash;
 
         static $inject = ['$resource'];
         constructor(private $resource: ng.resource.IResourceService) {
-            alert('app.services.resource');
-        }
+            let actionDescAtrray = <ng.resource.IActionDescriptor>{};
+            actionDescAtrray.isArray = true;
+            actionDescAtrray.method = 'POST';
 
-        getStrings(callBack: Function) {
             let actionDesc = <ng.resource.IActionDescriptor>{};
-            actionDesc.isArray = true;
+            actionDesc.isArray = false;
             actionDesc.method = 'POST';
 
-            let actionHash  = <ng.resource.IActionHash>{
-                ['save']: actionDesc
+            this.actionHash = <ng.resource.IActionHash>{
+                ['save']: actionDesc,
+                ['query']: actionDesc
             }
 
-            var jsonGetter = this.$resource('user/GetUsers', null, actionHash);
-            jsonGetter.save(callBack);
+            this.actionHashArray = <ng.resource.IActionHash>{
+                ['save']: actionDescAtrray,
+                ['query']: actionDescAtrray
+            }
+        }
+
+        getUsers(success: (users: IUser[]) => any, error: (data: any) => any): void {
+            this.$resource('user/getusers', null, this.actionHashArray)
+                .query(success, error);
+        }
+
+        getUser(id: number, success: (users: IUser) => any, error: (data: any) => any): void {
+            this.$resource('user/getuser', id, this.actionHashArray)
+                .query(success, error);
         }
     }
 

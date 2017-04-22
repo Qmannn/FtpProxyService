@@ -15,12 +15,16 @@ namespace Proxynet
         {
             routes.IgnoreRoute( "{resource}.axd/{*pathInfo}" );
 
-            routes.MapRoute("Users", "User/", new { controller = "User", action = "TestVIew" });
-
+            routes.MapRoute(
+                name: "FtpProxy",
+                url: "FtpProxy/{*.}",
+                defaults: new { controller = "FtpProxy", action = "Index" }
+            );
+            
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "User", action = "TestVIew", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

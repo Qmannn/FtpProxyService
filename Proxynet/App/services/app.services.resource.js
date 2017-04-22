@@ -6,18 +6,29 @@ var app;
         var ResourceService = (function () {
             function ResourceService($resource) {
                 this.$resource = $resource;
-                alert('app.services.resource');
-            }
-            ResourceService.prototype.getStrings = function (callBack) {
+                var actionDescAtrray = {};
+                actionDescAtrray.isArray = true;
+                actionDescAtrray.method = 'POST';
                 var actionDesc = {};
-                actionDesc.isArray = true;
+                actionDesc.isArray = false;
                 actionDesc.method = 'POST';
-                var actionHash = (_a = {},
+                this.actionHash = (_a = {},
                     _a['save'] = actionDesc,
+                    _a['query'] = actionDesc,
                     _a);
-                var jsonGetter = this.$resource('user/GetUsers', null, actionHash);
-                jsonGetter.save(callBack);
-                var _a;
+                this.actionHashArray = (_b = {},
+                    _b['save'] = actionDescAtrray,
+                    _b['query'] = actionDescAtrray,
+                    _b);
+                var _a, _b;
+            }
+            ResourceService.prototype.getUsers = function (success, error) {
+                this.$resource('user/getusers', null, this.actionHashArray)
+                    .query(success, error);
+            };
+            ResourceService.prototype.getUser = function (id, success, error) {
+                this.$resource('user/getuser', id, this.actionHashArray)
+                    .query(success, error);
             };
             return ResourceService;
         }());

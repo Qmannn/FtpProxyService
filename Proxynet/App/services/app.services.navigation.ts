@@ -1,81 +1,94 @@
 ﻿module app.Services {
     'use strict';
     export interface INavigationService {
-        currentStep : number;
-        maxSteps    : number;
-        next()      : void;
-        previous()  : void;
-        current()   : number;
-        jump(step: number): void;
-        setCurrentStep(step: number): void;
+        setPage(page: Page): void;
+        getCurrentPage(): Page;
+        getAllPages(): Array<IPageInfo>;
     }
 
-    export interface ISteps {
-        url: string[];
-        getRoute(step: number): string;
+    export enum Page {
+        UsersList,
+        UserEdit,
+        TestPage,
+        NotFound
     }
 
-    class Steps implements ISteps {
-        url: string[];
+    export interface IPageInfo {
+        name: string;
+        url: string;
+        page: Page;
+        showInBar: boolean;
+    }
+
+    class PageInfo implements IPageInfo {
+        name: string;
+        url: string;
+        page: Page;
+        showInBar: boolean;
+
+        constructor( name: string, url: string, page: Page, showInBar: boolean = false) {
+            this.name = name;
+            this.url = url;
+            this.page = page;
+            this.showInBar = showInBar;
+        }
+    }
+
+    class Pages {
+        pages: Array<IPageInfo>;
 
         constructor() {
-            this.url = [
-                'User'
-            ];
+            this.pages = new Array<IPageInfo>();
+
+            this.pages.push(new PageInfo('Пользователи', '/FtpProxy/users', Page.UsersList, true));
+            this.pages.push(new PageInfo('Тестовая страница', '/FtpProxy/testpage', Page.TestPage, true));
         }
 
-        getRoute(step: number): string {
-            return this.url[step];
+        public getPageInfo(page: Page) : IPageInfo {
+
+            var foundedPage = _.find<IPageInfo>(this.pages,
+                (pg): boolean => {
+                    return pg.page === page;
+                });
+
+            if (!_.isUndefined(foundedPage)) {
+                return foundedPage;
+            } else {
+                return _.find<IPageInfo>(this.pages,
+                    (pg): boolean => {
+                        return pg.page === Page.NotFound;
+                    });
+            }
+        }
+
+        public getPages(): Array<IPageInfo> {
+            return _.clone(this.pages);
         }
     }
 
     class NavigationService implements INavigationService {
-        currentStep : number;
-        maxSteps    : number;
-        steps       : ISteps;
+        currentPage: Page;
+        pages: Pages;
         location    : ng.ILocationService;
 
         static $inject = ['$location'];
         constructor($location: ng.ILocationService) {
-            this.location    = $location;
-            this.currentStep = 0;
-            this.maxSteps    = 1;
-            this.steps       = new Steps();
+            this.location = $location;
+            this.pages = new Pages();
         }
 
-        next(): void {
-            if (this.currentStep === this.maxSteps) {
-                return;
-            }
-
-            if (this.currentStep + 1 <= this.maxSteps) {
-                this.currentStep++;
-                this.location.path(this.steps.getRoute(this.currentStep));
-            }
+        setPage(page: Page): void {
+            var pageInfo = this.pages.getPageInfo(page);
+            this.currentPage = pageInfo.page;
+            this.location.path(pageInfo.url);
         }
 
-        previous(): void {
-            if (this.currentStep === 0) {
-                return;
-            }
-
-            if (this.currentStep - 1 > -1) {
-                this.currentStep--;
-                this.location.path(this.steps.getRoute(this.currentStep));
-            }
+        getCurrentPage(): Page {
+            return this.currentPage;
         }
 
-        current(): number {
-            return this.currentStep;
-        }
-
-        jump(step: number): void {
-            this.currentStep = step;
-            this.location.path(this.steps.getRoute(step));
-        }
-
-        setCurrentStep(step: number): void {
-            this.currentStep = step;
+        getAllPages(): IPageInfo[] {
+            return this.pages.getPages();
         }
     }
 

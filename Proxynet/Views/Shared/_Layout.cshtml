@@ -9,12 +9,12 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top" ng-controller="app.navbar.Controller as ctrl">
         <div class="container">
             @if ( Request.IsAuthenticated )
             {
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink( "Пользователи", "Index", "User" )</li>
+                    <li ng-repeat="page in ctrl.getPages()" ng-click="ctrl.setPage(page.page)"><a>{{page.name}}</a></li>
                 </ul>
             }
             <div class="navbar-collapse collapse">
@@ -31,6 +31,7 @@
     </div>
     @(Scripts.Render("~/bundles/jquery"))
     @(Scripts.Render("~/bundles/angular"))
+    @(Scripts.Render("~/bundles/lodash"))
     @(Scripts.Render("~/bundles/app"))
     @(Scripts.Render("~/bundles/bootstrap"))
     @(RenderSection("scripts", required: false))

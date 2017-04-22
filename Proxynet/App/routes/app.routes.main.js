@@ -3,14 +3,17 @@
     angular.module('app.routes').config(['$locationProvider', '$routeProvider', config]);
     function config($locationProvider, $routeProvider) {
         $routeProvider
-            .when('/User', {
-            templateUrl: '/User/TestVIew'
+            .when('/FtpProxy/', {
+            templateUrl: 'Pages/Users'
         })
-            .when('/User/TestVIew', {
-            templateUrl: '/User/TestVIew'
+            .when('/FtpProxy/users', {
+            templateUrl: 'Pages/Users'
         })
-            .when('/User/Test', {
-            templateUrl: '/User/TestVIew'
+            .when('/FtpProxy/user/:userid', {
+            templateUrl: 'Pages/UserEdit'
+        })
+            .when('/FtpProxy/testpage', {
+            templateUrl: 'Pages/TestPage'
         });
     }
 })();

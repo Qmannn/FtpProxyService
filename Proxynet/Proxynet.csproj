@@ -35,7 +35,7 @@
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
     <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
     <TypeScriptOutFile />
@@ -109,6 +109,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -180,13 +181,20 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\FtpProxyController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PagesController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\EditUserViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\UserDto.cs" />
+    <Compile Include="Models\UserGroupDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Converters\IUserDtoConverter.cs" />
+    <Compile Include="Service\Converters\UserDtoConverter.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +245,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <TypeScriptCompile Include="App\models\user.model.ts" />
     <None Include="Properties\PublishProfiles\ftpproxy.pubxml" />
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular.min.js.map" />
@@ -991,6 +1000,10 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\lodash.core.js" />
+    <Content Include="Scripts\lodash.core.min.js" />
+    <Content Include="Scripts\lodash.js" />
+    <Content Include="Scripts\lodash.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\respond.js" />
@@ -1021,6 +1034,9 @@
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Scripts\version.json" />
+    <Content Include="Views\Pages\Users.cshtml" />
+    <Content Include="Views\Pages\User.cshtml" />
+    <Content Include="Views\FtpProxy\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1037,14 +1053,9 @@
     <TypeScriptCompile Include="App\app.module.ts" />
     <TypeScriptCompile Include="App\navbar\navbar.controller.ts" />
     <TypeScriptCompile Include="App\navbar\navbar.module.ts" />
-    <TypeScriptCompile Include="App\navigation\navigation.controller.ts" />
-    <TypeScriptCompile Include="App\navigation\navigation.module.ts" />
-    <TypeScriptCompile Include="App\page0\page0.controller.ts" />
-    <TypeScriptCompile Include="App\page0\page0.module.ts" />
-    <TypeScriptCompile Include="App\page1\page1.controller.ts" />
-    <TypeScriptCompile Include="App\page1\page1.module.ts" />
-    <TypeScriptCompile Include="App\page2\page2.controller.ts" />
-    <TypeScriptCompile Include="App\page2\page2.module.ts" />
+    <TypeScriptCompile Include="App\pageControllers\user.controller.ts" />
+    <TypeScriptCompile Include="App\pageControllers\users.controller.ts" />
+    <TypeScriptCompile Include="App\pageControllers\users.module.ts" />
     <TypeScriptCompile Include="App\routes\app.routes.main.ts" />
     <TypeScriptCompile Include="App\routes\app.routes.module.ts" />
     <TypeScriptCompile Include="App\services\app.services.navigation.ts" />
@@ -1059,6 +1070,7 @@
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-sanitize.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\lodash\lodash.d.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

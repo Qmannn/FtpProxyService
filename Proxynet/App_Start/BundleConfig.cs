@@ -39,10 +39,13 @@ namespace Proxynet
                 "~/Scripts/angular-resource.js",
                 "~/Scripts/angular-messages.js"));
 
-            AddApplicationBundles( bundles );
-            BundleTable.VirtualPathProvider = new ScriptBundlePathProvider(HostingEnvironment.VirtualPathProvider);
+            bundles.Add( new ScriptBundle( "~/bundles/lodash" ).Include(
+                "~/Scripts/lodash.min.js" ) );
 
-            BundleTable.EnableOptimizations = true;
+            AddApplicationBundles( bundles );
+            //BundleTable.VirtualPathProvider = new ScriptBundlePathProvider(HostingEnvironment.VirtualPathProvider);
+
+            //BundleTable.EnableOptimizations = true;
         }
 
         #region  ///  ScriptBundlePathProvider  ///

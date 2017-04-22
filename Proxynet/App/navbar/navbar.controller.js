@@ -4,25 +4,25 @@ var app;
     (function (Navbar_1) {
         "use strict";
         var Navbar = (function () {
-            function Navbar($scope, resourceService) {
-                this.$scope = $scope;
-                this.resourceService = resourceService;
-                this.text = 'Navbar Controller';
-                $scope.text = 'testTextFromScope';
-                this.scope = $scope;
-                var localThis = this;
-                resourceService.getStrings(function (data) {
-                    localThis.onUsersLoaded(data);
-                });
+            function Navbar(navigation) {
+                this.navigation = navigation;
             }
-            Navbar.prototype.onUsersLoaded = function (data) {
-                console.log(this);
-                console.log(this.$scope);
-                this.scope.text += '!!!' + data[0].DisplayName;
+            Navbar.prototype.getPages = function () {
+                var allPages = this.navigation.getAllPages();
+                return _.filter(allPages, function (pg) {
+                    return pg.showInBar;
+                });
+            };
+            Navbar.prototype.setPage = function (page) {
+                this.navigation.setPage(page);
+            };
+            Navbar.prototype.isCurrentPage = function (page) {
+                var currentPage = this.navigation.getCurrentPage();
+                return currentPage === page;
             };
             return Navbar;
         }());
-        Navbar.$inject = ['$scope', 'app.services.resource'];
+        Navbar.$inject = ['app.services.navigation'];
         angular.module('app.navbar').controller('app.navbar.Controller', Navbar);
     })(Navbar = app.Navbar || (app.Navbar = {}));
 })(app || (app = {}));
