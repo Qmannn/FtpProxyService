@@ -1,58 +1,83 @@
 ﻿module app.PageControllers {
     'use strict';
 
-    interface IUserGroup {
-        id: number;
-        name: string;
-    }
-
-    interface IUser {
-        name: string;
-        login: string;
-        id: number;
-        groups: IUserGroup[];
-    }
-
-    class User implements IUser {
-        name: string;
-        login: string;
-        id: number;
-        groups: IUserGroup[];
-    }
-
-    class UserGroup implements IUserGroup {
-        id: number;
-        name: string;
-    }
-
+    import IUser = Models.IUser;
+    import IUserGroup = Models.IUserGroup;
+    
     class UserController {
         public user: IUser;
+        public allowedToUserGroups: IUserGroup[];
 
-        static $inject = ['app.services.navigation', '$routeParams'];
-        constructor(nav: app.Services.INavigationService, routeParams: ng.route.IRouteParamsService) {
+        private allGroups: IUserGroup[];
+        private resourceService: Services.IResourceService;
 
-            var user = new User();
-            user.login = 'Max';
-            user.name = 'Максим';
-            console.log(routeParams);
-            user.id = routeParams['userid'];
+        static $inject = ['$routeParams', 'app.services.resource' ];
 
-            user.groups = new Array<UserGroup>();
-            var group = new UserGroup();
-            group.name = 'Admin';
-            user.groups.push(group);
+        constructor( routeParams: ng.route.IRouteParamsService,
+            resourceService: Services.IResourceService ) {
+            this.resourceService = resourceService;
+            this.allGroups = null;
+            this.user = null;
 
-            group = new UserGroup();
-            group.name = 'Loshara';
-            user.groups.push(group);
+            var self = this;
+            var userId = routeParams[ 'userid' ];
+            this.resourceService.getUser( userId,
+                ( user: IUser ): void => {
+                    self.user = user;
+                },
+                self.onError );
 
-            group = new UserGroup();
-            group.name = 'LolGroup';
-            user.groups.push(group);
+            this.resourceService.getGroups( ( groups: IUserGroup[] ): void => {
+                    self.allGroups = groups;
+                },
+                self.onError );
+        }
 
-            this.user = user;
+        public getAllowedToUserGroups(): IUserGroup[] {
+            if ( _.isNull( this.user ) || !_.isArray( this.allGroups ) ) {
+                return <IUserGroup[]>{};
+            }
+
+            return _.filter( this.allGroups,
+                ( group: IUserGroup ): boolean => {
+                    return _.isUndefined( _.find( this.user.groups,
+                        ( gr: IUserGroup ): boolean => {
+                            return gr.id === group.id;
+                        } ) );
+                } );
+        }
+        
+        public addGroup(group: IUserGroup) {
+            this.user.groups.push( group );
+        }
+
+        public removeGroup( group: IUserGroup ) {
+            _.remove( this.user.groups,
+                ( gr: IUserGroup ): boolean => {
+                    return gr.id === group.id;
+                } );
+        }
+
+        public saveUser() {
+            var self = this;
+            this.resourceService.saveUser( this.user,
+                ( user: IUser ): void => {
+                    self.user = user;
+                    self.onSaveSucefull();
+                },
+                self.onError );
+        }
+
+        /*--PRIVATE---*/
+
+        private onError( data: any ): void {
+            console.error( data );
+        }
+
+        private onSaveSucefull(): void {
+
         }
     }
 
-    angular.module('app.pageControllers').controller('UserController', UserController);
+    angular.module( 'app.pageControllers' ).controller( 'UserController', UserController );
 }   

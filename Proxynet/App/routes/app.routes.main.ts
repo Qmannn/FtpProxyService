@@ -4,21 +4,25 @@
 
     function config($locationProvider: ng.ILocationProvider, $routeProvider: ng.route.IRouteProvider): void {
         $routeProvider
-            .when('/FtpProxy/',
+            .when( '/FtpProxy/',
                 {
                     templateUrl: 'Pages/Users'
-                })
-            .when('/FtpProxy/users',
+                } )
+            .when( '/FtpProxy/users',
                 {
                     templateUrl: 'Pages/Users'
-            })
-            .when('/FtpProxy/user/:userid',
+                } )
+            .when( '/FtpProxy/user/:userid',
                 {
                     templateUrl: 'Pages/UserEdit'
-                })
-            .when('/FtpProxy/testpage',
+                } )
+            .when( '/FtpProxy/sites',
                 {
-                    templateUrl: 'Pages/TestPage'
-                });
+                    templateUrl: 'Pages/Sites'
+                } )
+            .when( '/FtpProxy/site/:siteid',
+                {
+                    templateUrl: 'Pages/SiteEdit'
+                } );
     }
 })();

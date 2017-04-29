@@ -1,20 +1,7 @@
 ﻿module app.PageControllers {
     'use strict';
-
-    import IUserGroup = Models.IUserGroup;
+    
     import IUser = Models.IUser;
-
-    class User implements IUser {
-        name: string;
-        login: string;
-        id: number;
-        groups: IUserGroup[];
-    }
-
-    class UserGroup implements IUserGroup {
-        id: number;
-        name: string;
-    }
 
     class UsersController {
         public users: IUser[];
@@ -23,20 +10,13 @@
 
         static $inject = ['app.services.navigation', 'app.services.resource'];
 
-        constructor(nav: app.Services.INavigationService, resourceService: Services.IResourceService) {
+        constructor(nav: Services.INavigationService, resourceService: Services.IResourceService) {
             this.resourceService = resourceService;
 
             var self = this;
 
             resourceService.getUsers((users: IUser[]): void => {
-                    self.users = _.map(users,
-                        (user: any): IUser => {
-                            var userDto = <IUser>{};
-                            userDto.id = user.Id;
-                            userDto.login = user.Login;
-                            userDto.name = user.Name;
-                            return userDto;
-                        });
+                    self.users = users;
                 },
                 (data: any): void => { console.log(data); });
         }

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Proxynet.Models
 {
@@ -13,5 +15,8 @@ namespace Proxynet.Models
 
         [JsonProperty( "name" )]
         public string Name { get; set; }
+
+        [JsonProperty("groups")]
+        public List<UserGroupDto> Groups { get; set; }
     }
 }

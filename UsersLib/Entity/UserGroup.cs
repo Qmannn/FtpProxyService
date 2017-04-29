@@ -4,6 +4,9 @@ namespace UsersLib.Entity
 {
     public class UserGroup
     {
+        public UserGroup()
+        {
+        }
         public UserGroup( DbUserGroup dbUserGroup )
         {
             Id = dbUserGroup.UserGroupId;

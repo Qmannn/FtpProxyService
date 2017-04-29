@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using UsersLib.DbContextSettings;
@@ -47,9 +48,9 @@ namespace UsersLib.DbControllers
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
-                return dbContext.SiteGroups
-                    .Select( item => new SiteGroup( item ) )
+                List<DbSiteGroup> siteGroups = dbContext.SiteGroups
                     .ToList();
+                return siteGroups.ConvertAll( item => new SiteGroup( item ) );
             }
         }
 
@@ -61,7 +62,20 @@ namespace UsersLib.DbControllers
                     .FirstOrDefault( item => item.SiteKey == siteKey );
 
                 return dbSite != null
-                    ? dbSite.SiteGroups.ConvertAll( item => new SiteGroup( item ) ).ToList()
+                    ? dbSite.SiteGroups.Select( item => new SiteGroup( item ) ).ToList()
+                    : new List<SiteGroup>();
+            }
+        }
+
+        public List<SiteGroup> GetSiteGroups( int siteId )
+        {
+            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            {
+                DbSite dbSite = dbContext.Sites
+                    .FirstOrDefault( item => item.SiteId == siteId );
+
+                return dbSite != null
+                    ? dbSite.SiteGroups.Select( item => new SiteGroup( item ) ).ToList()
                     : new List<SiteGroup>();
             }
         }
@@ -84,6 +98,17 @@ namespace UsersLib.DbControllers
             }
         }
 
+        public Dictionary<Site, List<SiteGroup>> GetSitesByGroups()
+        {
+            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            {
+                return dbContext.Sites.Include( site => site.SiteGroups )
+                    .ToDictionary( item => new Site( item ),
+                        item => item.SiteGroups.ToList()
+                            .ConvertAll( group => new SiteGroup( group ) ) );
+            }
+        }
+
         public void SaveSite( Site site )
         {
             if ( site == null )
@@ -94,6 +119,31 @@ namespace UsersLib.DbControllers
             {
                 dbContext.Sites.AddOrUpdate( site.ConvertToDbSite() );
                 dbContext.SaveChanges();
+            }
+        }
+
+        public void SaveSiteGroups( int siteId, List<int> siteGroupIds )
+        {
+            if ( siteId == 0 )
+            {
+                return;
+            }
+
+            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            {
+                DbSite site = dbContext.Sites.Find( siteId );
+                List<DbSiteGroup> groups = dbContext.SiteGroups
+                    .Where( item => siteGroupIds.Contains( item.SiteGroupId ) )
+                    .ToList();
+                if ( site != null )
+                {
+                    site.SiteGroups.Clear();
+                    foreach ( DbSiteGroup userGroup in groups )
+                    {
+                        site.SiteGroups.Add( userGroup );
+                    }
+                    dbContext.SaveChanges();
+                }
             }
         }
     }

@@ -1,10 +1,48 @@
 ﻿<div ng-controller="UserController as ctrl">
-    <h2>Редактирование пользователя {{ctrl.user.name}} #{{ctrl.user.id}}</h2>
 
     <div class="row">
-        <div class="col-md-2">Имя</div>
-        <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Имя" ng-model="ctrl.user.name"/>
+        <div class="col-md-8">
+            <button ng-click="ctrl.saveUser()" class="btn btn-primary">Сохранить</button>
         </div>
+    </div>
+    <h2>Редактирование пользователя {{ctrl.user.login}} #{{ctrl.user.id}}</h2>
+
+    <div class="row">
+        <label for="name" class="col-md-1">Имя</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Имя" id="name" ng-model="ctrl.user.name"/>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-lg-5">
+            <h3>Состоит в гурппах:</h3>
+            <table class="table">
+                <tr ng-repeat="group in ctrl.user.groups">
+                    <td>
+                        {{group.name}}
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-danger" ng-click="ctrl.removeGroup(group)">Удалить</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-lg-5">
+            <h3>Доступные группы:</h3>
+            <table class="table">
+                <tr ng-repeat="group in ctrl.getAllowedToUserGroups()">
+                    <td>
+                        {{group.name}}
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-info" ng-click="ctrl.addGroup(group)">Добавить</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <button ng-click="ctrl.saveUser()" class="btn btn-primary">Сохранить</button>
     </div>
 </div>

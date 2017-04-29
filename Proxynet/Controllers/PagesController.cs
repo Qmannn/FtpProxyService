@@ -12,13 +12,24 @@ namespace Proxynet.Controllers
 
         public ActionResult UserEdit()
         {
-            return PartialView("User");
+            return PartialView( "User" );
         }
 
         // GET: Pages
         public ActionResult TestPage()
         {
             return PartialView( "User" );
+        }
+
+        // GET: Pages
+        public ActionResult Sites()
+        {
+            return PartialView( "Sites" );
+        }
+
+        public ActionResult SiteEdit()
+        {
+            return PartialView("Site");
         }
     }
 }

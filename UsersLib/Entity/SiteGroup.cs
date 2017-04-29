@@ -4,6 +4,11 @@ namespace UsersLib.Entity
 {
     public class SiteGroup
     {
+        public SiteGroup()
+        {
+            
+        }
+
         public SiteGroup( DbSiteGroup dbSiteGroup )
         {
             Id = dbSiteGroup.SiteGroupId;

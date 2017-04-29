@@ -12,8 +12,11 @@
             .when('/FtpProxy/user/:userid', {
             templateUrl: 'Pages/UserEdit'
         })
-            .when('/FtpProxy/testpage', {
-            templateUrl: 'Pages/TestPage'
+            .when('/FtpProxy/sites', {
+            templateUrl: 'Pages/Sites'
+        })
+            .when('/FtpProxy/site/:siteid', {
+            templateUrl: 'Pages/SiteEdit'
         });
     }
 })();

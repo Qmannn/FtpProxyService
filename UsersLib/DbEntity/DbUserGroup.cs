@@ -12,8 +12,8 @@ namespace UsersLib.DbEntity
 
         public virtual string Name { get; set; }
 
-        public virtual List<DbUser> Users { get; set; }
+        public virtual ICollection<DbUser> Users { get; set; }
         
-        public virtual List<DbSiteGroup> SiteGroups { get; set; }
+        public virtual ICollection<DbSiteGroup> SiteGroups { get; set; }
     }
 }

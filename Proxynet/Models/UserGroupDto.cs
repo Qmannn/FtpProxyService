@@ -1,14 +1,15 @@
 ﻿using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Proxynet.Models
 {
-    [DataContract]
+    [JsonObject]
     public class UserGroupDto
     {
-        [DataMember(Name = "name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [DataMember(Name = "id")]
+        [JsonProperty("id")]
         public int Id { get; set; }
     }
 }

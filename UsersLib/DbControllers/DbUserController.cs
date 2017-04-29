@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using UsersLib.DbContextSettings;
@@ -30,6 +31,16 @@ namespace UsersLib.DbControllers
             }
         }
 
+        public Dictionary<User, List<UserGroup>> GetUsersByGroups()
+        {
+            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            {
+                return dbContext.Users.Include(user => user.UserGroups)
+                    .ToDictionary(item => new User(item),
+                        item => item.UserGroups.ToList().ConvertAll(group => new UserGroup(group)));
+            }
+        }
+
         public List<UserGroup> GetUserGroups( string userLogin )
         {
             DbUser dbUser;
@@ -50,9 +61,7 @@ namespace UsersLib.DbControllers
             {
                 DbUser dbUser = dbContext.Users.FirstOrDefault( item => item.UserId == userId );
 
-                return dbUser != null
-                    ? dbUser.UserGroups.Select( item => new UserGroup( item ) ).ToList()
-                    : new List<UserGroup>();
+                return dbUser?.UserGroups.Select( item => new UserGroup( item ) ).ToList() ?? new List<UserGroup>();
             }
         }
 
@@ -79,6 +88,31 @@ namespace UsersLib.DbControllers
             {
                 dbContext.Users.AddOrUpdate( user.ConvertToDbUser() );
                 dbContext.SaveChanges();
+            }
+        }
+
+        public void SaveUserGroups( int userId, List<int> userGroupIds )
+        {
+            if ( userId == 0 )
+            {
+                return;
+            }
+
+            using (FtpProxyDbContext dbContext = new FtpProxyDbContext())
+            {
+                DbUser user = dbContext.Users.Find( userId );
+                List<DbUserGroup> groups = dbContext.UserGroups
+                    .Where( item => userGroupIds.Contains( item.UserGroupId ) )
+                    .ToList();
+                if ( user != null )
+                {
+                    user.UserGroups.Clear();
+                    foreach ( DbUserGroup userGroup in groups )
+                    {
+                        user.UserGroups.Add( userGroup );
+                    }
+                    dbContext.SaveChanges();
+                }
             }
         }
 

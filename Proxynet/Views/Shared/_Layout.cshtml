@@ -14,7 +14,7 @@
             @if ( Request.IsAuthenticated )
             {
                 <ul class="nav navbar-nav">
-                    <li ng-repeat="page in ctrl.getPages()" ng-click="ctrl.setPage(page.page)"><a>{{page.name}}</a></li>
+                    <li ng-repeat="page in ctrl.getPages()" ng-click="ctrl.setPage(page.page)" ng-class="page.isActive ? 'active' : ''"><a href="">{{page.name}}</a></li>
                 </ul>
             }
             <div class="navbar-collapse collapse">
@@ -22,13 +22,14 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - FTP Proxy admin UI</p>
-        </footer>
-    </div>
+<div class="container body-content">
+    <br/>
+    @RenderBody()
+    <hr/>
+    <footer>
+        <p>&copy; @DateTime.Now.Year - FTP Proxy admin UI</p>
+    </footer>
+</div>
     @(Scripts.Render("~/bundles/jquery"))
     @(Scripts.Render("~/bundles/angular"))
     @(Scripts.Render("~/bundles/lodash"))

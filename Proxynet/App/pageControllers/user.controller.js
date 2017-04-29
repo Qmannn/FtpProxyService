@@ -3,38 +3,55 @@ var app;
     var PageControllers;
     (function (PageControllers) {
         'use strict';
-        var User = (function () {
-            function User() {
-            }
-            return User;
-        }());
-        var UserGroup = (function () {
-            function UserGroup() {
-            }
-            return UserGroup;
-        }());
         var UserController = (function () {
-            function UserController(nav, routeParams) {
-                var user = new User();
-                user.login = 'Max';
-                user.name = 'Максим';
-                console.log(routeParams);
-                user.id = routeParams['userid'];
-                user.groups = new Array();
-                var group = new UserGroup();
-                group.name = 'Admin';
-                user.groups.push(group);
-                group = new UserGroup();
-                group.name = 'Loshara';
-                user.groups.push(group);
-                group = new UserGroup();
-                group.name = 'LolGroup';
-                user.groups.push(group);
-                this.user = user;
+            function UserController(routeParams, resourceService) {
+                this.resourceService = resourceService;
+                this.allGroups = null;
+                this.user = null;
+                var self = this;
+                var userId = routeParams['userid'];
+                this.resourceService.getUser(userId, function (user) {
+                    self.user = user;
+                }, self.onError);
+                this.resourceService.getGroups(function (groups) {
+                    self.allGroups = groups;
+                }, self.onError);
             }
+            UserController.prototype.getAllowedToUserGroups = function () {
+                var _this = this;
+                if (_.isNull(this.user) || !_.isArray(this.allGroups)) {
+                    return {};
+                }
+                return _.filter(this.allGroups, function (group) {
+                    return _.isUndefined(_.find(_this.user.groups, function (gr) {
+                        return gr.id === group.id;
+                    }));
+                });
+            };
+            UserController.prototype.addGroup = function (group) {
+                this.user.groups.push(group);
+            };
+            UserController.prototype.removeGroup = function (group) {
+                _.remove(this.user.groups, function (gr) {
+                    return gr.id === group.id;
+                });
+            };
+            UserController.prototype.saveUser = function () {
+                var self = this;
+                this.resourceService.saveUser(this.user, function (user) {
+                    self.user = user;
+                    self.onSaveSucefull();
+                }, self.onError);
+            };
+            /*--PRIVATE---*/
+            UserController.prototype.onError = function (data) {
+                console.error(data);
+            };
+            UserController.prototype.onSaveSucefull = function () {
+            };
             return UserController;
         }());
-        UserController.$inject = ['app.services.navigation', '$routeParams'];
+        UserController.$inject = ['$routeParams', 'app.services.resource'];
         angular.module('app.pageControllers').controller('UserController', UserController);
     })(PageControllers = app.PageControllers || (app.PageControllers = {}));
 })(app || (app = {}));

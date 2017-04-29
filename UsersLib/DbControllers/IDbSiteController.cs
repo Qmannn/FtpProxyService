@@ -11,7 +11,10 @@ namespace UsersLib.DbControllers
         List<Site> GetSites();
         List<SiteGroup> GetSiteGroups();
         List<SiteGroup> GetSiteGroups( string siteKey );
+        List<SiteGroup> GetSiteGroups(int siteId);
         List<UserGroup> GetUserGroupsBySite( int siteId );
+        Dictionary<Site, List<SiteGroup>> GetSitesByGroups();
         void SaveSite( Site site );
+        void SaveSiteGroups( int siteId, List<int> siteGroupIds );
     }
 }

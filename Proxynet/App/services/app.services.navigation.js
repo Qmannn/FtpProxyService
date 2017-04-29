@@ -6,17 +6,19 @@ var app;
         var Page;
         (function (Page) {
             Page[Page["UsersList"] = 0] = "UsersList";
-            Page[Page["UserEdit"] = 1] = "UserEdit";
-            Page[Page["TestPage"] = 2] = "TestPage";
+            Page[Page["TestPage"] = 1] = "TestPage";
+            Page[Page["SiteList"] = 2] = "SiteList";
             Page[Page["NotFound"] = 3] = "NotFound";
         })(Page = Services.Page || (Services.Page = {}));
         var PageInfo = (function () {
-            function PageInfo(name, url, page, showInBar) {
+            function PageInfo(name, url, page, showInBar, isActive) {
                 if (showInBar === void 0) { showInBar = false; }
+                if (isActive === void 0) { isActive = false; }
                 this.name = name;
                 this.url = url;
                 this.page = page;
                 this.showInBar = showInBar;
+                this.isActive = false;
             }
             return PageInfo;
         }());
@@ -24,7 +26,7 @@ var app;
             function Pages() {
                 this.pages = new Array();
                 this.pages.push(new PageInfo('Пользователи', '/FtpProxy/users', Page.UsersList, true));
-                this.pages.push(new PageInfo('Тестовая страница', '/FtpProxy/testpage', Page.TestPage, true));
+                this.pages.push(new PageInfo('Аккаунты сайтов', '/FtpProxy/sites', Page.SiteList, true));
             }
             Pages.prototype.getPageInfo = function (page) {
                 var foundedPage = _.find(this.pages, function (pg) {
@@ -55,10 +57,18 @@ var app;
                 this.location.path(pageInfo.url);
             };
             NavigationService.prototype.getCurrentPage = function () {
-                return this.currentPage;
+                var currentPuth = this.location.path();
+                var currentPageInfo = _.find(this.pages.pages, function (pageInfo) {
+                    return pageInfo.url === currentPuth;
+                });
+                if (_.isUndefined(currentPageInfo)) {
+                    return null;
+                }
+                return currentPageInfo.page;
             };
             NavigationService.prototype.getAllPages = function () {
                 return this.pages.getPages();
+                ;
             };
             return NavigationService;
         }());

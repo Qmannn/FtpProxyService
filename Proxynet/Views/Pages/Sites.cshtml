@@ -1,0 +1,32 @@
+﻿<div ng-controller="SitesController as ctrl">
+    <h2>Аккаунты сайтов</h2>
+    <table class="table">
+        <tr>
+            <th>Название</th> 
+            <th>Описание</th> 
+            <th>Группы</th> 
+            <th>
+                Дейтсвия
+            </th> 
+        </tr>
+        <tr ng-repeat="site in ctrl.sites">
+            <td class="left center-block">{{site.name}}</td>
+            <td>{{site.description}}</td>
+            <td>
+                <div>
+                    <button data-target="#groups-spoiler-{{site.id}}" class="btn-link" data-toggle="collapse">Показать</button>
+                    <div class="collapse" id="groups-spoiler-{{site.id}}">
+                        <div class="well">
+                            <ul>
+                                <li ng-repeat="group in site.groups">{{group.name}}</li> 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <a href="FtpProxy/site/{{site.id}}" class="btn btn-default">Изменить</a>
+            </td>
+        </tr>
+    </table>
+</div>

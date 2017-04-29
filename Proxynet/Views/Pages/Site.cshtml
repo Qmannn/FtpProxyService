@@ -1,0 +1,48 @@
+﻿<div ng-controller="SiteController as ctrl">
+
+    <div class="row">
+        <div class="col-md-8">
+            <button ng-click="ctrl.saveSite()" class="btn btn-primary">Сохранить</button>
+        </div>
+    </div>
+    <h2>Редактирование аккаунта {{ctrl.site.name}} #{{ctrl.site.id}}</h2>
+
+    <div class="row">
+        <label for="name" class="col-md-1">Описание</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Имя" id="name" ng-model="ctrl.site.description"/>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-lg-5">
+            <h3>Состоит в гурппах:</h3>
+            <table class="table">
+                <tr ng-repeat="group in ctrl.site.groups">
+                    <td>
+                        {{group.name}}
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-danger" ng-click="ctrl.removeGroup(group)">Удалить</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-lg-5">
+            <h3>Доступные группы:</h3>
+            <table class="table">
+                <tr ng-repeat="group in ctrl.getAllowedToSiteGroups()">
+                    <td>
+                        {{group.name}}
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-info" ng-click="ctrl.addGroup(group)">Добавить</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <button ng-click="ctrl.saveSite()" class="btn btn-primary">Сохранить</button>
+    </div>
+</div>

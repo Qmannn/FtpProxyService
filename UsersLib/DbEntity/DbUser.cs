@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Core.Metadata.Edm;
 using UsersLib.Entity;
 
 namespace UsersLib.DbEntity
@@ -15,8 +16,8 @@ namespace UsersLib.DbEntity
 
         public virtual string DisplayName { get; set; }
 
-        public virtual List<DbUserGroup> UserGroups { get; set; }
-
+        public virtual ICollection<DbUserGroup> UserGroups { get; set; }
+        
         public void Fill( User user )
         {
             Login = user.Login;

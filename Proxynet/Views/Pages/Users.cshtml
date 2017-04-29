@@ -10,11 +10,11 @@
             </th> 
         </tr>
         <tr ng-repeat="user in ctrl.users">
-            <td>{{user.login}}</td>
+            <td class="left center-block">{{user.login}}</td>
             <td>{{user.name}}</td>
             <td>
-                <div class="col-md-5">
-                    <a href="#groups-spoiler-{{user.id}}" class="btn-link" data-toggle="collapse">Показать</a>
+                <div>
+                    <button data-target="#groups-spoiler-{{user.id}}" class="btn-link" data-toggle="collapse">Показать</button>
                     <div class="collapse" id="groups-spoiler-{{user.id}}">
                         <div class="well">
                             <ul>
@@ -25,7 +25,7 @@
                 </div>
             </td>
             <td>
-                <a href="ftpproxy/user/{{user.id}}" class="btn btn-default">Изменить</a>
+                <a href="FtpProxy/user/{{user.id}}" class="btn btn-default">Изменить</a>
             </td>
         </tr>
     </table>

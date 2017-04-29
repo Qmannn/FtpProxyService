@@ -5,3 +5,5 @@ obj
 *.pdb
 /UsersLib/obj
 /packages
+.vs
+/.vs
