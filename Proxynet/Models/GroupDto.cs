@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Proxynet.Models
 {
     [JsonObject]
-    public class UserGroupDto
+    public class GroupDto
     {
         [JsonProperty("name")]
         public string Name { get; set; }

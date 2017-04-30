@@ -2,13 +2,14 @@
     'use strict';
 
     import IUser = Models.IUser;
-    import IUserGroup = Models.IUserGroup;
+    import IGroup = Models.IGroup;
     
     class UserController {
         public user: IUser;
-        public allowedToUserGroups: IUserGroup[];
+        public allowedToUserGroups: IGroup[];
+        public newGroupName: string;
 
-        private allGroups: IUserGroup[];
+        private allGroups: IGroup[];
         private resourceService: Services.IResourceService;
 
         static $inject = ['$routeParams', 'app.services.resource' ];
@@ -27,33 +28,33 @@
                 },
                 self.onError );
 
-            this.resourceService.getGroups( ( groups: IUserGroup[] ): void => {
+            this.resourceService.getGroups( ( groups: IGroup[] ): void => {
                     self.allGroups = groups;
                 },
                 self.onError );
         }
 
-        public getAllowedToUserGroups(): IUserGroup[] {
+        public getAllowedToUserGroups(): IGroup[] {
             if ( _.isNull( this.user ) || !_.isArray( this.allGroups ) ) {
-                return <IUserGroup[]>{};
+                return <IGroup[]>{};
             }
 
             return _.filter( this.allGroups,
-                ( group: IUserGroup ): boolean => {
+                ( group: IGroup ): boolean => {
                     return _.isUndefined( _.find( this.user.groups,
-                        ( gr: IUserGroup ): boolean => {
+                        ( gr: IGroup ): boolean => {
                             return gr.id === group.id;
                         } ) );
                 } );
         }
         
-        public addGroup(group: IUserGroup) {
+        public addGroup(group: IGroup) {
             this.user.groups.push( group );
         }
 
-        public removeGroup( group: IUserGroup ) {
+        public removeGroup( group: IGroup ) {
             _.remove( this.user.groups,
-                ( gr: IUserGroup ): boolean => {
+                ( gr: IGroup ): boolean => {
                     return gr.id === group.id;
                 } );
         }
@@ -66,6 +67,16 @@
                     self.onSaveSucefull();
                 },
                 self.onError );
+        }
+
+        public addNewGroup(name: string) {
+            var self = this;
+            this.resourceService.saveGroup( name,
+                ( group: Models.IGroup ): void => {
+                    self.allGroups.push( group );
+                },
+                self.onError);
+            this.newGroupName = "";
         }
 
         /*--PRIVATE---*/

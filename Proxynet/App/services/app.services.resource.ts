@@ -5,14 +5,15 @@
     export interface IResourceService {
         getUsers( success: ( users: IUser[] ) => any, error: ( data: any ) => any ): void;
         getUser( id: number, success: ( users: IUser ) => any, error: ( data: any ) => any ): void;
-        getGroups(success: (groups: Models.IUserGroup[]) => any, error: (data: any) => any): void;
+        getGroups(success: (groups: Models.IGroup[]) => any, error: (data: any) => any): void;
         
         getSites(success: (users: Models.ISite[]) => any, error: (data: any) => any): void;
         getSite(id: number, success: (users: Models.ISite) => any, error: (data: any) => any): void;
-        getSiteGroups(success: (groups: Models.ISiteGroup[]) => any, error: (data: any) => any): void;
+        getSiteGroups(success: (groups: Models.IGroup[]) => any, error: (data: any) => any): void;
 
         saveUser(user: IUser, success: (user: IUser) => any, error: (data: any) => any): void;
         saveSite(site: Models.ISite, success: (site: Models.ISite) => any, error: (data: any) => any): void;
+        saveGroup(name: string, success: (group: Models.IGroup) => any, error: (data: any) => any): void;
     }
 
     class ResourceService implements IResourceService {
@@ -53,7 +54,7 @@
                 .query( success, error );
         }
 
-        getGroups( success: ( groups: Models.IUserGroup[] ) => any, error: ( data: any ) => any ): void {
+        getGroups( success: ( groups: Models.IGroup[] ) => any, error: ( data: any ) => any ): void {
             this.$resource( 'user/getgroups', null, this.actionHashArray )
                 .query( success, error );
         }
@@ -68,7 +69,7 @@
                 .query( success, error );
         }
 
-        getSiteGroups( success: ( groups: Models.ISiteGroup[] ) => any, error: ( data: any ) => any ): void {
+        getSiteGroups( success: ( groups: Models.IGroup[] ) => any, error: ( data: any ) => any ): void {
             this.$resource( 'site/getgroups', null, this.actionHashArray )
                 .query( success, error );
         }
@@ -80,9 +81,14 @@
                 .query( success, error );
         }
 
-        saveSite(site: Models.ISite, success: (site: Models.ISite) => any, error: (data: any) => any): void {
-            this.$resource('site/savesite', { 'site': site }, this.actionHash)
-                .query(success, error);
+        saveSite( site: Models.ISite, success: ( site: Models.ISite ) => any, error: ( data: any ) => any ): void {
+            this.$resource( 'site/savesite', { 'site': site }, this.actionHash )
+                .query( success, error );
+        }
+
+        saveGroup( name: string, success: ( group: Models.IGroup ) => any, error: ( data: any ) => any ): void {
+            this.$resource( 'user/savegroup', { 'name': name }, this.actionHash )
+                .query( success, error );
         }
     }
 

@@ -15,8 +15,6 @@ namespace UsersLib.DbContextSettings
 
         public DbSet<DbSite> Sites { get; set; }
 
-        public DbSet<DbUserGroup> UserGroups { get; set; }
-
-        public DbSet<DbSiteGroup> SiteGroups { get; set; }
+        public DbSet<DbGroup> Groups { get; set; }
     }
 }

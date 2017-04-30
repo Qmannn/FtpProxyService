@@ -3,8 +3,9 @@
 
     class SiteController {
         public site: Models.ISite;
+        public newGroupName: string;
 
-        private allGroups: Models.ISiteGroup[];
+        private allGroups: Models.IGroup[];
         private resourceService: Services.IResourceService;
 
         static $inject = ['$routeParams', 'app.services.resource'];
@@ -23,33 +24,33 @@
                 },
                 self.onError );
 
-            this.resourceService.getSiteGroups( ( groups: Models.ISiteGroup[] ): void => {
+            this.resourceService.getSiteGroups( ( groups: Models.IGroup[] ): void => {
                     self.allGroups = groups;
                 },
                 self.onError );
         }
 
-        public getAllowedToSiteGroups(): Models.ISiteGroup[] {
+        public getAllowedToSiteGroups(): Models.IGroup[] {
             if ( _.isNull( this.site ) || !_.isArray( this.allGroups ) ) {
-                return <Models.ISiteGroup[]>{};
+                return <Models.IGroup[]>{};
             }
 
             return _.filter( this.allGroups,
-                ( group: Models.ISiteGroup ): boolean => {
+                ( group: Models.IGroup ): boolean => {
                     return _.isUndefined( _.find( this.site.groups,
-                        ( gr: Models.ISiteGroup ): boolean => {
+                        ( gr: Models.IGroup ): boolean => {
                             return gr.id === group.id;
                         } ) );
                 } );
         }
 
-        public addGroup( group: Models.ISiteGroup ) {
+        public addGroup( group: Models.IGroup ) {
             this.site.groups.push( group );
         }
 
-        public removeGroup( group: Models.ISiteGroup ) {
+        public removeGroup( group: Models.IGroup ) {
             _.remove( this.site.groups,
-                ( gr: Models.ISiteGroup ): boolean => {
+                ( gr: Models.IGroup ): boolean => {
                     return gr.id === group.id;
                 } );
         }
@@ -62,6 +63,16 @@
                     self.onSaveSucefull();
                 },
                 self.onError );
+        }
+
+        public addNewGroup(name: string) {
+            var self = this;
+            this.resourceService.saveGroup(name,
+                (group: Models.IGroup): void => {
+                    self.allGroups.push(group);
+                },
+                self.onError);
+            this.newGroupName = "";
         }
 
         /*--PRIVATE---*/

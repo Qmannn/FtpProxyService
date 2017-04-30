@@ -44,17 +44,17 @@ namespace UsersLib.DbControllers
             }
         }
 
-        public List<SiteGroup> GetSiteGroups()
+        public List<Group> GetSiteGroups()
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
-                List<DbSiteGroup> siteGroups = dbContext.SiteGroups
+                List<DbGroup> siteGroups = dbContext.Groups
                     .ToList();
-                return siteGroups.ConvertAll( item => new SiteGroup( item ) );
+                return siteGroups.ConvertAll( item => new Group( item ) );
             }
         }
 
-        public List<SiteGroup> GetSiteGroups( string siteKey )
+        public List<Group> GetSiteGroups( string siteKey )
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
@@ -62,12 +62,12 @@ namespace UsersLib.DbControllers
                     .FirstOrDefault( item => item.SiteKey == siteKey );
 
                 return dbSite != null
-                    ? dbSite.SiteGroups.Select( item => new SiteGroup( item ) ).ToList()
-                    : new List<SiteGroup>();
+                    ? dbSite.Groups.Select( item => new Group( item ) ).ToList()
+                    : new List<Group>();
             }
         }
 
-        public List<SiteGroup> GetSiteGroups( int siteId )
+        public List<Group> GetSiteGroups( int siteId )
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
@@ -75,12 +75,12 @@ namespace UsersLib.DbControllers
                     .FirstOrDefault( item => item.SiteId == siteId );
 
                 return dbSite != null
-                    ? dbSite.SiteGroups.Select( item => new SiteGroup( item ) ).ToList()
-                    : new List<SiteGroup>();
+                    ? dbSite.Groups.Select( item => new Group( item ) ).ToList()
+                    : new List<Group>();
             }
         }
 
-        public List<UserGroup> GetUserGroupsBySite( int siteId )
+        public List<Group> GetUserGroupsBySite( int siteId )
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
@@ -88,24 +88,21 @@ namespace UsersLib.DbControllers
 
                 if ( dbSite == null )
                 {
-                    return new List<UserGroup>();
+                    return new List<Group>();
                 }
 
-                return dbSite.SiteGroups
-                        .SelectMany( item => item.UserGroups )
-                        .Select( item => new UserGroup( item ) )
-                        .ToList();
+                return new List<Group>();
             }
         }
 
-        public Dictionary<Site, List<SiteGroup>> GetSitesByGroups()
+        public Dictionary<Site, List<Group>> GetSitesByGroups()
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
-                return dbContext.Sites.Include( site => site.SiteGroups )
+                return dbContext.Sites.Include( site => site.Groups )
                     .ToDictionary( item => new Site( item ),
-                        item => item.SiteGroups.ToList()
-                            .ConvertAll( group => new SiteGroup( group ) ) );
+                        item => item.Groups.ToList()
+                            .ConvertAll( group => new Group( group ) ) );
             }
         }
 
@@ -132,15 +129,15 @@ namespace UsersLib.DbControllers
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
                 DbSite site = dbContext.Sites.Find( siteId );
-                List<DbSiteGroup> groups = dbContext.SiteGroups
-                    .Where( item => siteGroupIds.Contains( item.SiteGroupId ) )
+                List<DbGroup> groups = dbContext.Groups
+                    .Where( item => siteGroupIds.Contains( item.Id ) )
                     .ToList();
                 if ( site != null )
                 {
-                    site.SiteGroups.Clear();
-                    foreach ( DbSiteGroup userGroup in groups )
+                    site.Groups.Clear();
+                    foreach ( DbGroup group in groups )
                     {
-                        site.SiteGroups.Add( userGroup );
+                        site.Groups.Add( group );
                     }
                     dbContext.SaveChanges();
                 }

@@ -27,13 +27,12 @@ namespace Proxynet
             // Controllers for working with data base
             container.RegisterType<IDbUserController, DbUserController>( new ContainerControlledLifetimeManager() );
             container.RegisterType<IDbSiteController, DbSiteController>( new ContainerControlledLifetimeManager() );
+            container.RegisterType<IDbGroupController, DbGroupController>( new ContainerControlledLifetimeManager() );
 
             container.RegisterType<IUserDtoConverter, UserDtoConverter>( new ContainerControlledLifetimeManager() );
-            container.RegisterType<IUserGroupDtoConverter, UserGroupDtoConverter>(
+            container.RegisterType<IGroupDtoConverter, GroupDtoConverter>(
                 new ContainerControlledLifetimeManager() );
             container.RegisterType<ISiteDtoConverter, SiteDtoConverter>( new ContainerControlledLifetimeManager() );
-            container.RegisterType<ISitesGroupDtoConverter, SitesGroupDtoConverter>(
-                new ContainerControlledLifetimeManager() );
 
             DependencyResolver.SetResolver( new UnityDependencyResolver( container ) );
         }

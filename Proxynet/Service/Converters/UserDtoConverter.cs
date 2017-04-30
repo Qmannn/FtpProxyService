@@ -6,9 +6,9 @@ namespace Proxynet.Service.Converters
 {
     public class UserDtoConverter : IUserDtoConverter
     {
-        private readonly IUserGroupDtoConverter _groupDtoConverter;
+        private readonly IGroupDtoConverter _groupDtoConverter;
 
-        public UserDtoConverter( IUserGroupDtoConverter groupDtoConverter )
+        public UserDtoConverter( IGroupDtoConverter groupDtoConverter )
         {
             _groupDtoConverter = groupDtoConverter;
         }
@@ -38,10 +38,10 @@ namespace Proxynet.Service.Converters
             };
         }
 
-        public List<UserDto> ConvertFromUsersWithGroups( Dictionary<User, List<UserGroup>> users )
+        public List<UserDto> ConvertFromUsersWithGroups( Dictionary<User, List<Group>> users )
         {
             List<UserDto> result = new List<UserDto>();
-            foreach ( KeyValuePair<User, List<UserGroup>> pair in users )
+            foreach ( KeyValuePair<User, List<Group>> pair in users )
             {
                 UserDto user = Convert( pair.Key );
                 user.Groups = _groupDtoConverter.Convert( pair.Value );

@@ -43,6 +43,13 @@ var app;
                     self.onSaveSucefull();
                 }, self.onError);
             };
+            SiteController.prototype.addNewGroup = function (name) {
+                var self = this;
+                this.resourceService.saveGroup(name, function (group) {
+                    self.allGroups.push(group);
+                }, self.onError);
+                this.newGroupName = "";
+            };
             /*--PRIVATE---*/
             SiteController.prototype.onError = function (data) {
                 console.error(data);

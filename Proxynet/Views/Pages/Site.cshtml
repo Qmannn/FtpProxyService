@@ -39,10 +39,37 @@
                         <button class="btn btn-info" ng-click="ctrl.addGroup(group)">Добавить</button>
                     </td>
                 </tr>
+                <tr>
+                    <td></td>
+                    <td class="text-right">
+                        <button data-target="#addGroupModal" data-toggle="modal" class="btn btn-success btn-xs">Создать группу</button>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
     <div class="row">
         <button ng-click="ctrl.saveSite()" class="btn btn-primary">Сохранить</button>
+    </div>
+    
+    <div id="addGroupModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Заголовок модального окна -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Добавление группы</h4>
+                </div>
+                <!-- Основное содержимое модального окна -->
+                <div class="modal-body">
+                    <input type="text" class="form-control" placeholder="Название группы" ng-model="ctrl.newGroupName" />
+                </div>
+                <!-- Футер модального окна -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="ctrl.addNewGroup(ctrl.newGroupName)">Добавить</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

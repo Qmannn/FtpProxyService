@@ -11,6 +11,6 @@ namespace Proxynet.Service.Converters
 
         List<SiteDto> Convert( List<Site> sites );
 
-        List<SiteDto> ConvertFromSitesWithGroups( Dictionary<Site, List<SiteGroup>> users );
+        List<SiteDto> ConvertFromSitesWithGroups( Dictionary<Site, List<Group>> users );
     }
 }

@@ -31,17 +31,17 @@ namespace UsersLib.DbControllers
             }
         }
 
-        public Dictionary<User, List<UserGroup>> GetUsersByGroups()
+        public Dictionary<User, List<Group>> GetUsersByGroups()
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
                 return dbContext.Users.Include(user => user.UserGroups)
                     .ToDictionary(item => new User(item),
-                        item => item.UserGroups.ToList().ConvertAll(group => new UserGroup(group)));
+                        item => item.UserGroups.ToList().ConvertAll(group => new Group(group)));
             }
         }
 
-        public List<UserGroup> GetUserGroups( string userLogin )
+        public List<Group> GetUserGroups( string userLogin )
         {
             DbUser dbUser;
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
@@ -50,18 +50,18 @@ namespace UsersLib.DbControllers
             }
             if ( dbUser == null )
             {
-                return new List<UserGroup>();
+                return new List<Group>();
             }
             return GetUserGroups( dbUser.UserId );
         }
 
-        public List<UserGroup> GetUserGroups( int userId )
+        public List<Group> GetUserGroups( int userId )
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
                 DbUser dbUser = dbContext.Users.FirstOrDefault( item => item.UserId == userId );
 
-                return dbUser?.UserGroups.Select( item => new UserGroup( item ) ).ToList() ?? new List<UserGroup>();
+                return dbUser?.UserGroups.Select( item => new Group( item ) ).ToList() ?? new List<Group>();
             }
         }
 
@@ -101,13 +101,13 @@ namespace UsersLib.DbControllers
             using (FtpProxyDbContext dbContext = new FtpProxyDbContext())
             {
                 DbUser user = dbContext.Users.Find( userId );
-                List<DbUserGroup> groups = dbContext.UserGroups
-                    .Where( item => userGroupIds.Contains( item.UserGroupId ) )
+                List<DbGroup> groups = dbContext.Groups
+                    .Where( item => userGroupIds.Contains( item.Id ) )
                     .ToList();
                 if ( user != null )
                 {
                     user.UserGroups.Clear();
-                    foreach ( DbUserGroup userGroup in groups )
+                    foreach ( DbGroup userGroup in groups )
                     {
                         user.UserGroups.Add( userGroup );
                     }
@@ -116,12 +116,12 @@ namespace UsersLib.DbControllers
             }
         }
 
-        public List<UserGroup> GetUserGroups()
+        public List<Group> GetUserGroups()
         {
             using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
             {
-                List<DbUserGroup> dbUserGroups = dbContext.UserGroups.ToList();
-                return dbUserGroups.ConvertAll( item => new UserGroup( item ) );
+                List<DbGroup> dbUserGroups = dbContext.Groups.ToList();
+                return dbUserGroups.ConvertAll( item => new Group( item ) );
             }
         }
     }

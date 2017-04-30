@@ -4,32 +4,32 @@ using UsersLib.Entity;
 
 namespace Proxynet.Service.Converters
 {
-    public class UserGroupDtoConverter : IUserGroupDtoConverter
+    public class GroupDtoConverter : IGroupDtoConverter
     {
-        public UserGroupDto Convert( UserGroup userGroup )
+        public GroupDto Convert( Group userGroup )
         {
-            return new UserGroupDto
+            return new GroupDto
             {
                 Id = userGroup.Id,
                 Name = userGroup.Name
             };
         }
 
-        public List<UserGroupDto> Convert( List<UserGroup> userGroups )
+        public List<GroupDto> Convert( List<Group> groups )
         {
-            return userGroups.ConvertAll( Convert );
+            return groups.ConvertAll( Convert );
         }
 
-        public UserGroup Convert( UserGroupDto userGroup )
+        public Group Convert( GroupDto userGroup )
         {
-            return new UserGroup
+            return new Group
             {
                 Id = userGroup.Id,
                 Name = userGroup.Name
             };
         }
 
-        public List<UserGroup> Convert( List<UserGroupDto> userGroup )
+        public List<Group> Convert( List<GroupDto> userGroup )
         {
             return userGroup.ConvertAll( Convert );
         }

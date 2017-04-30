@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UsersLib.DbEntity;
 using UsersLib.Entity;
 
 namespace UsersLib.DbControllers
@@ -9,12 +8,12 @@ namespace UsersLib.DbControllers
         Site GetSite( int siteId );
         Site GetSite( string siteKey );
         List<Site> GetSites();
-        List<SiteGroup> GetSiteGroups();
-        List<SiteGroup> GetSiteGroups( string siteKey );
-        List<SiteGroup> GetSiteGroups(int siteId);
-        List<UserGroup> GetUserGroupsBySite( int siteId );
-        Dictionary<Site, List<SiteGroup>> GetSitesByGroups();
+        List<Group> GetSiteGroups();
+        List<Group> GetSiteGroups( string siteKey );
+        List<Group> GetSiteGroups(int siteId);
+        List<Group> GetUserGroupsBySite( int siteId );
+        Dictionary<Site, List<Group>> GetSitesByGroups();
         void SaveSite( Site site );
-        void SaveSiteGroups( int siteId, List<int> siteGroupIds );
+        void SaveSiteGroups( int siteId, List<int> groupIds );
     }
 }

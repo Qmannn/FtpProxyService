@@ -6,11 +6,11 @@ namespace Proxynet.Service.Converters
 {
     public class SiteDtoConverter : ISiteDtoConverter
     {
-        private readonly ISitesGroupDtoConverter _sitesGroupDtoConverter;
+        private readonly IGroupDtoConverter _groupDtoConverter;
 
-        public SiteDtoConverter( ISitesGroupDtoConverter sitesGroupDtoConverter )
+        public SiteDtoConverter( IGroupDtoConverter sitesGroupDtoConverter )
         {
-            _sitesGroupDtoConverter = sitesGroupDtoConverter;
+            _groupDtoConverter = sitesGroupDtoConverter;
         }
 
         public SiteDto Convert( Site site )
@@ -38,13 +38,13 @@ namespace Proxynet.Service.Converters
             return sites.ConvertAll( Convert );
         }
 
-        public List<SiteDto> ConvertFromSitesWithGroups( Dictionary<Site, List<SiteGroup>> groupsBySites )
+        public List<SiteDto> ConvertFromSitesWithGroups( Dictionary<Site, List<Group>> groupsBySites )
         {
             List<SiteDto> result = new List<SiteDto>();
             foreach ( var pair in groupsBySites )
             {
                 SiteDto site = Convert( pair.Key );
-                site.Groups = _sitesGroupDtoConverter.Convert( pair.Value );
+                site.Groups = _groupDtoConverter.Convert( pair.Value );
                 result.Add( site );
             }
             return result;

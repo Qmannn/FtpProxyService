@@ -1,5 +1,5 @@
 ﻿module Models {
-    export interface IUserGroup {
+    export interface IGroup {
         id: number;
         name: string;
     }
@@ -8,6 +8,6 @@
         name: string;
         login: string;
         id: number;
-        groups: IUserGroup[];
+        groups: IGroup[];
     }
 }

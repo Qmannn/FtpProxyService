@@ -33,8 +33,8 @@ namespace UsersLib.Checkers
                 return null;
             }
 
-            List<UserGroup> userGroups = _dbUserController.GetUserGroups( user.Id );
-            List<UserGroup> siteUserGroups = _dbSiteController.GetUserGroupsBySite( site.Id );
+            List<Group> userGroups = _dbUserController.GetUserGroups( user.Id );
+            List<Group> siteUserGroups = _dbSiteController.GetUserGroupsBySite( site.Id );
 
             if ( userGroups == null || userGroups.Count == 0 )
             {

@@ -11,6 +11,7 @@ namespace UsersLib.Migrations
         {
             AutomaticMigrationsEnabled = false;
             ContextKey = "UsersLib.DbContextSettings.FtpProxyDbContext";
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(UsersLib.DbContextSettings.FtpProxyDbContext context)

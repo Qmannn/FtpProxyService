@@ -56,6 +56,10 @@ var app;
                 this.$resource('site/savesite', { 'site': site }, this.actionHash)
                     .query(success, error);
             };
+            ResourceService.prototype.saveGroup = function (name, success, error) {
+                this.$resource('user/savegroup', { 'name': name }, this.actionHash)
+                    .query(success, error);
+            };
             return ResourceService;
         }());
         ResourceService.$inject = ['$resource'];

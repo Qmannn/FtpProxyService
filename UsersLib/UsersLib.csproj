@@ -55,41 +55,25 @@
     <Compile Include="Checkers\UserChecker.cs" />
     <Compile Include="Checkers\UserCheckerImpl.cs" />
     <Compile Include="Configuration\Config.cs" />
+    <Compile Include="DbControllers\DbGroupController.cs" />
     <Compile Include="DbControllers\DbSiteController.cs" />
     <Compile Include="DbControllers\DbUserController.cs" />
+    <Compile Include="DbControllers\IDbGroupController.cs" />
     <Compile Include="DbControllers\IDbSiteController.cs" />
     <Compile Include="DbControllers\IDbUserController.cs" />
     <Compile Include="DbEntity\DbSite.cs" />
-    <Compile Include="DbEntity\DbSiteGroup.cs" />
     <Compile Include="DbEntity\DbUser.cs" />
-    <Compile Include="DbEntity\DbUserGroup.cs" />
+    <Compile Include="DbEntity\DbGroup.cs" />
     <Compile Include="Entity\Site.cs" />
-    <Compile Include="Entity\SiteGroup.cs" />
     <Compile Include="Entity\User.cs" />
-    <Compile Include="Entity\UserGroup.cs" />
+    <Compile Include="Entity\Group.cs" />
     <Compile Include="Factories\CheckersFactory.cs" />
     <Compile Include="Factories\ICheckersFactory.cs" />
     <Compile Include="Factories\ISecureFindersFactory.cs" />
     <Compile Include="Factories\SecureFindersFactory.cs" />
-    <Compile Include="Migrations\201704032006516_InitialCreate.cs" />
-    <Compile Include="Migrations\201704032006516_InitialCreate.Designer.cs">
-      <DependentUpon>201704032006516_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704032102597_rename-table-columns-migration.cs" />
-    <Compile Include="Migrations\201704032102597_rename-table-columns-migration.Designer.cs">
-      <DependentUpon>201704032102597_rename-table-columns-migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704242015562_rename_list.cs" />
-    <Compile Include="Migrations\201704242015562_rename_list.Designer.cs">
-      <DependentUpon>201704242015562_rename_list.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704242021477_DownOfRename.cs" />
-    <Compile Include="Migrations\201704242021477_DownOfRename.Designer.cs">
-      <DependentUpon>201704242021477_DownOfRename.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704242029010_m1.cs" />
-    <Compile Include="Migrations\201704242029010_m1.Designer.cs">
-      <DependentUpon>201704242029010_m1.cs</DependentUpon>
+    <Compile Include="Migrations\201704301537435_InitDataBase.cs" />
+    <Compile Include="Migrations\201704301537435_InitDataBase.Designer.cs">
+      <DependentUpon>201704301537435_InitDataBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,20 +88,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201704032006516_InitialCreate.resx">
-      <DependentUpon>201704032006516_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704032102597_rename-table-columns-migration.resx">
-      <DependentUpon>201704032102597_rename-table-columns-migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704242015562_rename_list.resx">
-      <DependentUpon>201704242015562_rename_list.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704242021477_DownOfRename.resx">
-      <DependentUpon>201704242021477_DownOfRename.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704242029010_m1.resx">
-      <DependentUpon>201704242029010_m1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201704301537435_InitDataBase.resx">
+      <DependentUpon>201704301537435_InitDataBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

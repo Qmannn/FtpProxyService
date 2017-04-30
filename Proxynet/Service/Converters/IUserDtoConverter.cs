@@ -10,6 +10,6 @@ namespace Proxynet.Service.Converters
         UserDto Convert( User user );
         User Convert( UserDto user );
 
-        List<UserDto> ConvertFromUsersWithGroups( Dictionary<User, List<UserGroup>> users );
+        List<UserDto> ConvertFromUsersWithGroups( Dictionary<User, List<Group>> users );
     }
 }

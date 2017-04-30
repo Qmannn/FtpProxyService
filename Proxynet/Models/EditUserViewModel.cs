@@ -7,8 +7,8 @@ namespace Proxynet.Models
     {
         public User User { get; set; }
 
-        public List<UserGroup> UserGroups { get; set; }
+        public List<Group> UserGroups { get; set; }
 
-        public List<UserGroup> Groups { get; set; }
+        public List<Group> Groups { get; set; }
     }
 }

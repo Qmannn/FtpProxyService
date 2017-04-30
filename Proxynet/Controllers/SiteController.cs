@@ -13,16 +13,16 @@ namespace Proxynet.Controllers
     {
         private readonly IDbSiteController _dbSiteController;
         private readonly ISiteDtoConverter _siteDtoConverter;
-        private readonly ISitesGroupDtoConverter _sitesGroupDtoConverter;
+        private readonly IGroupDtoConverter _groupDtoConverter;
 
         public SiteController( 
             IDbSiteController dbSiteController, 
-            ISiteDtoConverter siteDtoConverter, 
-            ISitesGroupDtoConverter sitesGroupDtoConverter )
+            ISiteDtoConverter siteDtoConverter,
+            IGroupDtoConverter groupDtoConverter )
         {
             _dbSiteController = dbSiteController;
             _siteDtoConverter = siteDtoConverter;
-            _sitesGroupDtoConverter = sitesGroupDtoConverter;
+            _groupDtoConverter = groupDtoConverter;
         }
 
         [HttpPost]
@@ -41,10 +41,10 @@ namespace Proxynet.Controllers
                 return HttpNotFound( $"Site #{siteId} not found" );
             }
 
-            List<SiteGroup> siteGroups = _dbSiteController.GetSiteGroups( siteId );
+            List<Group> siteGroups = _dbSiteController.GetSiteGroups( siteId );
 
             SiteDto siteDto = _siteDtoConverter.Convert( site );
-            siteDto.Groups = _sitesGroupDtoConverter.Convert( siteGroups );
+            siteDto.Groups = _groupDtoConverter.Convert( siteGroups );
 
             return Json( siteDto );
         }
@@ -52,8 +52,8 @@ namespace Proxynet.Controllers
         [HttpPost]
         public ContentResult GetGroups()
         {
-            List<SiteGroup> siteGroups = _dbSiteController.GetSiteGroups();
-            List<SitesGroupDto> siteGroupsDto = _sitesGroupDtoConverter.Convert( siteGroups );
+            List<Group> siteGroups = _dbSiteController.GetSiteGroups();
+            List<GroupDto> siteGroupsDto = _groupDtoConverter.Convert( siteGroups );
 
             return Json( siteGroupsDto );
         }
@@ -69,7 +69,7 @@ namespace Proxynet.Controllers
             }
 
             Site siteItem = _siteDtoConverter.Convert( siteDto );
-            List<SiteGroup> siteGroups = _sitesGroupDtoConverter.Convert( siteDto.Groups );
+            List<Group> siteGroups = _groupDtoConverter.Convert( siteDto.Groups );
 
             _dbSiteController.SaveSite( siteItem );
             _dbSiteController.SaveSiteGroups( siteItem.Id, siteGroups.Select( item => item.Id ).ToList() );

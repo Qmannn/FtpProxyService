@@ -203,19 +203,16 @@
     </Compile>
     <Compile Include="Models\EditUserViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\SitesGroupDto.cs" />
     <Compile Include="Models\SiteDto.cs" />
     <Compile Include="Models\UserDto.cs" />
-    <Compile Include="Models\UserGroupDto.cs" />
+    <Compile Include="Models\GroupDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\Converters\ISitesGroupDtoConverter.cs" />
     <Compile Include="Service\Converters\ISiteDtoConverter.cs" />
     <Compile Include="Service\Converters\IUserDtoConverter.cs" />
-    <Compile Include="Service\Converters\IUserGroupDtoConverter.cs" />
+    <Compile Include="Service\Converters\IGroupDtoConverter.cs" />
     <Compile Include="Service\Converters\SiteDtoConverter.cs" />
-    <Compile Include="Service\Converters\SitesGroupDtoConverter.cs" />
     <Compile Include="Service\Converters\UserDtoConverter.cs" />
-    <Compile Include="Service\Converters\UserGroupDtoConverter.cs" />
+    <Compile Include="Service\Converters\GroupDtoConverter.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1063,6 +1060,7 @@
     <Content Include="Views\FtpProxy\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App\directives\" />
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
