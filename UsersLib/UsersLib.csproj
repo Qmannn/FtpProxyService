@@ -41,6 +41,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,20 +54,24 @@
     <Compile Include="Checkers\Results\IUserCheckerResult.cs" />
     <Compile Include="Checkers\Results\UserCheckerResult.cs" />
     <Compile Include="Checkers\UserChecker.cs" />
-    <Compile Include="Checkers\UserCheckerImpl.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="DbControllers\DbGroupController.cs" />
     <Compile Include="DbControllers\DbSiteController.cs" />
     <Compile Include="DbControllers\DbUserController.cs" />
+    <Compile Include="DbControllers\DbAuthController.cs" />
     <Compile Include="DbControllers\IDbGroupController.cs" />
     <Compile Include="DbControllers\IDbSiteController.cs" />
     <Compile Include="DbControllers\IDbUserController.cs" />
+    <Compile Include="DbControllers\IDbAuthController.cs" />
     <Compile Include="DbEntity\DbSite.cs" />
     <Compile Include="DbEntity\DbUser.cs" />
     <Compile Include="DbEntity\DbGroup.cs" />
+    <Compile Include="DbEntity\DbUserAccess.cs" />
+    <Compile Include="DbEntity\DbUserRole.cs" />
     <Compile Include="Entity\Site.cs" />
     <Compile Include="Entity\User.cs" />
     <Compile Include="Entity\Group.cs" />
+    <Compile Include="Entity\UserRole.cs" />
     <Compile Include="Factories\CheckersFactory.cs" />
     <Compile Include="Factories\ICheckersFactory.cs" />
     <Compile Include="Factories\ISecureFindersFactory.cs" />
@@ -75,13 +80,22 @@
     <Compile Include="Migrations\201704301537435_InitDataBase.Designer.cs">
       <DependentUpon>201704301537435_InitDataBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705021835416_AddPropertyStorageId.cs" />
+    <Compile Include="Migrations\201705021835416_AddPropertyStorageId.Designer.cs">
+      <DependentUpon>201705021835416_AddPropertyStorageId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DbContextSettings\UserContext.cs" />
+    <Compile Include="Secure\ActiveDirectory\IUsersUpdater.cs" />
+    <Compile Include="Secure\ActiveDirectory\UsersUpdater.cs" />
+    <Compile Include="Secure\Auth\ILdapAuthorizer.cs" />
     <Compile Include="Secure\Auth\LdapAuthorizer.cs" />
     <Compile Include="Secure\Finders\ISiteSecureDataFinder.cs" />
     <Compile Include="Secure\Finders\Results\SiteSecureDataFinderResult.cs" />
     <Compile Include="Secure\Finders\SiteSecureDataFinder.cs" />
+    <Compile Include="Secure\Passwork\IPassworkController.cs" />
+    <Compile Include="Secure\Passwork\PassworkController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -91,6 +105,15 @@
     <EmbeddedResource Include="Migrations\201704301537435_InitDataBase.resx">
       <DependentUpon>201704301537435_InitDataBase.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705021835416_AddPropertyStorageId.resx">
+      <DependentUpon>201705021835416_AddPropertyStorageId.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Passwork.Core\Passwork.Core.csproj">
+      <Project>{9728f8e0-746a-450b-b4a4-f622f0f5439f}</Project>
+      <Name>Passwork.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

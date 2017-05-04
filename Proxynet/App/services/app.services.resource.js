@@ -47,6 +47,14 @@ var app;
                 this.$resource('site/getgroups', null, this.actionHashArray)
                     .query(success, error);
             };
+            ResourceService.prototype.updateUsers = function (success, error) {
+                this.$resource('user/updateusers', null, this.actionHash)
+                    .query(success, error);
+            };
+            ResourceService.prototype.updateSites = function (success, error) {
+                this.$resource('site/updatesites', null, this.actionHash)
+                    .query(success, error);
+            };
             // SAVE
             ResourceService.prototype.saveUser = function (user, success, error) {
                 this.$resource('user/saveuser', { 'users': user }, this.actionHash)

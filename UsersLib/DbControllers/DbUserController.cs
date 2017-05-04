@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -113,6 +114,19 @@ namespace UsersLib.DbControllers
                     }
                     dbContext.SaveChanges();
                 }
+            }
+        }
+
+        public int UpdateUsers( List<User> users )
+        {
+            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            {
+                List<string> existingUsers = dbContext.Users.Select( item => item.Login ).ToList();
+                users.RemoveAll( user => existingUsers.Contains( user.Login ) );
+                List<DbUser> dbUsers = users.ConvertAll( item => item.ConvertToDbUser() );
+                List<DbUser> addedUsers = dbContext.Users.AddRange( dbUsers ).ToList();
+                dbContext.SaveChanges();
+                return addedUsers.Count;
             }
         }
 

@@ -4,6 +4,6 @@ namespace UsersLib.Secure.Finders
 {
     public interface ISiteSecureDataFinder
     {
-        SiteSecureDataFinderResult FindeSiteSecureData( string siteIdentifier );
+        SiteSecureDataFinderResult FindeSiteSecureData( string storageId );
     }
 }

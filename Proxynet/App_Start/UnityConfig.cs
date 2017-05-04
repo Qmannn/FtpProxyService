@@ -6,6 +6,9 @@ using System.Web;
 using System.Diagnostics.CodeAnalysis;
 using Proxynet.Service.Converters;
 using UsersLib.DbControllers;
+using UsersLib.Secure.ActiveDirectory;
+using UsersLib.Secure.Auth;
+using UsersLib.Secure.Passwork;
 
 namespace Proxynet
 {
@@ -28,6 +31,10 @@ namespace Proxynet
             container.RegisterType<IDbUserController, DbUserController>( new ContainerControlledLifetimeManager() );
             container.RegisterType<IDbSiteController, DbSiteController>( new ContainerControlledLifetimeManager() );
             container.RegisterType<IDbGroupController, DbGroupController>( new ContainerControlledLifetimeManager() );
+            
+            container.RegisterType<IUsersUpdater, UsersUpdater>( new ContainerControlledLifetimeManager() );
+            container.RegisterType<IPassworkController, PassworkController>( new ContainerControlledLifetimeManager() );
+            container.RegisterType<ILdapAuthorizer, LdapAuthorizer>( new ContainerControlledLifetimeManager() );
 
             container.RegisterType<IUserDtoConverter, UserDtoConverter>( new ContainerControlledLifetimeManager() );
             container.RegisterType<IGroupDtoConverter, GroupDtoConverter>(

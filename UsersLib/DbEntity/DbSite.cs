@@ -12,6 +12,8 @@ namespace UsersLib.DbEntity
 
         public virtual string SiteKey { get; set; }
 
+        public virtual string StorageId { get; set; }
+
         public virtual string Description { get; set; }
 
         public virtual ICollection<DbGroup> Groups { get; set; }

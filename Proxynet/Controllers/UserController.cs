@@ -7,6 +7,7 @@ using Proxynet.Models;
 using Proxynet.Service.Converters;
 using UsersLib.DbControllers;
 using UsersLib.Entity;
+using UsersLib.Secure.ActiveDirectory;
 
 namespace Proxynet.Controllers
 {
@@ -14,6 +15,7 @@ namespace Proxynet.Controllers
     {
         private readonly IDbUserController _dbUserController;
         private readonly IDbGroupController _dbGroupController;
+        private readonly IUsersUpdater _usersUpdater;
 
         private readonly IUserDtoConverter _userDtoConverter;
         private readonly IGroupDtoConverter _userGroupDtoConverter;
@@ -22,12 +24,14 @@ namespace Proxynet.Controllers
             IDbUserController dbUserController,
             IUserDtoConverter userDtoConverter, 
             IGroupDtoConverter userGroupDtoConverter, 
-            IDbGroupController dbGroupController )
+            IDbGroupController dbGroupController, 
+            IUsersUpdater usersUpdater )
         {
             _dbUserController = dbUserController;
             _userDtoConverter = userDtoConverter;
             _userGroupDtoConverter = userGroupDtoConverter;
             _dbGroupController = dbGroupController;
+            _usersUpdater = usersUpdater;
         }
 
         [HttpPost]
@@ -98,6 +102,13 @@ namespace Proxynet.Controllers
             };
 
             return Json( groupDto );
+        }
+
+        [HttpPost]
+        public EmptyResult UpdateUsers()
+        {
+            _usersUpdater.Update();
+            return new EmptyResult();
         }
     }
 }

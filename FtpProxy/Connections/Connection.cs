@@ -331,7 +331,7 @@ namespace FtpProxy.Connections
         {
             _certificate = String.IsNullOrEmpty( Config.CertificatePassword )
                 ? new X509Certificate( Config.CertificatePath )
-                : new X509Certificate( Config.CertificatePath, Config.CertificatePassword );
+                : new X509Certificate2( Config.CertificatePath, Config.CertificatePassword );
 
             lock( _controlClientLocker )
             {

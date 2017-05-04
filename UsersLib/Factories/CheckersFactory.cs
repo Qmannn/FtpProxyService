@@ -1,5 +1,6 @@
 ﻿using UsersLib.Checkers;
 using UsersLib.DbControllers;
+using UsersLib.Secure.Auth;
 
 namespace UsersLib.Factories
 {
@@ -7,15 +8,11 @@ namespace UsersLib.Factories
     {
         public IUserChecker CreateUserChecker()
         {
-            return new UserChecker( new UserCheckerImpl() );
-        }
-
-        public IUserChecker CreateDataBaseUserChecker()
-        {
             return new UserChecker( new DataBaseUserChecker(
                 new DbUserController(),
                 new DbSiteController(),
-                new SecureFindersFactory() ) );
+                new SecureFindersFactory(),
+                new LdapAuthorizer() ) );
         }
     }
 }

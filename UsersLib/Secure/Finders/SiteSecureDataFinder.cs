@@ -1,31 +1,20 @@
-﻿using UsersLib.Secure.Finders.Results;
+﻿using System;
+using UsersLib.Secure.Finders.Results;
+using UsersLib.Secure.Passwork;
 
 namespace UsersLib.Secure.Finders
 {
     public class SiteSecureDataFinder : ISiteSecureDataFinder
     {
-        public SiteSecureDataFinderResult FindeSiteSecureData( string siteIdentifier )
+        public SiteSecureDataFinderResult FindeSiteSecureData( string storageId )
         {
-            switch ( siteIdentifier )
+            if ( String.IsNullOrEmpty( storageId ) )
             {
-                case "ftp":
-                    return new SiteSecureDataFinderResult
-                    {
-                        UrlAddress = "localhost",
-                        Login = "anonymous",
-                        Password = "blabla",
-                        Port = 21
-                    };
-                case "homeftp":
-                    return new SiteSecureDataFinderResult
-                    {
-                        UrlAddress = "127.0.0.1",
-                        Login = "max",
-                        Password = "max",
-                        Port = 55000
-                    };
+                return null;
             }
-            return null;
+
+            IPassworkController passworkController = new PassworkController();
+            return passworkController.GetSiteData( storageId );
         }
     }
 }

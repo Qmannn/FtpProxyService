@@ -14,11 +14,14 @@ namespace UsersLib.Entity
             Id = dbSite.SiteId;
             SiteKey = dbSite.SiteKey;
             Description = dbSite.Description;
+            StorageId = dbSite.StorageId;
         }
 
         public int Id { get; set; }
 
         public string SiteKey { get; set; }
+
+        public string StorageId { get; set; }
 
         public string Description { get; set; }
 
@@ -28,7 +31,8 @@ namespace UsersLib.Entity
             {
                 SiteId = Id,
                 Description = Description,
-                SiteKey = SiteKey
+                SiteKey = SiteKey,
+                StorageId = StorageId
             };
         }
     }

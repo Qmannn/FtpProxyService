@@ -9,11 +9,12 @@ namespace UsersLib.DbControllers
         List<User> GetUsers();
         User GetUser( int userId );
         User GetUser( string userLogin );
-        Dictionary<User, List<Group>> GetUsersByGroups(); 
+        Dictionary<User, List<Group>> GetUsersByGroups();
         List<Group> GetUserGroups( string userLogin );
         List<Group> GetUserGroups( int userId );
         List<Group> GetUserGroups();
         void SaveUser( User user );
-        void SaveUserGroups( int userId, List<int> userGroupIds);
+        void SaveUserGroups( int userId, List<int> userGroupIds );
+        int UpdateUsers( List<User> users );
     }
 }

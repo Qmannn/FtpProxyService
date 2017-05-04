@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UsersLib.Checkers.Results;
 using UsersLib.DbControllers;
 using UsersLib.Entity;
 using UsersLib.Factories;
+using UsersLib.Secure.Auth;
 using UsersLib.Secure.Finders.Results;
 
 namespace UsersLib.Checkers
@@ -13,20 +15,28 @@ namespace UsersLib.Checkers
         private readonly IDbUserController _dbUserController;
         private readonly IDbSiteController _dbSiteController;
         private readonly ISecureFindersFactory _secureFindersFactory;
+        private readonly ILdapAuthorizer _ldapAuthorizer;
 
         public DataBaseUserChecker( IDbUserController dbUserController,
             IDbSiteController dbSiteController,
-            ISecureFindersFactory secureFindersFactory )
+            ISecureFindersFactory secureFindersFactory, 
+            ILdapAuthorizer ldapAuthorizer )
         {
             _dbUserController = dbUserController;
             _dbSiteController = dbSiteController;
             _secureFindersFactory = secureFindersFactory;
+            _ldapAuthorizer = ldapAuthorizer;
         }
 
-        public IUserCheckerResult Check( string userLogin, string userPass, string serverIdentify )
+        public IUserCheckerResult Check( string userLogin, string userPass, string siteKey )
         {
+            if ( !_ldapAuthorizer.ValidateCredentials( userLogin, userPass, false ) )
+            {
+                return null;
+            }
+
             User user = _dbUserController.GetUser( userLogin );
-            Site site = _dbSiteController.GetSite( serverIdentify );
+            Site site = _dbSiteController.GetSite( siteKey );
 
             if ( user == null || site == null )
             {
@@ -34,26 +44,26 @@ namespace UsersLib.Checkers
             }
 
             List<Group> userGroups = _dbUserController.GetUserGroups( user.Id );
-            List<Group> siteUserGroups = _dbSiteController.GetUserGroupsBySite( site.Id );
+            List<Group> siteGroups = _dbSiteController.GetSiteGroups( site.Id );
 
             if ( userGroups == null || userGroups.Count == 0 )
             {
                 return null;
             }
 
-            if ( siteUserGroups == null || siteUserGroups.Count == 0 )
+            if ( siteGroups == null || siteGroups.Count == 0 )
             {
                 return null;
             }
-
-            if ( !userGroups.Any( item => siteUserGroups.Any( siteUserGroup => siteUserGroup.Id == item.Id ) ) )
+            
+            if ( !userGroups.Any( item => siteGroups.Any( siteGroup => siteGroup.Id == item.Id ) ) )
             {
                 return null;
             }
 
             SiteSecureDataFinderResult finderResult =
                 _secureFindersFactory.CreateSiteSecureDataFinder()
-                    .FindeSiteSecureData( serverIdentify );
+                    .FindeSiteSecureData( site.StorageId );
 
             return new UserCheckerResult(
                 finderResult.UrlAddress,

@@ -6,11 +6,22 @@ var app;
         var SitesController = (function () {
             function SitesController(resourceService) {
                 this.resourceService = resourceService;
+                this.getSites();
+            }
+            SitesController.prototype.updateSites = function () {
                 var self = this;
-                resourceService.getSites(function (sites) {
+                this.resourceService.updateSites(function () {
+                    self.getSites();
+                }, function (data) {
+                    console.log(data);
+                });
+            };
+            SitesController.prototype.getSites = function () {
+                var self = this;
+                self.resourceService.getSites(function (sites) {
                     self.sites = sites;
                 }, function (data) { console.log(data); });
-            }
+            };
             return SitesController;
         }());
         SitesController.$inject = ['app.services.resource'];

@@ -15,5 +15,6 @@ namespace UsersLib.DbControllers
         Dictionary<Site, List<Group>> GetSitesByGroups();
         void SaveSite( Site site );
         void SaveSiteGroups( int siteId, List<int> groupIds );
+        int UpdateSites( List<Site> sites );
     }
 }

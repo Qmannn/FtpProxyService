@@ -17,5 +17,8 @@ namespace Proxynet.Models
 
         [JsonProperty( "groups" )]
         public List<GroupDto> Groups { get; set; }
+
+        [JsonIgnore]
+        public string StorageId { get; set; }
     }
 }

@@ -5,6 +5,5 @@ namespace UsersLib.Factories
     public interface ICheckersFactory
     {
         IUserChecker CreateUserChecker();
-        IUserChecker CreateDataBaseUserChecker();
     }
 }

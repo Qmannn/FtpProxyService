@@ -10,10 +10,22 @@
 
         constructor( resourceService: Services.IResourceService ) {
             this.resourceService = resourceService;
+            this.getSites();
+        }
 
+        public updateSites() {
             var self = this;
+            this.resourceService.updateSites( (): void => {
+                    self.getSites();
+                },
+                ( data: any ): void => {
+                    console.log( data );
+                } );
+        }
 
-            resourceService.getSites( ( sites: Models.ISite[] ): void => {
+        public getSites() {
+            var self = this;
+            self.resourceService.getSites( ( sites: Models.ISite[] ): void => {
                     self.sites = sites;
                 },
                 ( data: any ): void => { console.log( data ); } );

@@ -14,6 +14,9 @@
         saveUser(user: IUser, success: (user: IUser) => any, error: (data: any) => any): void;
         saveSite(site: Models.ISite, success: (site: Models.ISite) => any, error: (data: any) => any): void;
         saveGroup(name: string, success: (group: Models.IGroup) => any, error: (data: any) => any): void;
+
+        updateUsers(success: () => any, error: (data:any) => any):void;
+        updateSites(success: () => any, error: (data:any) => any):void;
     }
 
     class ResourceService implements IResourceService {
@@ -71,6 +74,16 @@
 
         getSiteGroups( success: ( groups: Models.IGroup[] ) => any, error: ( data: any ) => any ): void {
             this.$resource( 'site/getgroups', null, this.actionHashArray )
+                .query( success, error );
+        }
+
+        updateUsers( success: () => any, error: ( data: any ) => any ): void {
+            this.$resource( 'user/updateusers', null, this.actionHash )
+                .query( success, error );
+        }
+
+        updateSites( success: () => any, error: ( data: any ) => any ): void {
+            this.$resource( 'site/updatesites', null, this.actionHash )
                 .query( success, error );
         }
 

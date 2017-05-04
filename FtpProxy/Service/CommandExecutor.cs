@@ -203,7 +203,7 @@ namespace FtpProxy.Service
                 return new Command( "503 incorrect command sequence", _clientConnection.Encoding );
             }
 
-            IUserChecker userChecker = CheckersFactory.CreateDataBaseUserChecker();
+            IUserChecker userChecker = CheckersFactory.CreateUserChecker();
             IUserCheckerResult checkerResult = userChecker.Check( _clientConnection.ConnectionData[ ConnectionDataType.User ],
                 _clientConnection.ConnectionData[ ConnectionDataType.Pass ],
                 _clientConnection.ConnectionData[ ConnectionDataType.RemoteSiteIdentifier ] );

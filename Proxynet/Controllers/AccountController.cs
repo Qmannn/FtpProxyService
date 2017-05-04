@@ -10,10 +10,12 @@ namespace Proxynet.Controllers
     public class AccountController : Controller
     {
         private readonly IAuthenticationManager _auth;
+        private readonly ILdapAuthorizer _ldapAuthorizer;
 
-        public AccountController( IAuthenticationManager auth )
+        public AccountController( IAuthenticationManager auth, ILdapAuthorizer ldapAuthorizer )
         {
             _auth = auth;
+            _ldapAuthorizer = ldapAuthorizer;
         }
 
         // GET: Account
@@ -32,9 +34,7 @@ namespace Proxynet.Controllers
             if( !ModelState.IsValid )
                 return View();
 
-            LdapAuthorizer authorizer = new LdapAuthorizer();
-
-            if ( true || authorizer.ValidateCredentials( model.UserName, model.Password ) )
+            if ( _ldapAuthorizer.ValidateCredentials( model.UserName, model.Password ) )
             {
                 var identity = new ClaimsIdentity( new[] { new Claim( ClaimTypes.Name, model.UserName ), },
                     DefaultAuthenticationTypes.ApplicationCookie );
@@ -46,7 +46,7 @@ namespace Proxynet.Controllers
 
                 return RedirectToRoute( "FtpProxy" );
             }
-            ModelState.AddModelError( "", "Invalid login attempt." );
+            ModelState.AddModelError( "", @"Invalid login attempt." );
             return View( model );
         }
 

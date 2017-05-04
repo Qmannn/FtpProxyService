@@ -19,7 +19,8 @@ namespace Proxynet.Service.Converters
             {
                 Id = site.Id,
                 Name = site.SiteKey,
-                Description = site.Description
+                Description = site.Description,
+                StorageId = site.StorageId
             };
         }
 
@@ -29,7 +30,8 @@ namespace Proxynet.Service.Converters
             {
                 Description = site.Description,
                 Id = site.Id,
-                SiteKey = site.Name
+                SiteKey = site.Name,
+                StorageId = site.StorageId
             };
         }
 

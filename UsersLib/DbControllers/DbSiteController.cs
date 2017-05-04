@@ -143,5 +143,26 @@ namespace UsersLib.DbControllers
                 }
             }
         }
+
+        public int UpdateSites( List<Site> sites )
+        {
+            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            {
+                List<string> siteStorageIds = sites.ConvertAll( item => item.StorageId );
+                IEnumerable<DbSite> deletedInStorageSites =
+                    dbContext.Sites.Where( item => siteStorageIds.All( id => id != item.StorageId ) );
+                dbContext.Sites.RemoveRange( deletedInStorageSites );
+
+                List<string> existingSiteIds = dbContext.Sites.Select( item => item.StorageId ).ToList();
+                sites.RemoveAll( item => existingSiteIds.Contains( item.StorageId ) );
+
+                List<DbSite> dbSites = sites.ConvertAll( item => item.ConvertToDbSite() );
+                int addedSitesCount = dbContext.Sites.AddRange( dbSites ).Count();
+
+                dbContext.SaveChanges();
+
+                return addedSitesCount;
+            }
+        }
     }
 }
