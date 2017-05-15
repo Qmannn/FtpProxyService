@@ -4,5 +4,5 @@ sc stop FtpProxyService
 sc delete FtpProxyService
 
 ::Установка
-C:\Windows\Microsoft.NET\Framework\v4.0.30319\installutil.exe %~dp0\FtpProxyService.exe
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\installutil.exe "%~dp0\FtpProxyService.exe"
 pause
