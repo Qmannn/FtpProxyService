@@ -368,7 +368,7 @@ namespace FtpProxy.Service
 
             _serverDataConnection = dataConnectionVersion == ProcessingClientCommand.Pasv
                 ? _commandExecutorHelper.GetPasvDataConnection( serverResponce )
-                : _commandExecutorHelper.GetEpsvDataConnection( serverResponce, _serverConnection.IpAddress );
+                : _commandExecutorHelper.GetEpsvDataConnection( serverResponce, _serverConnection.RemoteIpAddress );
 
             if ( _serverDataConnection == null )
             {
@@ -381,6 +381,9 @@ namespace FtpProxy.Service
 
                 return new Command( "451 can't open passive mode", _clientConnection.Encoding );
             }
+
+            // Открываем соединение данных с сервером
+            _serverDataConnection.Connect();
 
             _dataConnectionListener = new TcpListener( _clientConnection.IpAddress, 0 );
             _dataConnectionListener.Start();
@@ -560,7 +563,7 @@ namespace FtpProxy.Service
                 {
                     _clientDataConnection.SetUpSecureConnectionAsServer();
                 }
-                _serverDataConnection.Connect();
+                //_serverDataConnection.Connect();
                 if ( _serverConnection.DataEncryptionEnabled )
                 {
                     _serverDataConnection.SetUpSecureConnectionAsClient();

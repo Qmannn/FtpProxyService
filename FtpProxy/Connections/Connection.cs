@@ -77,9 +77,29 @@ namespace FtpProxy.Connections
             }
         }
 
+        public IPEndPoint RemoteEndPoint
+        {
+            get
+            {
+                lock ( _controlClientLocker )
+                {
+                    if ( _controlClient == null )
+                    {
+                        return null;
+                    }
+                    return (IPEndPoint) _controlClient.Client.RemoteEndPoint;
+                }
+            }
+        }
+
         public IPAddress IpAddress
         {
             get { return LocalEndPoint.Address; }
+        }
+
+        public IPAddress RemoteIpAddress
+        {
+            get { return RemoteEndPoint.Address; }
         }
 
         public bool DataAvailable
