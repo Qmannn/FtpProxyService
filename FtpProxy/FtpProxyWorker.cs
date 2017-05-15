@@ -60,7 +60,7 @@ namespace FtpProxy
                 _listener.BeginAcceptTcpClient( HandleAcceptTcpClient, _listener );
                 TcpClient client = _listener.EndAcceptTcpClient( result );
 
-                Logger.Log.Info( "Client was connected" );
+                Logger.Log.Error( "Client was connected" );
 
                 Connection connection = new Connection( client );
                 ClientHandler clientHandler = new ClientHandler( connection );

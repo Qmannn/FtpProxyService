@@ -66,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Builders\ServerConnectionBuilder.cs" />
     <Compile Include="Service\CommandExecutor.cs" />
+    <Compile Include="Service\CommandExecutorHelper.cs" />
     <Compile Include="Service\Handlers\ClientHandler.cs" />
     <Compile Include="Service\Resolvers\CommandArgsResolver.cs" />
   </ItemGroup>

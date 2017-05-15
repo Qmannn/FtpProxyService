@@ -1,4 +1,5 @@
-﻿using System.ServiceProcess;
+﻿using System.Data.Entity;
+using System.ServiceProcess;
 
 namespace FtpProxyService
 {

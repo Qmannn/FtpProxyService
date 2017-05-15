@@ -70,7 +70,7 @@ namespace FtpProxy.Service.Builders
 
         public ServerConnectionBuilder BuildPass()
         {
-            _connection.SendCommand( new Command( String.Format( "PASS {0}", _connection.ConnectionData[ ConnectionDataType.User ] ),
+            _connection.SendCommand( new Command( String.Format( "PASS {0}", _connection.ConnectionData[ ConnectionDataType.Pass ] ),
                     _connection.Encoding ) );
             Command recivedCommand = _connection.GetCommand();
 

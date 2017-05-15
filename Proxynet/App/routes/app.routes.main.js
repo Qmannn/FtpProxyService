@@ -1,22 +1,24 @@
 (function () {
     'use strict';
     angular.module('app.routes').config(['$locationProvider', '$routeProvider', config]);
+    var baseUrl = '/secure/FtpProxy/';
+    var templateBaseUrl = 'secure/';
     function config($locationProvider, $routeProvider) {
         $routeProvider
-            .when('/FtpProxy/', {
-            templateUrl: 'Pages/Users'
+            .when(baseUrl, {
+            templateUrl: templateBaseUrl + 'Pages/Users'
         })
-            .when('/FtpProxy/users', {
-            templateUrl: 'Pages/Users'
+            .when(baseUrl + 'users', {
+            templateUrl: templateBaseUrl + 'Pages/Users'
         })
-            .when('/FtpProxy/user/:userid', {
-            templateUrl: 'Pages/UserEdit'
+            .when(baseUrl + 'user/:userid', {
+            templateUrl: templateBaseUrl + 'Pages/UserEdit'
         })
-            .when('/FtpProxy/sites', {
-            templateUrl: 'Pages/Sites'
+            .when(baseUrl + 'sites', {
+            templateUrl: templateBaseUrl + 'Pages/Sites'
         })
-            .when('/FtpProxy/site/:siteid', {
-            templateUrl: 'Pages/SiteEdit'
+            .when(baseUrl + 'site/:siteid', {
+            templateUrl: templateBaseUrl + 'Pages/SiteEdit'
         });
     }
 })();

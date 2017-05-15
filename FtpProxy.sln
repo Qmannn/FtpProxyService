@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{EBC4E1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extentions", "Extentions", "{44E6DF1C-085B-498E-9C3C-A7D4F23D6C70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Passwork.Core", "Passwork.Core\Passwork.Core.csproj", "{9728F8E0-746A-450B-B4A4-F622F0F5439F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Passwork.Core", "Passwork.Core\Passwork.Core\Passwork.Core.csproj", "{9728F8E0-746A-450B-B4A4-F622F0F5439F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

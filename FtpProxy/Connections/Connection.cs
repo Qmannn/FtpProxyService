@@ -210,23 +210,23 @@ namespace FtpProxy.Connections
         {
             lock ( _controlClientLocker )
             {
-                _controlClient = new TcpClient();
                 if ( _ipAddress != null )
                 {
+                    _controlClient = new TcpClient( _ipAddress.AddressFamily );
                     _controlClient.Connect( _ipAddress, _port );
                 }
                 else if ( !String.IsNullOrEmpty( _urlAddress ) )
                 {
                     foreach ( IPAddress ipAddress in Dns.GetHostAddresses( _urlAddress ) )
                     {
+                        _controlClient = new TcpClient( ipAddress.AddressFamily );
                         try
                         {
                             _controlClient.Connect( ipAddress, _port );
                         }
-                        catch ( Exception e )
+                        catch ( Exception )
                         {
-                            Logger.Log.Error(
-                                String.Format( "Не удалось разрешить имя удаленного сервера (DNS) {0}", _urlAddress ), e );
+                            Logger.Log.Error( String.Format( "Не удалось разрешить имя удаленного сервера (DNS) {0}", _urlAddress ) );
                         }
                         if ( IsConnected )
                         {

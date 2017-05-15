@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using UsersLib.Checkers;
 using UsersLib.Checkers.Results;
@@ -18,6 +16,8 @@ namespace FtpProxy.Service
 {
     public class CommandExecutor
     {
+        #region Members and properties
+
         // соденинеия для передачи команд
         private readonly Connection _clientConnection;
         private Connection _serverConnection;
@@ -36,59 +36,80 @@ namespace FtpProxy.Service
         /// </summary>
         private TcpListener _dataConnectionListener;
 
+        // Фабрика оздания различных чекеров для проверки прав пользователя
         private ICheckersFactory _checkersFactory;
 
         private readonly CommandArgsResolver _argsResolver = new CommandArgsResolver();
+        private readonly CommandExecutorHelper _commandExecutorHelper;
 
         private ICheckersFactory CheckersFactory
         {
             get { return _checkersFactory ?? ( _checkersFactory = new CheckersFactory() ); }
-        }
+        } 
+
+        #endregion
 
         public CommandExecutor( Connection clientConnection )
         {
             _clientConnection = clientConnection;
             _serverConnection = null;
+            _commandExecutorHelper = new CommandExecutorHelper();
         }
 
+        #region CommandExecuting
+
+        /// <summary>
+        /// Выполняет команду клиента
+        /// </summary>
+        /// <param name="clientCommand">Команда к выполнению</param>
+        /// <returns>Ответ, сформированный локально или пришедший от удаленного сервера</returns>
         public Command Execute( Command clientCommand )
         {
             try
             {
-                if( _serverConnection != null && _serverConnection.IsConnected )
+                if ( _serverConnection != null && _serverConnection.IsConnected )
                 {
                     return ExecuteWithRemouteServer( clientCommand );
                 }
             }
-            catch ( IOException e )
+            catch ( Exception e )
             {
                 _serverConnection = null;
-                Logger.Log.Info( "Remote server disconnected", e );
-                return new Command( "421 ssss", Encoding.UTF8 );
+                Logger.Log.Info( "Erorr executing with remote server", e );
+                return new Command( "451 Локальная ошибка, операция прервана", _clientConnection.Encoding );
             }
-            
+
             return ExecuteAsServer( clientCommand );
         }
 
+        /// <summary>
+        /// Выполнение команды на удаленном сервере
+        /// Использовать только после успешного соединения с удаленным сервером
+        /// </summary>
+        /// <param name="clientCommand"></param>
+        /// <returns></returns>
         private Command ExecuteWithRemouteServer( Command clientCommand )
         {
-            switch( clientCommand.CommandName )
+            // команды, требующие особой обработки (открытие режимов передачи данных)
+            switch ( clientCommand.CommandName )
             {
                 case ProcessingClientCommand.Port:
-                    clientCommand = Port( clientCommand );
-                    break;
                 case ProcessingClientCommand.Eprt:
-                    clientCommand = Eprt( clientCommand );
-                    break;
+                    return ActiveDataConnection( clientCommand );
+                case ProcessingClientCommand.Pasv:
+                case ProcessingClientCommand.Epsv:
+                    return PassiveDataConnection( clientCommand );
             }
 
+            // отправка команд на удаленный сервер
             _serverConnection.SendCommand( clientCommand );
             var serverCommand = _serverConnection.GetCommand();
 
-            switch( serverCommand.CommandType )
+            // обработка ответа сервера
+            switch ( serverCommand.CommandType )
             {
                 case ServerCommandType.Waiting:
-                    if( _dataConnectionType != DataConnectionType.None )
+                    if ( _dataConnectionType != DataConnectionType.None )
                     {
                         StartDataConnectionOperation();
                     }
@@ -100,22 +121,17 @@ namespace FtpProxy.Service
                     break;
             }
 
-            switch( clientCommand.CommandName )
+            switch ( clientCommand.CommandName )
             {
                 case ProcessingClientCommand.Auth:
                     Command clientResponce = Auth( clientCommand );
                     _clientConnection.SendCommand( clientResponce );
                     _clientConnection.SetUpSecureConnectionAsServer();
-                    if( serverCommand.CommandType != ServerCommandType.Error )
+                    if ( serverCommand.CommandType != ServerCommandType.Error )
                     {
                         _serverConnection.SetUpSecureConnectionAsClient();
                     }
                     serverCommand = null;
-                    break;
-                case ProcessingClientCommand.Pasv:
-                    serverCommand = Pasv( serverCommand );
-                    break;
-                case ProcessingClientCommand.Epsv:
                     break;
                 case ProcessingClientCommand.Prot:
                     serverCommand = Prot( clientCommand, serverCommand );
@@ -127,6 +143,12 @@ namespace FtpProxy.Service
             return serverCommand;
         }
 
+        /// <summary>
+        /// Выполняет команду относительно своего функционала - 
+        /// установить защиту канала и авторизовать пользователя
+        /// </summary>
+        /// <param name="clientCommand">Команда к выполнению</param>
+        /// <returns>Команда для отправки клиенту</returns>
         private Command ExecuteAsServer( Command clientCommand )
         {
             Command asServerCommand;
@@ -152,14 +174,19 @@ namespace FtpProxy.Service
                         break;
                 }
             }
-            catch ( ArgumentException e )
+            catch ( ArgumentException )
             {
-                Logger.Log.Error( String.Format( "Invalid USER command: {0}", clientCommand.Args ), e );
+                Logger.Log.Error( String.Format( "Invalid USER command: {0}", clientCommand.Args ) );
                 asServerCommand = new Command( "504 invalid command", _clientConnection.Encoding );
             }
             return asServerCommand;
         }
 
+        #endregion
+
+        /// <summary>
+        /// Безопасно закрывает все активные соединения
+        /// </summary>
         public void Close()
         {
             if( _clientConnection != null && _clientConnection.IsConnected )
@@ -191,7 +218,7 @@ namespace FtpProxy.Service
 
         private Command Pass( Command clientCommand )
         {
-            Command responce = new Command( "230 user connected. Welcome", _clientConnection.Encoding );
+            Command responce = new Command( "230 успешная авторизация", _clientConnection.Encoding );
 
             _clientConnection.ConnectionData[ ConnectionDataType.Pass ] =
                 _argsResolver.ResolvePassword( clientCommand.Args );
@@ -200,7 +227,7 @@ namespace FtpProxy.Service
                  || !_clientConnection.ConnectionData.ContainsKey( ConnectionDataType.Pass )
                  || !_clientConnection.ConnectionData.ContainsKey( ConnectionDataType.RemoteSiteIdentifier ) )
             {
-                return new Command( "503 incorrect command sequence", _clientConnection.Encoding );
+                return new Command( "503 неверная последовательность команд", _clientConnection.Encoding );
             }
 
             IUserChecker userChecker = CheckersFactory.CreateUserChecker();
@@ -210,7 +237,7 @@ namespace FtpProxy.Service
 
             if ( checkerResult == null )
             {
-                return new Command( "530 Login incorrect", _clientConnection.Encoding );
+                return new Command( "530 Неверная комбинация логин-пароль", _clientConnection.Encoding );
             }
 
             ServerConnectionBuilder connectionBuilder = new ServerConnectionBuilder(
@@ -225,8 +252,8 @@ namespace FtpProxy.Service
             }
             catch ( Exception e )
             {
-                Logger.Log.Error( String.Format( "BuildRemoteConnection: {0}", e.Message ), e );
-                return new Command( "434 Remote host not available", _clientConnection.Encoding );
+                Logger.Log.Error( String.Format( "BuildRemoteConnection: {0}", e.Message ) );
+                return new Command( "434 удаленный сервер недоступен", _clientConnection.Encoding );
             }
 
             try
@@ -235,7 +262,7 @@ namespace FtpProxy.Service
             }
             catch( Exception e )
             {
-                Logger.Log.Error( String.Format( "BuildConnectionSecurity: {0}", e.Message ), e );
+                Logger.Log.Error( String.Format( "BuildConnectionSecurity: {0}", e.Message ) );
             }
 
             try
@@ -245,8 +272,8 @@ namespace FtpProxy.Service
             }
             catch( Exception e )
             {
-                Logger.Log.Error( String.Format( "BuildUserPass: {0}", e.Message ), e );
-                return new Command( "425 remote server data is incorrect", _clientConnection.Encoding );
+                Logger.Log.Error( String.Format( "BuildUserPass: {0}", e.Message ) );
+                return new Command( "425 некорректные данные для подключения к удаленному серверу. Обратитесь к администратру", _clientConnection.Encoding );
             }
 
             _serverConnection = connectionBuilder.GetResult();
@@ -259,9 +286,9 @@ namespace FtpProxy.Service
         {
             if ( !clientCommand.Args.StartsWith( "TLS" ) )
             {
-                return new Command( "504 only TLS supported", _clientConnection.Encoding );
+                return new Command( "504 поддерживается только TLS протокол", _clientConnection.Encoding );
             }
-            return new Command( "234 Enabling TLS Connection", _clientConnection.Encoding );
+            return new Command( "234 открытие TLS соединения", _clientConnection.Encoding );
         }
 
         private Command Prot( Command clientCommand, Command serverResponce )
@@ -273,7 +300,7 @@ namespace FtpProxy.Service
                 {
                     _serverConnection.DataEncryptionEnabled = true;
                 }
-                return new Command( "200 success, data connection was protected", _serverConnection.Encoding );
+                return new Command( "200 канал данных успешно защищен", _serverConnection.Encoding );
             }
             if ( clientCommand.Args.StartsWith( "C" ) )
             {
@@ -281,131 +308,10 @@ namespace FtpProxy.Service
                 _serverConnection.DataEncryptionEnabled = false;
                 if ( serverResponce.CommandType == ServerCommandType.Success )
                 {
-                    return new Command( "200 success, data connection was not protected", _serverConnection.Encoding );
+                    return new Command( "200 защита канала данных не активна", _serverConnection.Encoding );
                 }
             }
-            return new Command( "501 command not understood", _serverConnection.Encoding );
-        }
-
-        private Command Pasv( Command serverCommand )
-        {
-            Match pasvInfo = Regex.Match( serverCommand.Args,
-                @"(?<quad1>\d+),(?<quad2>\d+),(?<quad3>\d+),(?<quad4>\d+),(?<port1>\d+),(?<port2>\d+)" );
-
-            if ( !pasvInfo.Success || pasvInfo.Groups.Count != 7 )
-            {
-                Logger.Log.Error( String.Format( "Malformed PASV response: {0}", serverCommand ) );
-                _serverConnection.SendCommand( "ABOR can't parse pasv address" );
-                _serverConnection.GetCommand();
-                return new Command( "451 can't open passive mode", _clientConnection.Encoding );
-            }
-            byte[] host =
-            {
-                Convert.ToByte( pasvInfo.Groups[ "quad1" ].Value ),
-                Convert.ToByte( pasvInfo.Groups[ "quad2" ].Value ),
-                Convert.ToByte( pasvInfo.Groups[ "quad3" ].Value ),
-                Convert.ToByte( pasvInfo.Groups[ "quad4" ].Value )
-            };
-
-            int port = ( Convert.ToInt32( pasvInfo.Groups[ "port1" ].Value ) << 8 ) +
-                       Convert.ToInt32( pasvInfo.Groups[ "port2" ].Value );
-
-            _serverDataConnection = new Connection( new IPAddress( host ), port );
-
-            _dataConnectionListener = new TcpListener( _clientConnection.LocalEndPoint.Address, 0 );
-            _dataConnectionListener.Start();
-
-            IPEndPoint passiveListenerEndpoint = (IPEndPoint) _dataConnectionListener.LocalEndpoint;
-
-            byte[] address = passiveListenerEndpoint.Address.GetAddressBytes();
-            short clientPort = (short) passiveListenerEndpoint.Port;
-
-            byte[] clientPortArray = BitConverter.GetBytes( clientPort );
-            if ( BitConverter.IsLittleEndian )
-                Array.Reverse( clientPortArray );
-
-            _dataConnectionType = DataConnectionType.Passive;
-
-            return
-                new Command(
-                    String.Format( "227 Entering!! Passive Mode ({0},{1},{2},{3},{4},{5})", address[ 0 ], address[ 1 ],
-                        address[ 2 ], address[ 3 ], clientPortArray[ 0 ], clientPortArray[ 1 ] ),
-                    _clientConnection.Encoding );
-        }
-
-        private Command Port( Command clientCommand )
-        {
-            Match portInfo = Regex.Match( clientCommand.Args,
-                @"(?<quad1>\d+),(?<quad2>\d+),(?<quad3>\d+),(?<quad4>\d+),(?<port1>\d+),(?<port2>\d+)" );
-            byte[] host =
-            {
-                Convert.ToByte( portInfo.Groups[ "quad1" ].Value ),
-                Convert.ToByte( portInfo.Groups[ "quad2" ].Value ),
-                Convert.ToByte( portInfo.Groups[ "quad3" ].Value ),
-                Convert.ToByte( portInfo.Groups[ "quad4" ].Value )
-            };
-
-            int port = ( Convert.ToInt32( portInfo.Groups[ "port1" ].Value ) << 8 ) +
-                       Convert.ToInt32( portInfo.Groups[ "port2" ].Value );
-
-            _clientDataConnection = new Connection( new IPAddress( host ), port );
-
-            _dataConnectionListener = new TcpListener( _serverConnection.LocalEndPoint.Address, 0 );
-            _dataConnectionListener.Start();
-
-            IPEndPoint passiveListenerEndpoint = (IPEndPoint) _dataConnectionListener.LocalEndpoint;
-
-            byte[] address = passiveListenerEndpoint.Address.GetAddressBytes();
-            short clientPort = (short) passiveListenerEndpoint.Port;
-
-            byte[] clientPortArray = BitConverter.GetBytes( clientPort );
-            if ( BitConverter.IsLittleEndian )
-                Array.Reverse( clientPortArray );
-
-            _dataConnectionType = DataConnectionType.Active;
-
-            return new Command(
-                String.Format( "PORT {0},{1},{2},{3},{4},{5}", address[ 0 ], address[ 1 ],
-                    address[ 2 ], address[ 3 ], clientPortArray[ 0 ], clientPortArray[ 1 ] ),
-                _clientConnection.Encoding );
-        }
-
-        private Command Eprt( Command clientCommand )
-        {
-            _dataConnectionType = DataConnectionType.Active;
-
-            string hostPort = clientCommand.Args;
-
-            _dataConnectionType = DataConnectionType.Active;
-
-            char delimiter = hostPort[ 0 ];
-
-            string[] rawSplit = hostPort.Split( new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries );
-
-            string ipAddress = rawSplit[ 1 ];
-            string port = rawSplit[ 2 ];
-
-            _clientDataConnection = new Connection( IPAddress.Parse( ipAddress ), int.Parse( port ) );
-
-            _dataConnectionListener = new TcpListener( _serverConnection.LocalEndPoint.Address, 0 );
-            _dataConnectionListener.Start();
-            IPEndPoint passiveListenerEndpoint = (IPEndPoint) _dataConnectionListener.LocalEndpoint;
-            int ipver;
-            switch ( passiveListenerEndpoint.AddressFamily )
-            {
-                case AddressFamily.InterNetwork:
-                    ipver = 1;
-                    break;
-                case AddressFamily.InterNetworkV6:
-                    ipver = 2;
-                    break;
-                default:
-                    throw new InvalidOperationException( "The IP protocol being used is not supported." );
-            }
-
-            return new Command(
-                String.Format( "EPRT |{0}|{1}|{2}|", ipver, passiveListenerEndpoint.Address,
-                    passiveListenerEndpoint.Port ), _clientConnection.Encoding );
+            return new Command( "501 команда не распознана", _serverConnection.Encoding );
         }
 
         private Command Pbsz( Command clientCommand )
@@ -419,6 +325,164 @@ namespace FtpProxy.Service
         }
 
         #endregion FTPCommands
+
+        #region DstsConnectionPreparing
+
+        private Command PassiveDataConnection( Command clientCommand )
+        {
+            _dataConnectionType = DataConnectionType.Passive;
+
+            List<Command> commandQueue = new List<Command>();
+
+            if ( clientCommand.CommandName == ProcessingClientCommand.Pasv )
+            {
+                commandQueue.Add( new Command( ProcessingClientCommand.Pasv, _serverConnection.Encoding ) );
+                commandQueue.Add( new Command( ProcessingClientCommand.Epsv, _serverConnection.Encoding ) );
+            }
+            else
+            {
+                commandQueue.Add( new Command( ProcessingClientCommand.Epsv, _serverConnection.Encoding ) );
+                commandQueue.Add( new Command( ProcessingClientCommand.Pasv, _serverConnection.Encoding ) );
+            }
+
+            string dataConnectionVersion = String.Empty;
+
+            Command serverResponce = null;
+            foreach ( Command command in commandQueue )
+            {
+                _serverConnection.SendCommand( command );
+                serverResponce = _serverConnection.GetCommand();
+                if ( serverResponce.CommandType == ServerCommandType.Success )
+                {
+                    dataConnectionVersion = command.CommandName;
+                    break;
+                }
+            }
+
+            // Если не удалось установить соединение с сервером ни по одному из возможных типов соединения
+            // обычному или расширенному - говорим клиенту, что соединение открыть с этим режимом нельзя
+            if ( String.IsNullOrEmpty( dataConnectionVersion ) )
+            {
+                return new Command( "451 can't open data connection", _clientConnection.Encoding );
+            }
+
+            _serverDataConnection = dataConnectionVersion == ProcessingClientCommand.Pasv
+                ? _commandExecutorHelper.GetPasvDataConnection( serverResponce )
+                : _commandExecutorHelper.GetEpsvDataConnection( serverResponce, _serverConnection.IpAddress );
+
+            if ( _serverDataConnection == null )
+            {
+                Logger.Log.Error( String.Format( "Malformed PASV response: {0}:{1}", serverResponce,
+                    _clientConnection.IpAddress ) );
+
+                // Останавливаем на сервере ожидание подключения, т.к. не удалось получить адрес
+                _serverConnection.SendCommand( "ABOR can't parse pasv address" );
+                _serverConnection.GetCommand();
+
+                return new Command( "451 can't open passive mode", _clientConnection.Encoding );
+            }
+
+            _dataConnectionListener = new TcpListener( _clientConnection.IpAddress, 0 );
+            _dataConnectionListener.Start();
+
+            IPEndPoint passiveListenerEndpoint = (IPEndPoint) _dataConnectionListener.LocalEndpoint;
+
+            // Для расширенного пассивного режима соедиенние и данные подготовлены, можно вернуть команду
+            // Клиенту отдаем команду по тому типу режима, который он запросил, независимо
+            // от того, какой установлен с сервером, иначе соединение будет оборвано клиентом
+            if ( clientCommand.CommandName == ProcessingClientCommand.Epsv )
+            {
+                return new Command(
+                    String.Format( "229 Entering Extended Passive Mode (|||{0}|)", passiveListenerEndpoint.Port ),
+                    _clientConnection.Encoding );
+            }
+
+            // далее подготавливаются данные для ответа по обычному пассивному режиму.
+            byte[] address = passiveListenerEndpoint.Address.GetAddressBytes();
+            short clientPort = (short) passiveListenerEndpoint.Port;
+
+            byte[] clientPortArray = BitConverter.GetBytes( clientPort );
+            if ( BitConverter.IsLittleEndian )
+                Array.Reverse( clientPortArray );
+
+            return new Command(
+                String.Format( "227 Entering Passive Mode ({0},{1},{2},{3},{4},{5})", address[ 0 ], address[ 1 ],
+                    address[ 2 ], address[ 3 ], clientPortArray[ 0 ], clientPortArray[ 1 ] ),
+                _clientConnection.Encoding );
+        }
+
+        private Command ActiveDataConnection( Command clientCommand )
+        {
+            _dataConnectionType = DataConnectionType.Active;
+
+            _clientDataConnection = _commandExecutorHelper.GetActiveDataConnection( clientCommand );
+
+            _dataConnectionListener = new TcpListener( _serverConnection.LocalEndPoint.Address, 0 );
+            _dataConnectionListener.Start();
+
+            IPEndPoint passiveListenerEndpoint = (IPEndPoint) _dataConnectionListener.LocalEndpoint;
+
+            byte[] address = passiveListenerEndpoint.Address.GetAddressBytes();
+            short clientPort = (short) passiveListenerEndpoint.Port;
+
+            byte[] clientPortArray = BitConverter.GetBytes( clientPort );
+            if ( BitConverter.IsLittleEndian )
+                Array.Reverse( clientPortArray );
+
+            int ipver;
+            switch ( passiveListenerEndpoint.AddressFamily )
+            {
+                case AddressFamily.InterNetwork:
+                    ipver = 1;
+                    break;
+                case AddressFamily.InterNetworkV6:
+                    ipver = 2;
+                    break;
+                default:
+                    throw new InvalidOperationException( "The IP protocol being used is not supported." );
+            }
+
+            // созданы команды для двух типов подключения чтобы в случае когда сервер не поддерживает одну из них - использовать вторую
+            Command portCommand = new Command(
+                String.Format( "PORT {0},{1},{2},{3},{4},{5}", address[ 0 ], address[ 1 ],
+                    address[ 2 ], address[ 3 ], clientPortArray[ 0 ], clientPortArray[ 1 ] ),
+                _serverConnection.Encoding );
+
+            Command eprtCommand = new Command(
+                String.Format( "EPRT |{0}|{1}|{2}|", ipver, passiveListenerEndpoint.Address,
+                    passiveListenerEndpoint.Port ), _serverConnection.Encoding );
+
+            Command successfulResponce = new Command(
+                String.Format( "200 {0} command successful", clientCommand.CommandName ), _clientConnection.Encoding );
+
+            List<Command> commandsQueue = new List<Command>();
+
+            if ( clientCommand.CommandName == ProcessingClientCommand.Port )
+            {
+                commandsQueue.Add( portCommand );
+                commandsQueue.Add( eprtCommand );
+            }
+            else
+            {
+                commandsQueue.Add( eprtCommand );
+                commandsQueue.Add( portCommand );
+            }
+
+            foreach ( Command command in commandsQueue )
+            {
+                _serverConnection.SendCommand( command );
+                Command serverResponse = _serverConnection.GetCommand();
+
+                if ( serverResponse.CommandType != ServerCommandType.Error )
+                {
+                    return successfulResponce;
+                }
+            }
+
+            return new Command( "451 can't open data connection", _clientConnection.Encoding );
+        } 
+
+        #endregion
 
         #region DataConnectionOperations
 

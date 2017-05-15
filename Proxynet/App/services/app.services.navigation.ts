@@ -44,8 +44,8 @@
         constructor() {
             this.pages = new Array<IPageInfo>();
 
-            this.pages.push( new PageInfo( 'Пользователи', '/FtpProxy/users', Page.UsersList, true ) );
-            this.pages.push( new PageInfo( 'Аккаунты сайтов', '/FtpProxy/sites', Page.SiteList, true ) );
+            this.pages.push( new PageInfo( 'Пользователи', 'secure/FtpProxy/users', Page.UsersList, true ) );
+            this.pages.push(new PageInfo('Аккаунты сайтов', 'secure/FtpProxy/sites', Page.SiteList, true ) );
         }
 
         public getPageInfo( page: Page ): IPageInfo {

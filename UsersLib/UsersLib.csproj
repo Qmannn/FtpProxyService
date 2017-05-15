@@ -110,7 +110,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Passwork.Core\Passwork.Core.csproj">
+    <ProjectReference Include="..\Passwork.Core\Passwork.Core\Passwork.Core.csproj">
       <Project>{9728f8e0-746a-450b-b4a4-f622f0f5439f}</Project>
       <Name>Passwork.Core</Name>
     </ProjectReference>

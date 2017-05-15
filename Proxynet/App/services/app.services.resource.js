@@ -12,6 +12,7 @@ var app;
                 var actionDesc = {};
                 actionDesc.isArray = false;
                 actionDesc.method = 'POST';
+                this.resourceBaseUrl = 'secure/';
                 this.actionHash = (_a = {},
                     _a['save'] = actionDesc,
                     _a['query'] = actionDesc,
@@ -24,48 +25,48 @@ var app;
             }
             // GET
             ResourceService.prototype.getUsers = function (success, error) {
-                this.$resource('user/getusers', null, this.actionHashArray)
+                this.$resource(this.resourceBaseUrl + 'user/getusers', null, this.actionHashArray)
                     .query(success, error);
             };
             ResourceService.prototype.getUser = function (id, success, error) {
-                this.$resource('user/getuser', { 'userId': id }, this.actionHash)
+                this.$resource(this.resourceBaseUrl + 'user/getuser', { 'userId': id }, this.actionHash)
                     .query(success, error);
             };
             ResourceService.prototype.getGroups = function (success, error) {
-                this.$resource('user/getgroups', null, this.actionHashArray)
+                this.$resource(this.resourceBaseUrl + 'user/getgroups', null, this.actionHashArray)
                     .query(success, error);
             };
             ResourceService.prototype.getSites = function (success, error) {
-                this.$resource('site/getsites', null, this.actionHashArray)
+                this.$resource(this.resourceBaseUrl + 'site/getsites', null, this.actionHashArray)
                     .query(success, error);
             };
             ResourceService.prototype.getSite = function (id, success, error) {
-                this.$resource('site/getsite', { 'siteId': id }, this.actionHash)
+                this.$resource(this.resourceBaseUrl + 'site/getsite', { 'siteId': id }, this.actionHash)
                     .query(success, error);
             };
             ResourceService.prototype.getSiteGroups = function (success, error) {
-                this.$resource('site/getgroups', null, this.actionHashArray)
+                this.$resource(this.resourceBaseUrl + 'site/getgroups', null, this.actionHashArray)
                     .query(success, error);
             };
             ResourceService.prototype.updateUsers = function (success, error) {
-                this.$resource('user/updateusers', null, this.actionHash)
+                this.$resource(this.resourceBaseUrl + 'user/updateusers', null, this.actionHash)
                     .query(success, error);
             };
             ResourceService.prototype.updateSites = function (success, error) {
-                this.$resource('site/updatesites', null, this.actionHash)
+                this.$resource(this.resourceBaseUrl + 'site/updatesites', null, this.actionHash)
                     .query(success, error);
             };
             // SAVE
             ResourceService.prototype.saveUser = function (user, success, error) {
-                this.$resource('user/saveuser', { 'users': user }, this.actionHash)
+                this.$resource(this.resourceBaseUrl + 'user/saveuser', { 'users': user }, this.actionHash)
                     .query(success, error);
             };
             ResourceService.prototype.saveSite = function (site, success, error) {
-                this.$resource('site/savesite', { 'site': site }, this.actionHash)
+                this.$resource(this.resourceBaseUrl + 'site/savesite', { 'site': site }, this.actionHash)
                     .query(success, error);
             };
             ResourceService.prototype.saveGroup = function (name, success, error) {
-                this.$resource('user/savegroup', { 'name': name }, this.actionHash)
+                this.$resource(this.resourceBaseUrl + 'user/savegroup', { 'name': name }, this.actionHash)
                     .query(success, error);
             };
             return ResourceService;

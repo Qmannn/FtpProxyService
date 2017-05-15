@@ -22,6 +22,7 @@
     class ResourceService implements IResourceService {
         private actionHash: ng.resource.IActionHash;
         private actionHashArray: ng.resource.IActionHash;
+        private resourceBaseUrl: string;
 
         static $inject = ['$resource'];
 
@@ -29,10 +30,11 @@
             let actionDescAtrray = <ng.resource.IActionDescriptor>{};
             actionDescAtrray.isArray = true;
             actionDescAtrray.method = 'POST';
-
             let actionDesc = <ng.resource.IActionDescriptor>{};
             actionDesc.isArray = false;
             actionDesc.method = 'POST';
+
+            this.resourceBaseUrl = 'secure/';
 
             this.actionHash = <ng.resource.IActionHash>{
                 ['save']: actionDesc,
@@ -48,59 +50,59 @@
         // GET
 
         getUsers( success: ( users: IUser[] ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'user/getusers', null, this.actionHashArray )
+            this.$resource( this.resourceBaseUrl + 'user/getusers', null, this.actionHashArray )
                 .query( success, error );
         }
 
         getUser( id: number, success: ( user: IUser ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'user/getuser', { 'userId': id }, this.actionHash )
+            this.$resource( this.resourceBaseUrl + 'user/getuser', { 'userId': id }, this.actionHash )
                 .query( success, error );
         }
 
         getGroups( success: ( groups: Models.IGroup[] ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'user/getgroups', null, this.actionHashArray )
+            this.$resource( this.resourceBaseUrl + 'user/getgroups', null, this.actionHashArray )
                 .query( success, error );
         }
 
         getSites( success: ( users: Models.ISite[] ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'site/getsites', null, this.actionHashArray )
+            this.$resource( this.resourceBaseUrl + 'site/getsites', null, this.actionHashArray )
                 .query( success, error );
         }
 
         getSite( id: number, success: ( site: Models.ISite ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'site/getsite', { 'siteId': id }, this.actionHash )
+            this.$resource( this.resourceBaseUrl + 'site/getsite', { 'siteId': id }, this.actionHash )
                 .query( success, error );
         }
 
         getSiteGroups( success: ( groups: Models.IGroup[] ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'site/getgroups', null, this.actionHashArray )
+            this.$resource( this.resourceBaseUrl + 'site/getgroups', null, this.actionHashArray )
                 .query( success, error );
         }
 
         updateUsers( success: () => any, error: ( data: any ) => any ): void {
-            this.$resource( 'user/updateusers', null, this.actionHash )
+            this.$resource( this.resourceBaseUrl + 'user/updateusers', null, this.actionHash )
                 .query( success, error );
         }
 
         updateSites( success: () => any, error: ( data: any ) => any ): void {
-            this.$resource( 'site/updatesites', null, this.actionHash )
+            this.$resource( this.resourceBaseUrl + 'site/updatesites', null, this.actionHash )
                 .query( success, error );
         }
 
         // SAVE
 
         saveUser( user: IUser, success: ( user: IUser ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'user/saveuser', { 'users': user }, this.actionHash )
+            this.$resource( this.resourceBaseUrl + 'user/saveuser', { 'users': user }, this.actionHash )
                 .query( success, error );
         }
 
         saveSite( site: Models.ISite, success: ( site: Models.ISite ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'site/savesite', { 'site': site }, this.actionHash )
+            this.$resource( this.resourceBaseUrl + 'site/savesite', { 'site': site }, this.actionHash )
                 .query( success, error );
         }
 
         saveGroup( name: string, success: ( group: Models.IGroup ) => any, error: ( data: any ) => any ): void {
-            this.$resource( 'user/savegroup', { 'name': name }, this.actionHash )
+            this.$resource( this.resourceBaseUrl + 'user/savegroup', { 'name': name }, this.actionHash )
                 .query( success, error );
         }
     }
