@@ -8,3 +8,9 @@ obj
 .vs
 /.vs
 *.user
+/ServiceInstalling/*.dll
+/ServiceInstalling/*.xml
+/ServiceInstalling/*.pdb
+/ServiceInstalling/*.config
+/ServiceInstalling/*.manifest
+/ServiceInstalling/*.exe
