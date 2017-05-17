@@ -11,33 +11,55 @@ namespace FtpProxy
 {
     public class FtpProxyWorker
     {
-        private TcpListener _listener;
-        private List<ClientHandler> _activeHandlers;
+        /// <summary>
+        /// Слушатель адресов ipV6
+        /// </summary>
+        private TcpListener _ipV6Listener;
+        /// <summary>
+        /// Слушатель адресов ipV4
+        /// </summary>
+        private TcpListener _ipV4Listener;
 
-        private readonly IPEndPoint _localEndPoint;
+        /// <summary>
+        /// Активные обработчики клиентов ipV4
+        /// </summary>
+        private readonly List<ClientHandler> _activeIpv4Handlers;
+        /// <summary>
+        /// Активные обработчики клиентов ipV6
+        /// </summary>
+        private readonly List<ClientHandler> _activeIpv6Handlers;
+        
+        private readonly IPEndPoint _ipV6LocalEndPoint;
+        private readonly IPEndPoint _ipV4LocalEndPoint;
 
         private bool _listening;
 
-        public FtpProxyWorker( IPAddress ipAddress, int port )
+        public FtpProxyWorker( int port )
         {
-            _localEndPoint = new IPEndPoint( ipAddress, port );
+            _ipV6LocalEndPoint = new IPEndPoint( IPAddress.IPv6Any, port );
+            _ipV4LocalEndPoint = new IPEndPoint( IPAddress.Any, port );
+
+            _activeIpv4Handlers = new List<ClientHandler>();
+            _activeIpv6Handlers = new List<ClientHandler>();
         }
 
         public FtpProxyWorker()
-            : this( IPAddress.Any, 21 )
+            : this( 21 )
         {
         }
         
         public void Start()
         {
-            _listener = new TcpListener( _localEndPoint );
+            _ipV6Listener = new TcpListener( _ipV6LocalEndPoint );
+            _ipV4Listener = new TcpListener( _ipV4LocalEndPoint );
 
             Logger.Log.Info( "Started" );
 
-            _listener.Start();
+            _ipV6Listener.Start();
+            _ipV4Listener.Start();
             _listening = true;
-            _activeHandlers = new List<ClientHandler>();
-            _listener.BeginAcceptTcpClient( HandleAcceptTcpClient, _listener );
+            _ipV6Listener.BeginAcceptTcpClient( HandleAcceptIpv6TcpClient, _ipV6Listener );
+            _ipV4Listener.BeginAcceptTcpClient( HandleAcceptIpv4TcpClient, _ipV4Listener );
         }
 
         public void Stop()
@@ -45,26 +67,49 @@ namespace FtpProxy
             Logger.Log.Info( "Service stoped" );
 
             _listening = false;
-            _listener.Stop();
+            _ipV6Listener.Stop();
+            _ipV4Listener.Stop();
 
-            foreach( ClientHandler activeHandler in _activeHandlers )
+            foreach ( ClientHandler activeHandler in _activeIpv4Handlers )
+            {
+                activeHandler.CloseHandler();
+            }
+
+            foreach ( ClientHandler activeHandler in _activeIpv6Handlers )
             {
                 activeHandler.CloseHandler();
             }
         }
 
-        private void HandleAcceptTcpClient( IAsyncResult result )
+        private void HandleAcceptIpv6TcpClient( IAsyncResult result )
         {
             if ( _listening )
             {
-                _listener.BeginAcceptTcpClient( HandleAcceptTcpClient, _listener );
-                TcpClient client = _listener.EndAcceptTcpClient( result );
+                _ipV6Listener.BeginAcceptTcpClient( HandleAcceptIpv6TcpClient, _ipV6Listener );
+                TcpClient client = _ipV6Listener.EndAcceptTcpClient( result );
 
-                Logger.Log.Error( "Client was connected" );
+                Logger.Log.Info( "Client was connected" );
 
                 Connection connection = new Connection( client );
                 ClientHandler clientHandler = new ClientHandler( connection );
-                _activeHandlers.Add( clientHandler );
+                _activeIpv6Handlers.Add( clientHandler );
+
+                ThreadPool.QueueUserWorkItem( clientHandler.HandleClient );
+            }
+        }
+
+        private void HandleAcceptIpv4TcpClient( IAsyncResult result )
+        {
+            if ( _listening )
+            {
+                _ipV4Listener.BeginAcceptTcpClient( HandleAcceptIpv4TcpClient, _ipV4Listener );
+                TcpClient client = _ipV4Listener.EndAcceptTcpClient( result );
+
+                Logger.Log.Info( "Client was connected" );
+
+                Connection connection = new Connection( client );
+                ClientHandler clientHandler = new ClientHandler( connection );
+                _activeIpv4Handlers.Add( clientHandler );
 
                 ThreadPool.QueueUserWorkItem( clientHandler.HandleClient );
             }

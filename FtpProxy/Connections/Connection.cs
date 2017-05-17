@@ -56,6 +56,8 @@ namespace FtpProxy.Connections
 
         private readonly object _activeStreamLocker = new object();
 
+        public readonly object ConnectionOperationLocker = new object();
+
         public DataConnectionType DataConnectionType { get; set; }
 
         public ConnectionType ConnectionType { get; private set; }

@@ -65,21 +65,26 @@ namespace FtpProxy.Service
         /// <returns>Ответ, сформированный локально или пришедший от удаленного сервера</returns>
         public Command Execute( Command clientCommand )
         {
-            try
+            // выполнение команды лочится до завершения предыдущей в этом соединениии.
+            // ситуация возможно в случае попытки одновременного открытия нескольких соединений данных
+            lock ( _clientConnection.ConnectionOperationLocker )
             {
-                if ( _serverConnection != null && _serverConnection.IsConnected )
+                try
                 {
-                    return ExecuteWithRemouteServer( clientCommand );
+                    if ( _serverConnection != null && _serverConnection.IsConnected )
+                    {
+                        return ExecuteWithRemouteServer( clientCommand );
+                    }
                 }
-            }
-            catch ( Exception e )
-            {
-                _serverConnection = null;
-                Logger.Log.Info( "Erorr executing with remote server", e );
-                return new Command( "451 Локальная ошибка, операция прервана", _clientConnection.Encoding );
-            }
+                catch ( Exception e )
+                {
+                    _serverConnection = null;
+                    Logger.Log.Info( "Erorr executing with remote server", e );
+                    return new Command( "451 Локальная ошибка, операция прервана", _clientConnection.Encoding );
+                }
 
-            return ExecuteAsServer( clientCommand );
+                return ExecuteAsServer( clientCommand ); 
+            }
         }
 
         /// <summary>
@@ -491,57 +496,60 @@ namespace FtpProxy.Service
 
         private void DoDataConnectionOperation( IAsyncResult result )
         {
-            CheckDataConnectionsAccess();
+            lock ( _clientConnection.ConnectionOperationLocker )
+            {
+                CheckDataConnectionsAccess();
 
-            try
-            {
-                PrepareDataConnections( result );
-            }
-            catch ( Exception ex )
-            {
-                Logger.Log.Error( "Error starting data connection operation", ex );
-                return;
-            }
-
-            try
-            {
-                while ( true )
+                try
                 {
-                    if ( _serverDataConnection.DataAvailable )
-                    {
-                        _serverDataConnection.CopyDataTo( _clientDataConnection );
-                        break;
-                    }
-                    if ( _clientDataConnection.DataAvailable )
-                    {
-                        _clientDataConnection.CopyDataTo( _serverDataConnection );
-                        break;
-                    }
-                    Thread.Sleep( 150 );
+                    PrepareDataConnections( result );
                 }
-            }
-            catch ( Exception ex )
-            {
-                Logger.Log.Error( "Data connection closed when copy operation was running", ex );
-            }
+                catch ( Exception ex )
+                {
+                    Logger.Log.Error( "Error starting data connection operation", ex );
+                    return;
+                }
 
-            _serverDataConnection.CloseConnection();
-            Command command = _serverConnection.GetCommand();
-            if ( command != null )
-            {
-                _clientConnection.SendCommand( command );
-            }
-            _clientDataConnection.CloseConnection();
+                try
+                {
+                    // Бесконечный цикл, работает до появления в одном из каналов данных для считывания
+                    // таким образом проверяется направление передачи
+                    while ( true )
+                    {
+                        if ( _serverDataConnection.DataAvailable )
+                        {
+                            _serverDataConnection.CopyDataTo( _clientDataConnection );
+                            break;
+                        }
+                        if ( _clientDataConnection.DataAvailable )
+                        {
+                            _clientDataConnection.CopyDataTo( _serverDataConnection );
+                            break;
+                        }
+                        Thread.Sleep( 150 );
+                    }
+                }
+                catch ( Exception ex )
+                {
+                    Logger.Log.Error( "Data connection closed when copy operation was running", ex );
+                }
 
-            _dataConnectionType = DataConnectionType.None;
-            _serverDataConnection = null;
-            _clientDataConnection = null;
+                _serverDataConnection.CloseConnection();
+                Command command = _serverConnection.GetCommand();
+                if ( command != null )
+                {
+                    _clientConnection.SendCommand( command );
+                }
+                _clientDataConnection.CloseConnection();
+
+                _dataConnectionType = DataConnectionType.None;
+                _serverDataConnection = null;
+                _clientDataConnection = null; 
+            }
         }
 
         private void PrepareDataConnections( IAsyncResult result )
         {
-            CheckDataConnectionsAccess();
-
             if ( _dataConnectionType == DataConnectionType.Active )
             {
                 _serverDataConnection = new Connection( _dataConnectionListener.EndAcceptTcpClient( result ) );
@@ -602,21 +610,6 @@ namespace FtpProxy.Service
                 Logger.Log.Error( "Data connection with remote server was not established (_clientDataConnection)" );
                 throw new MemberAccessException( "Access to data connection obj before initializing" );
             }
-
-            //if ( !_serverDataConnection.IsConnected )
-            //{
-            //    Logger.Log.Error( "Data connection with remote server was not established (not connected) (_serverDataConnection)" );
-            //    throw new MemberAccessException( "Access to data connection obj before setup connection" );
-            //}
-
-            //if ( _dataConnectionType == DataConnectionType.Active
-            //     && _clientDataConnection != null
-            //     && !_clientDataConnection.IsConnected )
-            //{
-            //    Logger.Log.Error(
-            //        "Data connection with remote server was not established  (not connected) (_clientDataConnection)" );
-            //    throw new MemberAccessException( "Access to data connection obj before setup connection" );
-            //}
         }
 
         #endregion

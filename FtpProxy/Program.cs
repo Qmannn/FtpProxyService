@@ -12,7 +12,7 @@ namespace FtpProxy
         {
             Logger.InitLogger();
 
-            _worker = new FtpProxyWorker( IPAddress.IPv6Any, 26000 );
+            _worker = new FtpProxyWorker( 26000 );
             _worker.Start();
         }
 
