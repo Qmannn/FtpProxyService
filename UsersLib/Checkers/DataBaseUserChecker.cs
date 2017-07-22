@@ -65,6 +65,11 @@ namespace UsersLib.Checkers
                 _secureFindersFactory.CreateSiteSecureDataFinder()
                     .FindeSiteSecureData( site.StorageId );
 
+            if( finderResult == null )
+            {
+                return null;
+            }
+
             return new UserCheckerResult(
                 finderResult.UrlAddress,
                 finderResult.Port,

@@ -16,3 +16,5 @@ obj
 /ServiceInstalling/*.exe
 /ServiceInstalling/*.InstallLog
 /ServiceInstalling/*.InstallState
+/ServiceInstalling/*.pfx
+/Proxynet/Properties/PublishProfiles

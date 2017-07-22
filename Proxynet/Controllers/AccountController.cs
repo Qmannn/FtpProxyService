@@ -46,7 +46,7 @@ namespace Proxynet.Controllers
 
                 return RedirectToRoute( "FtpProxy" );
             }
-            ModelState.AddModelError( "", @"Invalid login attempt." );
+            ModelState.AddModelError( "", @"Неверный логин или пароль." );
             return View( model );
         }
 
