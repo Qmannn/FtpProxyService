@@ -12,26 +12,26 @@ namespace Proxynet
         private const string AdminAppDir = "App";
 
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
-        public static void RegisterBundles( BundleCollection bundles )
+        public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add( new ScriptBundle( "~/bundles/jquery" ).Include(
-                "~/Scripts/jquery-{version}.js" ) );
+            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+                "~/Scripts/jquery-{version}.js"));
 
-            bundles.Add( new ScriptBundle( "~/bundles/jqueryval" ).Include(
-                "~/Scripts/jquery.validate*" ) );
+            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+                "~/Scripts/jquery.validate*"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-            bundles.Add( new ScriptBundle( "~/bundles/modernizr" ).Include(
-                "~/Scripts/modernizr-*" ) );
+            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+                "~/Scripts/modernizr-*"));
 
-            bundles.Add( new ScriptBundle( "~/bundles/bootstrap" ).Include(
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                 "~/Scripts/bootstrap.js",
-                "~/Scripts/respond.js" ) );
+                "~/Scripts/respond.js"));
 
-            bundles.Add( new StyleBundle( "~/Content/css" ).Include(
+            bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap.css",
-                "~/Content/site.css" ) );
+                "~/Content/site.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                 "~/Scripts/angular.js",
@@ -39,10 +39,12 @@ namespace Proxynet
                 "~/Scripts/angular-resource.js",
                 "~/Scripts/angular-messages.js"));
 
-            bundles.Add( new ScriptBundle( "~/bundles/lodash" ).Include(
-                "~/Scripts/lodash.min.js" ) );
+            bundles.Add(new ScriptBundle("~/bundles/lodash").Include(
+                "~/Scripts/lodash.min.js"));
 
-            AddApplicationBundles( bundles );
+            bundles.Add(new ScriptBundle("~/bundles/systemjs").Include("~/node_modules/systemjs/dist/system.js"));
+
+            AddApplicationBundles(bundles);
             //BundleTable.VirtualPathProvider = new ScriptBundlePathProvider(HostingEnvironment.VirtualPathProvider);
 
             //BundleTable.EnableOptimizations = true;
@@ -84,27 +86,28 @@ namespace Proxynet
         private static void AddApplicationBundles(BundleCollection bundles)
         {
             var scriptBundle = new ScriptBundle("~/bundles/app");
-            var adminAppDirFullPath = HttpContext.Current.Server.MapPath(string.Format("~/{0}", AdminAppDir));
-            if (Directory.Exists(adminAppDirFullPath))
-            {
-                scriptBundle.Include(
-                        //  Order matters, so get the core app setup first..
-                        //---------------------------------------------------
-                        string.Format("~/{0}/app.module.js", AdminAppDir),
-                        string.Format("~/{0}/app.core.module.js", AdminAppDir))
+            scriptBundle
+                .IncludeDirectory("~/build", "typescript*", false);
+            //var adminAppDirFullPath = HttpContext.Current.Server.MapPath(string.Format("~/{0}", AdminAppDir));
+            //if (Directory.Exists(adminAppDirFullPath))
+            //{
+            //    scriptBundle.Include(
+            //            //  Order matters, so get the core app setup first..
+            //            //---------------------------------------------------
+            //            string.Format("~/{0}/module.js", AdminAppDir))
 
-                    //  then get any other top level js files..
-                    //---------------------------------------------------
-                    .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.js", false)
+            //        //  then get any other top level js files..
+            //        //---------------------------------------------------
+            //        .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.js", false)
 
-                    //  then get all nested module js files..
-                    //---------------------------------------------------
-                    .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.module.js", true)
+            //        //  then get all nested module js files..
+            //        //---------------------------------------------------
+            //        .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.module.js", true)
 
-                    //  finally, get all the other js files
-                    //---------------------------------------------------
-                    .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.js", true);
-            }
+            //        //  finally, get all the other js files
+            //        //---------------------------------------------------
+            //        .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.js", true);
+            //}
             bundles.Add(scriptBundle);
             //bundles.Add(new StyleBundle("~/app-styles").Include(
             //    "~/Content/css/site.css"));

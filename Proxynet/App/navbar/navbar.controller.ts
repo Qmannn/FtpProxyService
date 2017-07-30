@@ -1,56 +1,41 @@
-﻿module app.Navbar {
-    import IPageInfo = app.Services.IPageInfo;
-    "use strict";
+﻿import { IPageInfo, Page, INavigationService } from './../services/app.services.navigation';
 
-    interface INavbar {
-        navigation: Services.INavigationService;
+export class Navbar {
+    private currentPage: Page;
 
-        getPages(): Services.IPageInfo[];
-        setPage(page: Services.Page): void;
-        isCurrentPage(page: Services.Page): boolean;
+    public getPages(): IPageInfo[] {
+        let allPages: IPageInfo[] = this.navigation.getAllPages();
+        let currentPage: Page = this.navigation.getCurrentPage();
+        _.forEach(allPages,
+            (pageInfo: IPageInfo): void => {
+                if (pageInfo.page === currentPage) {
+                    pageInfo.isActive = true;
+                } else {
+                    pageInfo.isActive = false;
+                }
+            });
+
+        return _.filter<IPageInfo>(allPages,
+            (pg): boolean => {
+                return pg.showInBar;
+            });
     }
 
-    class Navbar implements INavbar {
-        currentPage: Services.Page;
-
-        getPages(): Services.IPageInfo[] {
-            var allPages = this.navigation.getAllPages();
-            var currentPage = this.navigation.getCurrentPage();
-            _.forEach( allPages,
-                ( pageInfo: IPageInfo ): void => {
-                    if ( pageInfo.page === currentPage ) {
-                        pageInfo.isActive = true;
-                    } else {
-                        pageInfo.isActive = false;
-                    }
-                } );
-
-            return _.filter<Services.IPageInfo>(allPages,
-                (pg): boolean => {
-                    return pg.showInBar;
-                });
-        }
-
-        setPage(page: Services.Page) {
-            this.navigation.setPage(page);
-            this.currentPage = page;
-        }
-
-        isCurrentPage( page: Services.Page ): boolean {
-            return this.currentPage == page;
-        }
-
-        navigation: Services.INavigationService;
-
-        static $inject = ['app.services.navigation'];
-
-        constructor(navigation: Services.INavigationService) {
-            this.navigation = navigation;
-            this.currentPage = this.navigation.getCurrentPage();
-        }
-
-
+    public setPage(page: Page): void {
+        this.navigation.setPage(page);
+        this.currentPage = page;
     }
 
-    angular.module('app.navbar').controller('app.navbar.Controller', Navbar);
+    public isCurrentPage(page: Page): boolean {
+        return this.currentPage === page;
+    }
+
+    private navigation: INavigationService;
+
+    public static $inject: string[] = ['app.services.navigation'];
+
+    constructor(navigation: INavigationService) {
+        this.navigation = navigation;
+        this.currentPage = this.navigation.getCurrentPage();
+    }
 }

@@ -1,4 +1,4 @@
-{
+var configuration = {
     "rules": {
         "align": [
             false,
@@ -8,16 +8,16 @@
         ],
         "ban": false,
         "class-name": true,
-        "comment-format": [ true, "check-space", "check-uppercase" ],
+        "comment-format": [true, "check-space", "check-uppercase"],
         "curly": true,
         "eofline": false,
         "forin": true,
-        "indent": [ true, 4 ],
+        "indent": [true, 4],
         "interface-name": true,
         "jsdoc-format": true,
         "label-position": true,
         "label-undefined": true,
-        "max-line-length": [ false, 140 ],
+        "max-line-length": [false, 140],
         "member-ordering": [
             false,
             "public-before-private",
@@ -59,11 +59,11 @@
             "check-else",
             "check-whitespace"
         ],
-        "quotemark": [ true, "single" ],
+        "quotemark": [true, "single"],
         "radix": true,
         "semicolon": true,
         "switch-default": true,
-        "triple-equals": [ true, "allow-null-check" ],
+        "triple-equals": [true, "allow-null-check"],
         "typedef": [
             true,
             "call-signature",
@@ -87,7 +87,7 @@
             "check-module",
             "check-function"
         ],
-        "variable-name": [ true, "allow-leading-underscore" ],
+        "variable-name": [true, "allow-leading-underscore"],
         "whitespace": [
             true,
             "check-branch",
@@ -99,4 +99,17 @@
         ],
         "member-access": true
     }
-}
+};
+module.exports = {
+    options: {
+        configuration: configuration,
+        rulesDirectory: 'grunt/tslint/rules/',
+        formatter: 'msbuild'
+    },
+    files: {
+        src: [
+            'App/*.ts',
+            'App/**/*.ts'
+        ]
+    }
+};

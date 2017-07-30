@@ -1,94 +1,83 @@
-﻿module app.PageControllers {
-    'use strict';
+﻿import { IResourceService } from './../services/app.services.resource';
+import { IUser, IGroup } from './../models/user.model';
 
-    import IUser = Models.IUser;
-    import IGroup = Models.IGroup;
-    
-    class UserController {
-        public user: IUser;
-        public allowedToUserGroups: IGroup[];
-        public newGroupName: string;
+export class UserController {
+    public user: IUser;
+    public allowedToUserGroups: IGroup[];
+    public newGroupName: string;
 
-        private allGroups: IGroup[];
-        private resourceService: Services.IResourceService;
+    private allGroups: IGroup[];
+    private resourceService: IResourceService;
 
-        static $inject = ['$routeParams', 'app.services.resource' ];
+    public static $inject: string[] = ['$routeParams', 'app.services.resource'];
 
-        constructor( routeParams: ng.route.IRouteParamsService,
-            resourceService: Services.IResourceService ) {
-            this.resourceService = resourceService;
-            this.allGroups = null;
-            this.user = null;
+    constructor(routeParams: ng.route.IRouteParamsService,
+        resourceService: IResourceService) {
+        this.resourceService = resourceService;
+        this.allGroups = null;
+        this.user = null;
 
-            var self = this;
-            var userId = routeParams[ 'userid' ];
-            this.resourceService.getUser( userId,
-                ( user: IUser ): void => {
-                    self.user = user;
-                },
-                self.onError );
+        var userId: number = routeParams['userid'];
+        this.resourceService.getUser(userId,
+            (user: IUser): void => {
+                this.user = user;
+            },
+            this.onError);
 
-            this.resourceService.getGroups( ( groups: IGroup[] ): void => {
-                    self.allGroups = groups;
-                },
-                self.onError );
-        }
-
-        public getAllowedToUserGroups(): IGroup[] {
-            if ( _.isNull( this.user ) || !_.isArray( this.allGroups ) ) {
-                return <IGroup[]>{};
-            }
-
-            return _.filter( this.allGroups,
-                ( group: IGroup ): boolean => {
-                    return _.isUndefined( _.find( this.user.groups,
-                        ( gr: IGroup ): boolean => {
-                            return gr.id === group.id;
-                        } ) );
-                } );
-        }
-        
-        public addGroup(group: IGroup) {
-            this.user.groups.push( group );
-        }
-
-        public removeGroup( group: IGroup ) {
-            _.remove( this.user.groups,
-                ( gr: IGroup ): boolean => {
-                    return gr.id === group.id;
-                } );
-        }
-
-        public saveUser() {
-            var self = this;
-            this.resourceService.saveUser( this.user,
-                ( user: IUser ): void => {
-                    self.user = user;
-                    self.onSaveSucefull();
-                },
-                self.onError );
-        }
-
-        public addNewGroup(name: string) {
-            var self = this;
-            this.resourceService.saveGroup( name,
-                ( group: Models.IGroup ): void => {
-                    self.allGroups.push( group );
-                },
-                self.onError);
-            this.newGroupName = "";
-        }
-
-        /*--PRIVATE---*/
-
-        private onError( data: any ): void {
-            console.error( data );
-        }
-
-        private onSaveSucefull(): void {
-
-        }
+        this.resourceService.getGroups((groups: IGroup[]): void => {
+            this.allGroups = groups;
+        },
+            this.onError);
     }
 
-    angular.module( 'app.pageControllers' ).controller( 'UserController', UserController );
-}   
+    public getAllowedToUserGroups(): IGroup[] {
+        if (_.isNull(this.user) || !_.isArray(this.allGroups)) {
+            return <IGroup[]>{};
+        }
+
+        return _.filter(this.allGroups,
+            (group: IGroup): boolean => {
+                return _.isUndefined(_.find(this.user.groups,
+                    (gr: IGroup): boolean => {
+                        return gr.id === group.id;
+                    }));
+            });
+    }
+
+    public addGroup(group: IGroup): void {
+        this.user.groups.push(group);
+    }
+
+    public removeGroup(group: IGroup): void {
+        _.remove(this.user.groups,
+            (gr: IGroup): boolean => {
+                return gr.id === group.id;
+            });
+    }
+
+    public saveUser(): void {
+        this.resourceService.saveUser(this.user,
+            (user: IUser): void => {
+                this.user = user;
+                this.onSaveSucefull();
+            }, this.onError);
+    }
+
+    public addNewGroup(name: string): void {
+        this.resourceService.saveGroup(name,
+            (group: IGroup): void => {
+                this.allGroups.push(group);
+            }, this.onError);
+        this.newGroupName = '';
+    }
+
+    /*--PRIVATE---*/
+
+    private onError(data: any): void {
+        console.error(data);
+    }
+
+    private onSaveSucefull(): void {
+
+    }
+}

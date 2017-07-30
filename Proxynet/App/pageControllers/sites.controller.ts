@@ -1,36 +1,29 @@
-﻿module app.PageControllers {
-    'use strict';
-    
-    class SitesController {
-        public sites: Models.ISite[];
+﻿import { IResourceService } from './../services/app.services.resource';
+import { ISite } from './../models/site.model';
 
-        private resourceService: Services.IResourceService;
+'use strict';
 
-        static $inject = ['app.services.resource'];
+export class SitesController {
+    public sites: ISite[];
 
-        constructor( resourceService: Services.IResourceService ) {
-            this.resourceService = resourceService;
-            this.getSites();
-        }
+    private resourceService: IResourceService;
 
-        public updateSites() {
-            var self = this;
-            this.resourceService.updateSites( (): void => {
-                    self.getSites();
-                },
-                ( data: any ): void => {
-                    console.log( data );
-                } );
-        }
+    public static $inject: string[] = ['app.services.resource'];
 
-        public getSites() {
-            var self = this;
-            self.resourceService.getSites( ( sites: Models.ISite[] ): void => {
-                    self.sites = sites;
-                },
-                ( data: any ): void => { console.log( data ); } );
-        }
+    constructor(resourceService: IResourceService) {
+        this.resourceService = resourceService;
+        this.getSites();
     }
 
-    angular.module('app.pageControllers').controller('SitesController', SitesController);
-}   
+    public updateSites(): void {
+        this.resourceService.updateSites((): void => {
+            this.getSites();
+        }, () => undefined);
+    }
+
+    public getSites(): void {
+        this.resourceService.getSites((sites: ISite[]): void => {
+            this.sites = sites;
+        }, () => undefined);
+    }
+}

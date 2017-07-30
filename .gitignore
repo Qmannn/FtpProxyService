@@ -18,3 +18,6 @@ obj
 /ServiceInstalling/*.InstallState
 /ServiceInstalling/*.pfx
 /Proxynet/Properties/PublishProfiles
+/Proxynet/node_modules
+/Proxynet/build
+/Proxynet/.vscode

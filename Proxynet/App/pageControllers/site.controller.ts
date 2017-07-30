@@ -1,90 +1,87 @@
-﻿module app.PageControllers {
-    'use strict';
+﻿import { IResourceService } from '../services/app.services.resource';
+import { ISite } from '../models/site.model';
+import { IGroup } from '../models/user.model';
 
-    class SiteController {
-        public site: Models.ISite;
-        public newGroupName: string;
+export class SiteController {
+    public site: ISite;
+    public newGroupName: string;
 
-        private allGroups: Models.IGroup[];
-        private resourceService: Services.IResourceService;
+    private allGroups: IGroup[];
+    private resourceService: IResourceService;
 
-        static $inject = ['$routeParams', 'app.services.resource'];
+    public push: any;
 
-        constructor( routeParams: ng.route.IRouteParamsService,
-            resourceService: Services.IResourceService ) {
-            this.resourceService = resourceService;
-            this.allGroups = null;
-            this.site = null;
+    public static $inject: string[] = ['$routeParams', 'app.services.resource'];
 
-            var self = this;
-            var siteId = routeParams[ 'siteid' ];
-            this.resourceService.getSite( siteId,
-                ( site: Models.ISite ): void => {
-                    self.site = site;
-                },
-                self.onError );
+    constructor(routeParams: ng.route.IRouteParamsService,
+        resourceService: IResourceService) {
+        this.resourceService = resourceService;
+        this.allGroups = null;
+        this.site = null;
 
-            this.resourceService.getSiteGroups( ( groups: Models.IGroup[] ): void => {
-                    self.allGroups = groups;
-                },
-                self.onError );
-        }
+        var siteId: number = routeParams['siteid'];
+        this.resourceService.getSite(siteId,
+            (site: ISite): void => {
+                this.site = site;
+            },
+            this.onError);
 
-        public getAllowedToSiteGroups(): Models.IGroup[] {
-            if ( _.isNull( this.site ) || !_.isArray( this.allGroups ) ) {
-                return <Models.IGroup[]>{};
-            }
-
-            return _.filter( this.allGroups,
-                ( group: Models.IGroup ): boolean => {
-                    return _.isUndefined( _.find( this.site.groups,
-                        ( gr: Models.IGroup ): boolean => {
-                            return gr.id === group.id;
-                        } ) );
-                } );
-        }
-
-        public addGroup( group: Models.IGroup ) {
-            this.site.groups.push( group );
-        }
-
-        public removeGroup( group: Models.IGroup ) {
-            _.remove( this.site.groups,
-                ( gr: Models.IGroup ): boolean => {
-                    return gr.id === group.id;
-                } );
-        }
-
-        public saveSite() {
-            var self = this;
-            this.resourceService.saveSite( this.site,
-                ( site: Models.ISite ): void => {
-                    self.site = site;
-                    self.onSaveSucefull();
-                },
-                self.onError );
-        }
-
-        public addNewGroup(name: string) {
-            var self = this;
-            this.resourceService.saveGroup(name,
-                (group: Models.IGroup): void => {
-                    self.allGroups.push(group);
-                },
-                self.onError);
-            this.newGroupName = "";
-        }
-
-        /*--PRIVATE---*/
-
-        private onError( data: any ): void {
-            console.error( data );
-        }
-
-        private onSaveSucefull(): void {
-
-        }
+        this.resourceService.getSiteGroups((groups: IGroup[]): void => {
+            this.allGroups = groups;
+        },
+            this.onError);
     }
 
-    angular.module( 'app.pageControllers' ).controller( 'SiteController', SiteController );
+    public getAllowedToSiteGroups(): IGroup[] {
+        if (_.isNull(this.site) || !_.isArray(this.allGroups)) {
+            return <IGroup[]>{};
+        }
+
+        return _.filter(this.allGroups,
+            (group: IGroup): boolean => {
+                return _.isUndefined(_.find(this.site.groups,
+                    (gr: IGroup): boolean => {
+                        return gr.id === group.id;
+                    }));
+            });
+    }
+
+    public addGroup(group: IGroup): void {
+        this.site.groups.push(group);
+    }
+
+    public removeGroup(group: IGroup): void {
+        _.remove(this.site.groups,
+            (gr: IGroup): boolean => {
+                return gr.id === group.id;
+            });
+    }
+
+    public saveSite(): void {
+        this.resourceService.saveSite(this.site,
+            (site: ISite): void => {
+                this.site = site;
+                this.onSaveSucefull();
+            },
+            this.onError);
+    }
+
+    public addNewGroup(name: string): void {
+        this.resourceService.saveGroup(name,
+            (group: IGroup): void => {
+                this.allGroups.push(group);
+            },
+            this.onError);
+        this.newGroupName = '';
+    }
+
+    /*--PRIVATE---*/
+
+    private onError(data: any): void {
+        console.error(data);
+    }
+
+    private onSaveSucefull(): void {
+
+    }
 }

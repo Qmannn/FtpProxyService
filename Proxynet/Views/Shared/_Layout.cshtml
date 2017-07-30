@@ -7,9 +7,10 @@
     <title>@ViewBag.Title - FTP Proxy admin UI</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @(Scripts.Render("~/bundles/systemjs"))
 </head>
 <body>
-    <div class="navbar navbar-default navbar-fixed-top" ng-controller="app.navbar.Controller as ctrl">
+    <div class="navbar navbar-default navbar-fixed-top" ng-controller="NavbarController as ctrl">
         <div class="container">
             @if ( Request.IsAuthenticated )
             {
@@ -36,5 +37,8 @@
     @(Scripts.Render("~/bundles/app"))
     @(Scripts.Render("~/bundles/bootstrap"))
     @(RenderSection("scripts", required: false))
+    <script>
+        System.import('app.module');
+    </script>
 </body>
 </html>

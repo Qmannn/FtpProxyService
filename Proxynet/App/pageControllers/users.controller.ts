@@ -1,60 +1,49 @@
-﻿module app.PageControllers {
-    'use strict';
-    
-    import IUser = Models.IUser;
+﻿import { INavigationService } from './../services/app.services.navigation';
+import { IResourceService } from './../services/app.services.resource';
+import { IUser } from './../models/user.model';
+'use strict';
+class Filter {
+    public login: string;
+    public name: string;
 
-    class Filter {
-        login: string;
-        name: string;
+    constructor() {
+        this.login = '';
+        this.name = '';
+    }
+}
 
-        constructor() {
-            this.login = "";
-            this.name = "";
-        }
+export class UsersController {
+    public users: IUser[];
+
+    public filter: Filter;
+
+    private resourceService: IResourceService;
+
+    public static $inject: string[] = ['app.services.navigation', 'app.services.resource'];
+
+    constructor(nav: INavigationService, resourceService: IResourceService) {
+        this.resourceService = resourceService;
+        this.filter = new Filter();
+        this.getUsers();
     }
 
-    class UsersController {
-        public users: IUser[];
-
-        public filter: Filter;
-
-        private resourceService: Services.IResourceService;
-
-        static $inject = ['app.services.navigation', 'app.services.resource'];
-
-        constructor(nav: Services.INavigationService, resourceService: Services.IResourceService) {
-            this.resourceService = resourceService;
-            this.filter = new Filter();
+    public updateUsers(): void {
+        this.resourceService.updateUsers((): void => {
             this.getUsers();
-        }
-
-        public updateUsers() {
-            var self = this;
-            this.resourceService.updateUsers( (): void => {
-                    self.getUsers();
-                },
-                ( data: any ): void => {
-                    console.log( data );
-                } );
-        }
-
-        private getUsers() {
-
-            var self = this;
-            this.resourceService.getUsers( ( users: IUser[] ): void => {
-                    self.users = users;
-                },
-                ( data: any ): void => { console.log( data ); } );
-        }
-
-        public getFilteredUsers() : Models.IUser[] {
-            return _.filter( this.users,
-                ( user: IUser ): boolean => {
-                    return user.login.toUpperCase().indexOf( this.filter.login.toUpperCase() ) >= 0 ||
-                        this.filter.login === "";
-                } );
-        }
+        }, () => undefined);
     }
 
-    angular.module('app.pageControllers').controller('UsersController', UsersController);
-}   
+    private getUsers(): void {
+        this.resourceService.getUsers((users: IUser[]): void => {
+            this.users = users;
+        }, () => undefined);
+    }
+
+    public getFilteredUsers(): IUser[] {
+        return _.filter(this.users,
+            (user: IUser): boolean => {
+                return user.login.toUpperCase().indexOf(this.filter.login.toUpperCase()) >= 0 ||
+                    this.filter.login === '';
+            });
+    }
+}
