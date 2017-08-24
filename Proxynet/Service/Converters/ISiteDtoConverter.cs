@@ -9,6 +9,8 @@ namespace Proxynet.Service.Converters
         SiteDto Convert( Site site );
         Site Convert( SiteDto site );
 
+        Site ConvertFromCreateData(SiteToSaveDto siteData);
+
         List<SiteDto> Convert( List<Site> sites );
 
         List<SiteDto> ConvertFromSitesWithGroups( Dictionary<Site, List<Group>> users );

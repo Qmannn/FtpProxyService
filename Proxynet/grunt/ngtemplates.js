@@ -1,8 +1,8 @@
 module.exports = {
-  tlApp: {
+  app: {
     files: {
-      '.tmp/templates.js': [
-        ['src/pages/**/*.html', 'src/pages/**/*.tlui.xml']
+      'build/templates.js': [
+        ['App/Pages/**/*.html']
       ]
     }
   }

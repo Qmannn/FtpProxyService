@@ -15,6 +15,11 @@ namespace UsersLib.Entity
             SiteKey = dbSite.SiteKey;
             Description = dbSite.Description;
             StorageId = dbSite.StorageId;
+            Name = dbSite.Name;
+            Address = dbSite.Address;
+            Port = dbSite.Port;
+            Login = dbSite.Login;
+            Password = dbSite.Password;
         }
 
         public int Id { get; set; }
@@ -25,6 +30,16 @@ namespace UsersLib.Entity
 
         public string Description { get; set; }
 
+        public string Name { get; set; }
+
+        public string Address { get; set; }
+
+        public int Port { get; set; }
+
+        public string Login { get; set; }
+
+        public string Password { get; set; }
+
         public DbSite ConvertToDbSite()
         {
             return new DbSite
@@ -32,7 +47,12 @@ namespace UsersLib.Entity
                 SiteId = Id,
                 Description = Description,
                 SiteKey = SiteKey,
-                StorageId = StorageId
+                StorageId = StorageId,
+                Name = Name,
+                Address = Address,
+                Port = Port,
+                Login = Login,
+                Password = Password
             };
         }
     }

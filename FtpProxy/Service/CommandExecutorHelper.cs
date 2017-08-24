@@ -17,7 +17,7 @@ namespace FtpProxy.Service
         /// </summary>
         /// <param name="clientCommand"></param>
         /// <returns></returns>
-        public Connection GetActiveDataConnection( Command clientCommand )
+        public Connection GetActiveDataConnection(IFtpMessage clientCommand )
         {
             switch ( clientCommand.CommandName )
             {
@@ -35,7 +35,7 @@ namespace FtpProxy.Service
         /// </summary>
         /// <param name="serverResponce">Ответ сервера на команда PASV</param>
         /// <returns>Соединение</returns>
-        public Connection GetPasvDataConnection( Command serverResponce )
+        public Connection GetPasvDataConnection(IFtpMessage serverResponce )
         {
             Match pasvInfo = Regex.Match( serverResponce.Args,
                 @"(?<quad1>\d+),(?<quad2>\d+),(?<quad3>\d+),(?<quad4>\d+),(?<port1>\d+),(?<port2>\d+)" );
@@ -65,7 +65,7 @@ namespace FtpProxy.Service
         /// <param name="serverResponce">Ответ сервера на команду EPSV</param>
         /// <param name="serverIpAddress">IpAddress соединения с сервером</param>
         /// <returns></returns>
-        public Connection GetEpsvDataConnection( Command serverResponce, IPAddress serverIpAddress )
+        public Connection GetEpsvDataConnection(IFtpMessage serverResponce, IPAddress serverIpAddress )
         {
             Match epsvInfo = Regex.Match( serverResponce.Args,
                 @"\(\|\|\|(?<port>\d+)\|\)" );
@@ -85,7 +85,7 @@ namespace FtpProxy.Service
 
         #region Private
 
-        private Connection GetPortDataConnetion( Command clientCommand )
+        private Connection GetPortDataConnetion(IFtpMessage clientCommand )
         {
             Match portInfo = Regex.Match( clientCommand.Args,
                 @"(?<quad1>\d+),(?<quad2>\d+),(?<quad3>\d+),(?<quad4>\d+),(?<port1>\d+),(?<port2>\d+)" );
@@ -103,7 +103,7 @@ namespace FtpProxy.Service
             return new Connection( new IPAddress( host ), port );
         }
 
-        private Connection GetEprtDataConnection( Command clientCommand )
+        private Connection GetEprtDataConnection(IFtpMessage clientCommand )
         {
             string hostPort = clientCommand.Args;
 

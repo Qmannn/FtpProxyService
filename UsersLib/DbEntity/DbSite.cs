@@ -16,6 +16,16 @@ namespace UsersLib.DbEntity
 
         public virtual string Description { get; set; }
 
+        public virtual string Name { get; set; }
+
+        public virtual string Address { get; set; }
+
+        public virtual int Port { get; set; }
+
+        public virtual string Login { get; set; }
+
+        public virtual string Password { get; set; }
+
         public virtual ICollection<DbGroup> Groups { get; set; }
     }
 }

@@ -4,6 +4,6 @@ export module AppConfig {
     }
 
     export function RouteBaseUrl(): string {
-        return AppBaseUrl() + 'FtpProxy/';
+        return 'App/Pages';
     }
 }

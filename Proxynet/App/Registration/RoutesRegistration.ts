@@ -4,32 +4,41 @@ import { AppConfig } from '../AppConfig';
 export class RoutesRegistrator extends RegistratorBase {
     public register(): void {
         this._angular.module('app.routes').config(['$routeProvider', this.setRoutes]);
+        this._angular.module('app').config(['$locationProvider', this.setLocationSettings]);
     }
 
     private setRoutes($routeProvider: ng.route.IRouteProvider): void {
-        const baseUrl: string = AppConfig.RouteBaseUrl();
-        const templateBaseUrl: string = AppConfig.AppBaseUrl();
+        const baseUrl: string = AppConfig.AppBaseUrl();
+        const templateBaseUrl: string = AppConfig.RouteBaseUrl();
         $routeProvider
             .when(baseUrl,
             {
-                templateUrl: templateBaseUrl + 'Pages/Users'
+                redirectTo: baseUrl + 'users'
             })
             .when(baseUrl + 'users',
             {
-                templateUrl: templateBaseUrl + 'Pages/Users'
+                templateUrl: templateBaseUrl + '/Users/Users.html'
             })
             .when(baseUrl + 'user/:userid',
             {
-                templateUrl: templateBaseUrl + 'Pages/UserEdit'
+                templateUrl: templateBaseUrl + '/UserEdit/UserEdit.html'
             })
             .when(baseUrl + 'sites',
             {
-                templateUrl: templateBaseUrl + 'Pages/Sites'
+                templateUrl: templateBaseUrl + '/Sites/Sites.html'
             })
             .when(baseUrl + 'site/:siteid',
             {
-                templateUrl: templateBaseUrl + 'Pages/SiteEdit'
+                templateUrl: templateBaseUrl + '/SiteEdit/SiteEdit.html'
             })
-            .otherwise({ templateUrl: baseUrl });
+            .when(baseUrl + 'Account/Login', {
+                template: ''
+            })
+            .otherwise({ redirectTo: baseUrl + 'users' });
+    }
+
+    private setLocationSettings($locationProvider: ng.ILocationProvider): void {
+        $locationProvider.html5Mode(false);
+        $locationProvider.hashPrefix('');
     }
 }

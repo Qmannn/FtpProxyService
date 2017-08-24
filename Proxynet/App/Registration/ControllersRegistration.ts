@@ -1,9 +1,9 @@
+import { UsersController } from './../Pages/Users/UsersController';
+import { UserController } from './../Pages/UserEdit/UserEditController';
+import { SitesController } from './../Pages/Sites/SitesController';
+import { SiteController } from './../Pages/SiteEdit/SiteEditController';
+import { Navbar } from './../Pages/NavigationBar/NavigationController';
 import { RegistratorBase } from './RegistratorBase';
-import { UsersController } from './../pageControllers/users.controller';
-import { UserController } from './../pageControllers/user.controller';
-import { SitesController } from './../pageControllers/sites.controller';
-import { SiteController } from './../pageControllers/site.controller';
-import { Navbar } from './../navbar/navbar.controller';
 
 export class ControllersRegistrator extends RegistratorBase {
     public register(): void {

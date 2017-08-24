@@ -31,17 +31,17 @@ namespace FtpProxy.Service.Handlers
 
             try
             {
-                Command clientCommand;
-                while ( ( clientCommand = _clientConnection.GetCommand() ) != null )
+                IFtpMessage clientCommand;
+                while ( ( clientCommand = _clientConnection.GetMessage() ) != null )
                 {
-                    Command serverCommand = _commandExecutor.Execute( clientCommand );
+                    IFtpMessage serverCommand = _commandExecutor.Execute( clientCommand );
 
                     if ( serverCommand == null )
                     {
                         continue;
                     }
 
-                    _clientConnection.SendCommand( serverCommand );
+                    _clientConnection.SendMessage( serverCommand );
                     if ( clientCommand.CommandName == ProcessingClientCommand.Quit )
                     {
                         Logger.Log.Info( "Client disconnected" );

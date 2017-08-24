@@ -36,9 +36,10 @@
     @(Scripts.Render("~/bundles/lodash"))
     @(Scripts.Render("~/bundles/app"))
     @(Scripts.Render("~/bundles/bootstrap"))
-    @(RenderSection("scripts", required: false))
+    @(RenderSection("scripts", false))
     <script>
         System.import('app.module');
     </script>
+    @(Scripts.Render("~/bundles/templates"))
 </body>
 </html>

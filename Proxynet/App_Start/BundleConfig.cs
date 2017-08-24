@@ -9,9 +9,6 @@ namespace Proxynet
     [ExcludeFromCodeCoverage]
     public class BundleConfig
     {
-        private const string AdminAppDir = "App";
-
-        // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
@@ -45,9 +42,6 @@ namespace Proxynet
             bundles.Add(new ScriptBundle("~/bundles/systemjs").Include("~/node_modules/systemjs/dist/system.js"));
 
             AddApplicationBundles(bundles);
-            //BundleTable.VirtualPathProvider = new ScriptBundlePathProvider(HostingEnvironment.VirtualPathProvider);
-
-            //BundleTable.EnableOptimizations = true;
         }
 
         #region  ///  ScriptBundlePathProvider  ///
@@ -81,37 +75,16 @@ namespace Proxynet
             }
         }
         #endregion
-
-        #region  ///  AddApplicationBundles  ///
+        
         private static void AddApplicationBundles(BundleCollection bundles)
         {
             var scriptBundle = new ScriptBundle("~/bundles/app");
-            scriptBundle
-                .IncludeDirectory("~/build", "typescript*", false);
-            //var adminAppDirFullPath = HttpContext.Current.Server.MapPath(string.Format("~/{0}", AdminAppDir));
-            //if (Directory.Exists(adminAppDirFullPath))
-            //{
-            //    scriptBundle.Include(
-            //            //  Order matters, so get the core app setup first..
-            //            //---------------------------------------------------
-            //            string.Format("~/{0}/module.js", AdminAppDir))
-
-            //        //  then get any other top level js files..
-            //        //---------------------------------------------------
-            //        .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.js", false)
-
-            //        //  then get all nested module js files..
-            //        //---------------------------------------------------
-            //        .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.module.js", true)
-
-            //        //  finally, get all the other js files
-            //        //---------------------------------------------------
-            //        .IncludeDirectory(string.Format("~/{0}", AdminAppDir), "*.js", true);
-            //}
+            scriptBundle.IncludeDirectory("~/build", "typescript*", false);
             bundles.Add(scriptBundle);
-            //bundles.Add(new StyleBundle("~/app-styles").Include(
-            //    "~/Content/css/site.css"));
+
+            var pagesBundle = new ScriptBundle("~/bundles/templates");
+            pagesBundle.IncludeDirectory("~/build", "templates*", false);
+            bundles.Add(pagesBundle);
         }
-        #endregion
     }
 }

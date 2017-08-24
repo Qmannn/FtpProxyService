@@ -63,7 +63,7 @@ namespace FtpProxy.Service
         /// </summary>
         /// <param name="clientCommand">Команда к выполнению</param>
         /// <returns>Ответ, сформированный локально или пришедший от удаленного сервера</returns>
-        public Command Execute( Command clientCommand )
+        public IFtpMessage Execute(IFtpMessage clientCommand )
         {
             // выполнение команды лочится до завершения предыдущей в этом соединениии.
             // ситуация возможно в случае попытки одновременного открытия нескольких соединений данных
@@ -80,7 +80,7 @@ namespace FtpProxy.Service
                 {
                     _serverConnection = null;
                     Logger.Log.Info( "Erorr executing with remote server", e );
-                    return new Command( "451 Локальная ошибка, операция прервана", _clientConnection.Encoding );
+                    return new FtpMessage( "451 Локальная ошибка, операция прервана", _clientConnection.Encoding );
                 }
 
                 return ExecuteAsServer( clientCommand ); 
@@ -93,7 +93,7 @@ namespace FtpProxy.Service
         /// </summary>
         /// <param name="clientCommand"></param>
         /// <returns></returns>
-        private Command ExecuteWithRemouteServer( Command clientCommand )
+        private IFtpMessage ExecuteWithRemouteServer(IFtpMessage clientCommand )
         {
             // команды, требующие особой обработки (открытие режимов передачи данных)
             switch ( clientCommand.CommandName )
@@ -107,8 +107,8 @@ namespace FtpProxy.Service
             }
 
             // отправка команд на удаленный сервер
-            _serverConnection.SendCommand( clientCommand );
-            var serverCommand = _serverConnection.GetCommand();
+            _serverConnection.SendMessage( clientCommand );
+            var serverCommand = _serverConnection.GetMessage();
 
             // обработка ответа сервера
             switch ( serverCommand.CommandType )
@@ -120,8 +120,8 @@ namespace FtpProxy.Service
                     }
                     else
                     {
-                        _clientConnection.SendCommand( serverCommand );
-                        serverCommand = _serverConnection.GetCommand();
+                        _clientConnection.SendMessage( serverCommand );
+                        serverCommand = _serverConnection.GetMessage();
                     }
                     break;
             }
@@ -129,8 +129,8 @@ namespace FtpProxy.Service
             switch ( clientCommand.CommandName )
             {
                 case ProcessingClientCommand.Auth:
-                    Command clientResponce = Auth( clientCommand );
-                    _clientConnection.SendCommand( clientResponce );
+                    FtpMessage clientResponce = Auth( clientCommand );
+                    _clientConnection.SendMessage( clientResponce );
                     _clientConnection.SetUpSecureConnectionAsServer();
                     if ( serverCommand.CommandType != ServerCommandType.Error )
                     {
@@ -154,16 +154,16 @@ namespace FtpProxy.Service
         /// </summary>
         /// <param name="clientCommand">Команда к выполнению</param>
         /// <returns>Команда для отправки клиенту</returns>
-        private Command ExecuteAsServer( Command clientCommand )
+        private FtpMessage ExecuteAsServer(IFtpMessage clientCommand )
         {
-            Command asServerCommand;
+            FtpMessage asServerCommand;
             try
             {
                 switch ( clientCommand.CommandName )
                 {
                     case ProcessingClientCommand.Auth:
                         asServerCommand = Auth( clientCommand );
-                        _clientConnection.SendCommand( asServerCommand );
+                        _clientConnection.SendMessage( asServerCommand );
                         _clientConnection.SetUpSecureConnectionAsServer();
                         asServerCommand = null;
                         break;
@@ -174,7 +174,7 @@ namespace FtpProxy.Service
                         asServerCommand = Pass( clientCommand );
                         break;
                     default:
-                        asServerCommand = new Command( "530 Please login with USER and PASS.",
+                        asServerCommand = new FtpMessage( "530 Please login with USER and PASS.",
                             _clientConnection.Encoding );
                         break;
                 }
@@ -182,7 +182,7 @@ namespace FtpProxy.Service
             catch ( ArgumentException )
             {
                 Logger.Log.Error( String.Format( "Invalid USER command: {0}", clientCommand.Args ) );
-                asServerCommand = new Command( "504 invalid command", _clientConnection.Encoding );
+                asServerCommand = new FtpMessage( "504 invalid command", _clientConnection.Encoding );
             }
             return asServerCommand;
         }
@@ -206,9 +206,9 @@ namespace FtpProxy.Service
         
         #region FTP Commands
 
-        private Command User( Command clientCommand )
+        private FtpMessage User(IFtpMessage clientCommand )
         {
-            Command responce = new Command( "331 Password required",
+            FtpMessage responce = new FtpMessage( "331 Password required",
                 _clientConnection.Encoding );
 
             _clientConnection.UserChanged = true;
@@ -221,9 +221,9 @@ namespace FtpProxy.Service
             return responce;
         }
 
-        private Command Pass( Command clientCommand )
+        private FtpMessage Pass(IFtpMessage clientCommand )
         {
-            Command responce = new Command( "230 успешная авторизация", _clientConnection.Encoding );
+            FtpMessage responce = new FtpMessage( "230 успешная авторизация", _clientConnection.Encoding );
 
             _clientConnection.ConnectionData[ ConnectionDataType.Pass ] =
                 _argsResolver.ResolvePassword( clientCommand.Args );
@@ -232,7 +232,7 @@ namespace FtpProxy.Service
                  || !_clientConnection.ConnectionData.ContainsKey( ConnectionDataType.Pass )
                  || !_clientConnection.ConnectionData.ContainsKey( ConnectionDataType.RemoteSiteIdentifier ) )
             {
-                return new Command( "503 неверная последовательность команд", _clientConnection.Encoding );
+                return new FtpMessage( "503 неверная последовательность команд", _clientConnection.Encoding );
             }
 
             IUserChecker userChecker = CheckersFactory.CreateUserChecker();
@@ -242,7 +242,7 @@ namespace FtpProxy.Service
 
             if ( checkerResult == null )
             {
-                return new Command( "530 Неверная комбинация логин-пароль", _clientConnection.Encoding );
+                return new FtpMessage( "530 Неверная комбинация логин-пароль", _clientConnection.Encoding );
             }
 
             ServerConnectionBuilder connectionBuilder = new ServerConnectionBuilder(
@@ -258,7 +258,7 @@ namespace FtpProxy.Service
             catch ( Exception e )
             {
                 Logger.Log.Error( String.Format( "BuildRemoteConnection: {0}", e.Message ) );
-                return new Command( "434 удаленный сервер недоступен", _clientConnection.Encoding );
+                return new FtpMessage( "434 удаленный сервер недоступен", _clientConnection.Encoding );
             }
 
             try
@@ -278,25 +278,24 @@ namespace FtpProxy.Service
             catch( Exception e )
             {
                 Logger.Log.Error( String.Format( "BuildUserPass: {0}", e.Message ) );
-                return new Command( "425 некорректные данные для подключения к удаленному серверу. Обратитесь к администратру", _clientConnection.Encoding );
+                return new FtpMessage( "425 некорректные данные для подключения к удаленному серверу. Обратитесь к администратру", _clientConnection.Encoding );
             }
 
             _serverConnection = connectionBuilder.GetResult();
             _serverConnection.ConnectionClosed += Close;
-
             return responce;
         }
 
-        private Command Auth( Command clientCommand )
+        private FtpMessage Auth(IFtpMessage clientCommand )
         {
             if ( !clientCommand.Args.StartsWith( "TLS" ) )
             {
-                return new Command( "504 поддерживается только TLS протокол", _clientConnection.Encoding );
+                return new FtpMessage( "504 поддерживается только TLS протокол", _clientConnection.Encoding );
             }
-            return new Command( "234 открытие TLS соединения", _clientConnection.Encoding );
+            return new FtpMessage( "234 открытие TLS соединения", _clientConnection.Encoding );
         }
 
-        private Command Prot( Command clientCommand, Command serverResponce )
+        private IFtpMessage Prot( IFtpMessage clientCommand, IFtpMessage serverResponce )
         {
             if ( clientCommand.Args.StartsWith( "P" ) )
             {
@@ -305,7 +304,7 @@ namespace FtpProxy.Service
                 {
                     _serverConnection.DataEncryptionEnabled = true;
                 }
-                return new Command( "200 канал данных успешно защищен", _serverConnection.Encoding );
+                return new FtpMessage( "200 канал данных успешно защищен", _serverConnection.Encoding );
             }
             if ( clientCommand.Args.StartsWith( "C" ) )
             {
@@ -313,50 +312,50 @@ namespace FtpProxy.Service
                 _serverConnection.DataEncryptionEnabled = false;
                 if ( serverResponce.CommandType == ServerCommandType.Success )
                 {
-                    return new Command( "200 защита канала данных не активна", _serverConnection.Encoding );
+                    return new FtpMessage( "200 защита канала данных не активна", _serverConnection.Encoding );
                 }
             }
-            return new Command( "501 команда не распознана", _serverConnection.Encoding );
+            return new FtpMessage( "501 команда не распознана", _serverConnection.Encoding );
         }
 
-        private Command Pbsz( Command clientCommand )
+        private FtpMessage Pbsz(IFtpMessage clientCommand )
         {
             if ( clientCommand.Args != "0" )
             {
-                return new Command( "501 Server cannot accept argument", _clientConnection.Encoding );
+                return new FtpMessage( "501 Server cannot accept argument", _clientConnection.Encoding );
             }
 
-            return new Command( "200 PBSZ command successful", _clientConnection.Encoding );
+            return new FtpMessage( "200 PBSZ command successful", _clientConnection.Encoding );
         }
 
         #endregion FTPCommands
 
         #region DstsConnectionPreparing
 
-        private Command PassiveDataConnection( Command clientCommand )
+        private IFtpMessage PassiveDataConnection(IFtpMessage clientCommand )
         {
             _dataConnectionType = DataConnectionType.Passive;
 
-            List<Command> commandQueue = new List<Command>();
+            List<FtpMessage> commandQueue = new List<FtpMessage>();
 
             if ( clientCommand.CommandName == ProcessingClientCommand.Pasv )
             {
-                commandQueue.Add( new Command( ProcessingClientCommand.Pasv, _serverConnection.Encoding ) );
-                commandQueue.Add( new Command( ProcessingClientCommand.Epsv, _serverConnection.Encoding ) );
+                commandQueue.Add( new FtpMessage( ProcessingClientCommand.Pasv, _serverConnection.Encoding ) );
+                commandQueue.Add( new FtpMessage( ProcessingClientCommand.Epsv, _serverConnection.Encoding ) );
             }
             else
             {
-                commandQueue.Add( new Command( ProcessingClientCommand.Epsv, _serverConnection.Encoding ) );
-                commandQueue.Add( new Command( ProcessingClientCommand.Pasv, _serverConnection.Encoding ) );
+                commandQueue.Add( new FtpMessage( ProcessingClientCommand.Epsv, _serverConnection.Encoding ) );
+                commandQueue.Add( new FtpMessage( ProcessingClientCommand.Pasv, _serverConnection.Encoding ) );
             }
 
             string dataConnectionVersion = String.Empty;
 
-            Command serverResponce = null;
-            foreach ( Command command in commandQueue )
+            IFtpMessage serverResponce = null;
+            foreach ( FtpMessage command in commandQueue )
             {
-                _serverConnection.SendCommand( command );
-                serverResponce = _serverConnection.GetCommand();
+                _serverConnection.SendMessage( command );
+                serverResponce = _serverConnection.GetMessage();
                 if ( serverResponce.CommandType == ServerCommandType.Success )
                 {
                     dataConnectionVersion = command.CommandName;
@@ -368,7 +367,7 @@ namespace FtpProxy.Service
             // обычному или расширенному - говорим клиенту, что соединение открыть с этим режимом нельзя
             if ( String.IsNullOrEmpty( dataConnectionVersion ) )
             {
-                return new Command( "451 can't open data connection", _clientConnection.Encoding );
+                return new FtpMessage( "451 can't open data connection", _clientConnection.Encoding );
             }
 
             _serverDataConnection = dataConnectionVersion == ProcessingClientCommand.Pasv
@@ -382,9 +381,9 @@ namespace FtpProxy.Service
 
                 // Останавливаем на сервере ожидание подключения, т.к. не удалось получить адрес
                 _serverConnection.SendCommand( "ABOR can't parse pasv address" );
-                _serverConnection.GetCommand();
+                _serverConnection.GetMessage();
 
-                return new Command( "451 can't open passive mode", _clientConnection.Encoding );
+                return new FtpMessage( "451 can't open passive mode", _clientConnection.Encoding );
             }
 
             // Открываем соединение данных с сервером
@@ -400,7 +399,7 @@ namespace FtpProxy.Service
             // от того, какой установлен с сервером, иначе соединение будет оборвано клиентом
             if ( clientCommand.CommandName == ProcessingClientCommand.Epsv )
             {
-                return new Command(
+                return new FtpMessage(
                     String.Format( "229 Entering Extended Passive Mode (|||{0}|)", passiveListenerEndpoint.Port ),
                     _clientConnection.Encoding );
             }
@@ -413,13 +412,13 @@ namespace FtpProxy.Service
             if ( BitConverter.IsLittleEndian )
                 Array.Reverse( clientPortArray );
 
-            return new Command(
+            return new FtpMessage(
                 String.Format( "227 Entering Passive Mode ({0},{1},{2},{3},{4},{5})", address[ 0 ], address[ 1 ],
                     address[ 2 ], address[ 3 ], clientPortArray[ 0 ], clientPortArray[ 1 ] ),
                 _clientConnection.Encoding );
         }
 
-        private Command ActiveDataConnection( Command clientCommand )
+        private FtpMessage ActiveDataConnection(IFtpMessage clientCommand )
         {
             _dataConnectionType = DataConnectionType.Active;
 
@@ -451,19 +450,19 @@ namespace FtpProxy.Service
             }
 
             // созданы команды для двух типов подключения чтобы в случае когда сервер не поддерживает одну из них - использовать вторую
-            Command portCommand = new Command(
+            FtpMessage portCommand = new FtpMessage(
                 String.Format( "PORT {0},{1},{2},{3},{4},{5}", address[ 0 ], address[ 1 ],
                     address[ 2 ], address[ 3 ], clientPortArray[ 0 ], clientPortArray[ 1 ] ),
                 _serverConnection.Encoding );
 
-            Command eprtCommand = new Command(
+            FtpMessage eprtCommand = new FtpMessage(
                 String.Format( "EPRT |{0}|{1}|{2}|", ipver, passiveListenerEndpoint.Address,
                     passiveListenerEndpoint.Port ), _serverConnection.Encoding );
 
-            Command successfulResponce = new Command(
+            FtpMessage successfulResponce = new FtpMessage(
                 String.Format( "200 {0} command successful", clientCommand.CommandName ), _clientConnection.Encoding );
 
-            List<Command> commandsQueue = new List<Command>();
+            List<FtpMessage> commandsQueue = new List<FtpMessage>();
 
             if ( clientCommand.CommandName == ProcessingClientCommand.Port )
             {
@@ -476,10 +475,10 @@ namespace FtpProxy.Service
                 commandsQueue.Add( portCommand );
             }
 
-            foreach ( Command command in commandsQueue )
+            foreach ( FtpMessage command in commandsQueue )
             {
-                _serverConnection.SendCommand( command );
-                Command serverResponse = _serverConnection.GetCommand();
+                _serverConnection.SendMessage( command );
+                IFtpMessage serverResponse = _serverConnection.GetMessage();
 
                 if ( serverResponse.CommandType != ServerCommandType.Error )
                 {
@@ -487,7 +486,8 @@ namespace FtpProxy.Service
                 }
             }
 
-            return new Command( "451 can't open data connection", _clientConnection.Encoding );
+            _dataConnectionListener.Stop();
+            return new FtpMessage( "451 can't open data connection", _clientConnection.Encoding );
         } 
 
         #endregion
@@ -535,10 +535,10 @@ namespace FtpProxy.Service
                 }
 
                 _serverDataConnection.CloseConnection();
-                Command command = _serverConnection.GetCommand();
+                IFtpMessage command = _serverConnection.GetMessage();
                 if ( command != null )
                 {
-                    _clientConnection.SendCommand( command );
+                    _clientConnection.SendMessage( command );
                 }
                 _clientDataConnection.CloseConnection();
 

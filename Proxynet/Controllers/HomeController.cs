@@ -6,12 +6,12 @@ using System.Web.Mvc;
 
 namespace Proxynet.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        // GET: Home
         public ActionResult Index()
         {
-            return RedirectToRoute( "FtpProxy" );
+            return View();
         }
     }
 }

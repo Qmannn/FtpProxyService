@@ -1,0 +1,49 @@
+<div ng-controller="UsersController as ctrl">
+    <div class="row">
+        <div class="col-lg-10">
+            <h2>Пользователи</h2>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-primary" ng-click="ctrl.updateUsers()">Синхронизировать</button>
+        </div>
+    </div>
+    <table class="table">
+        <tr>
+            <th class="col-lg-3">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        <label for="login">Логин</label>
+                    </div>  
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" placeholder="Логин" id="login" ng-model="ctrl.filter.login" />
+                    </div>
+                </div>
+            </th>
+            <th class="col-lg-3">Имя</th>
+            <th>Группы</th>
+            <th class="col-lg-2">
+                Дейтсвия
+            </th>
+        </tr>
+        <tr ng-repeat="user in ctrl.getFilteredUsers()">
+            <td class="left center-block">{{user.login}}</td>
+            <td>{{user.name}}</td>
+            <td>
+                <div>
+                    <button data-target="#groups-spoiler-{{user.id}}" class="btn-link" data-toggle="collapse">Показать</button>
+                    <div class="collapse" id="groups-spoiler-{{user.id}}">
+                        <div class="well">
+                            <ul>
+                                <li ng-repeat="group in user.groups">{{group.name}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <a href="secure/FtpProxy/user/{{user.id}}" class="btn btn-default">Изменить</a>
+            </td>
+        </tr>
+    </table>
+</div>
+

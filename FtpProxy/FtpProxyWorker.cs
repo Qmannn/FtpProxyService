@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using FtpProxy.Connections;
+using FtpProxy.Core;
 using FtpProxy.Log;
 using FtpProxy.Service.Handlers;
 
@@ -91,10 +92,12 @@ namespace FtpProxy
                 Logger.Log.Info( "Client was connected" );
 
                 Connection connection = new Connection( client );
+                Executor executor = new Executor(connection);
+
                 ClientHandler clientHandler = new ClientHandler( connection );
                 _activeIpv6Handlers.Add( clientHandler );
 
-                ThreadPool.QueueUserWorkItem( clientHandler.HandleClient );
+                ThreadPool.QueueUserWorkItem(executor.StartExecuting);
             }
         }
 
@@ -108,10 +111,11 @@ namespace FtpProxy
                 Logger.Log.Info( "Client was connected" );
 
                 Connection connection = new Connection( client );
+                Executor executor = new Executor(connection);
                 ClientHandler clientHandler = new ClientHandler( connection );
                 _activeIpv4Handlers.Add( clientHandler );
 
-                ThreadPool.QueueUserWorkItem( clientHandler.HandleClient );
+                ThreadPool.QueueUserWorkItem(executor.StartExecuting);
             }
         }
     }

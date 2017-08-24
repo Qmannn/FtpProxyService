@@ -25,7 +25,7 @@ namespace FtpProxy.Service.Builders
         {
             _connection.Connect();
 
-            Command recivedCommand = _connection.GetCommand();
+            IFtpMessage recivedCommand = _connection.GetMessage();
 
             // Если сервер вернул не код подтверждения подключения
             if( recivedCommand.CommandName != "220" )
@@ -40,7 +40,7 @@ namespace FtpProxy.Service.Builders
         {
             _connection.SendCommand( "AUTH TLS" );
 
-            Command recivedCommand = _connection.GetCommand();
+            IFtpMessage recivedCommand = _connection.GetMessage();
 
             // Если сервер вернул не код подтверждения установки соединения - соединение не установлено
             if( recivedCommand.CommandName != "234" )
@@ -55,9 +55,9 @@ namespace FtpProxy.Service.Builders
 
         public ServerConnectionBuilder BuildUser()
         {
-            _connection.SendCommand( new Command( String.Format( "USER {0}", _connection.ConnectionData[ ConnectionDataType.User ] ),
+            _connection.SendMessage( new FtpMessage( String.Format( "USER {0}", _connection.ConnectionData[ ConnectionDataType.User ] ),
                     _connection.Encoding ) );
-            Command recivedCommand = _connection.GetCommand();
+            IFtpMessage recivedCommand = _connection.GetMessage();
 
             // Если сервер вернул не код ожидания ввода пароля - данные неверны
             if ( recivedCommand.CommandName != "331" )
@@ -70,9 +70,9 @@ namespace FtpProxy.Service.Builders
 
         public ServerConnectionBuilder BuildPass()
         {
-            _connection.SendCommand( new Command( String.Format( "PASS {0}", _connection.ConnectionData[ ConnectionDataType.Pass ] ),
+            _connection.SendMessage( new FtpMessage( String.Format( "PASS {0}", _connection.ConnectionData[ ConnectionDataType.Pass ] ),
                     _connection.Encoding ) );
-            Command recivedCommand = _connection.GetCommand();
+            IFtpMessage recivedCommand = _connection.GetMessage();
 
             // Если сервер вернул не код подтверждения корректности пароля - данные неверны
             if( recivedCommand.CommandName != "230" )

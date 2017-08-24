@@ -1,4 +1,5 @@
-﻿using Proxynet.Models;
+﻿using System;
+using Proxynet.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System.Security.Claims;
@@ -44,7 +45,11 @@ namespace Proxynet.Controllers
                     IsPersistent = model.RememberMe
                 }, identity );
 
-                return RedirectToRoute( "FtpProxy" );
+                if (String.IsNullOrEmpty(ViewBag.ReturnUrl))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                return Redirect(ViewBag.ReturnUrl);
             }
             ModelState.AddModelError( "", @"Неверный логин или пароль." );
             return View( model );
