@@ -20,7 +20,10 @@ namespace FtpProxy.Core.Factory
                     break;
                 case ProcessingClientCommand.Pass:
                     break;
+                default:
+                    return null;
             }
+            return null;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace UsersLib.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<UsersLib.DbContextSettings.FtpProxyDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<UsersLib.DbContextSettings.UsersLibDbContext>
     {
         public Configuration()
         {
@@ -14,7 +14,7 @@ namespace UsersLib.Migrations
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(UsersLib.DbContextSettings.FtpProxyDbContext context)
+        protected override void Seed(UsersLib.DbContextSettings.UsersLibDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

@@ -13,7 +13,7 @@ namespace UsersLib.DbControllers
     {
         public List<User> GetUsers()
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 List<DbUser> dbUsers = dbContext.Users.ToList();
                 return dbUsers.ConvertAll( item => new User( item ) ).ToList();
@@ -22,7 +22,7 @@ namespace UsersLib.DbControllers
 
         public User GetUser( int userId )
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 DbUser dbUser = dbContext.Users.FirstOrDefault( item => item.UserId == userId );
 
@@ -34,7 +34,7 @@ namespace UsersLib.DbControllers
 
         public Dictionary<User, List<Group>> GetUsersByGroups()
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 return dbContext.Users.Include(user => user.UserGroups)
                     .ToDictionary(item => new User(item),
@@ -45,7 +45,7 @@ namespace UsersLib.DbControllers
         public List<Group> GetUserGroups( string userLogin )
         {
             DbUser dbUser;
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 dbUser = dbContext.Users.FirstOrDefault( user => user.Login == userLogin );
             }
@@ -58,7 +58,7 @@ namespace UsersLib.DbControllers
 
         public List<Group> GetUserGroups( int userId )
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 DbUser dbUser = dbContext.Users.FirstOrDefault( item => item.UserId == userId );
 
@@ -68,7 +68,7 @@ namespace UsersLib.DbControllers
 
         public User GetUser( string userLogin )
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 DbUser dbUser = dbContext.Users.FirstOrDefault( item => item.Login == userLogin );
 
@@ -85,7 +85,7 @@ namespace UsersLib.DbControllers
                 return;
             }
 
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 dbContext.Users.AddOrUpdate( user.ConvertToDbUser() );
                 dbContext.SaveChanges();
@@ -99,7 +99,7 @@ namespace UsersLib.DbControllers
                 return;
             }
 
-            using (FtpProxyDbContext dbContext = new FtpProxyDbContext())
+            using (UsersLibDbContext dbContext = new UsersLibDbContext())
             {
                 DbUser user = dbContext.Users.Find( userId );
                 List<DbGroup> groups = dbContext.Groups
@@ -119,7 +119,7 @@ namespace UsersLib.DbControllers
 
         public int UpdateUsers( List<User> users )
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 List<string> existingUsers = dbContext.Users.Select( item => item.Login ).ToList();
                 users.RemoveAll( user => existingUsers.Contains( user.Login ) );
@@ -132,7 +132,7 @@ namespace UsersLib.DbControllers
 
         public List<Group> GetUserGroups()
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 List<DbGroup> dbUserGroups = dbContext.Groups.ToList();
                 return dbUserGroups.ConvertAll( item => new Group( item ) );

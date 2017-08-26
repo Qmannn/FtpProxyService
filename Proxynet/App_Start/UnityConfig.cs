@@ -7,9 +7,10 @@ using System.Web.Http;
 using Proxynet.Service.Converters;
 using UsersLib.DbControllers;
 using UsersLib.Secure.ActiveDirectory;
-using UsersLib.Secure.Auth;
 using Proxynet.Service.Savers;
 using Unity.WebApi;
+using UsersLib.Service.ActiveDirectory;
+using UsersLib.Service.Auth;
 
 namespace Proxynet
 {
@@ -19,12 +20,6 @@ namespace Proxynet
         public static void RegisterComponents(HttpConfiguration config)
         {
             var container = new UnityContainer();
-
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
-
-            // e.g. container.RegisterType<ITestService, TestService>();
-
             container.RegisterType<IAuthenticationManager>(
                 new InjectionFactory(o => HttpContext.Current.GetOwinContext().Authentication));
 

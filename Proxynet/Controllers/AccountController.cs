@@ -4,7 +4,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System.Security.Claims;
 using System.Web.Mvc;
-using UsersLib.Secure.Auth;
+using UsersLib.Service.Auth;
 
 namespace Proxynet.Controllers
 {

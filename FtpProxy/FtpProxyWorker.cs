@@ -97,7 +97,8 @@ namespace FtpProxy
                 ClientHandler clientHandler = new ClientHandler( connection );
                 _activeIpv6Handlers.Add( clientHandler );
 
-                ThreadPool.QueueUserWorkItem(executor.StartExecuting);
+                ThreadPool.QueueUserWorkItem(clientHandler.HandleClient);
+                // ThreadPool.QueueUserWorkItem(executor.StartExecuting);
             }
         }
 
@@ -115,7 +116,8 @@ namespace FtpProxy
                 ClientHandler clientHandler = new ClientHandler( connection );
                 _activeIpv4Handlers.Add( clientHandler );
 
-                ThreadPool.QueueUserWorkItem(executor.StartExecuting);
+                ThreadPool.QueueUserWorkItem(clientHandler.HandleClient);
+                // ThreadPool.QueueUserWorkItem(executor.StartExecuting);
             }
         }
     }

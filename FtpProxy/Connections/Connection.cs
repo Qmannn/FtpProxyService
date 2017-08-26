@@ -29,7 +29,6 @@ namespace FtpProxy.Connections
         private readonly object _controlClientLocker = new object();
 
         private FixedSslStream _sslStream;
-        private X509Certificate _certificate;
 
         private NetworkStream _controlStream;
 
@@ -45,6 +44,10 @@ namespace FtpProxy.Connections
         {
             get { return _connectionData ?? (_connectionData = new Dictionary<ConnectionDataType, string>()); }
         }
+
+        public string UserLogin { get; set; }
+        public string RemoteServerIdentifier { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// Текущий активный стрим (SSl или Network)
@@ -406,8 +409,6 @@ namespace FtpProxy.Connections
                 }
                 _controlClient = null;
             }
-
-            _certificate = null;
         }
 
         public void Write(byte[] buffer, int offset, int count)
@@ -420,6 +421,11 @@ namespace FtpProxy.Connections
                     AciveStream.Flush();
                 }
             }
+        }
+
+        public void SetDataEncryptionStatus(bool dataEncriptionStatus)
+        {
+            DataEncryptionEnabled = dataEncriptionStatus;
         }
 
         public void SetUpSecureConnectionAsClient()

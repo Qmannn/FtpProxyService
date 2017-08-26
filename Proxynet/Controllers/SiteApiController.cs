@@ -78,14 +78,10 @@ namespace Proxynet.Controllers
             }
 
             Site siteItem = _siteDtoConverter.Convert(site);
-
-            // Init internal data
-            siteItem.StorageId = otiginalSite.StorageId;
-
             List<Group> siteGroups = _groupDtoConverter.Convert(site.Groups);
 
             _dbSiteController.SaveSite(siteItem);
-            _dbSiteController.SaveSiteGroups(siteItem.Id, siteGroups.Select(item => item.Id).ToList());
+            _dbSiteController.SaveSiteGroups(siteItem.SiteId, siteGroups.Select(item => item.Id).ToList());
 
             return Ok(site);
         }

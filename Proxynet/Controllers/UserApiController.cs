@@ -6,7 +6,7 @@ using Proxynet.Models;
 using Proxynet.Service.Converters;
 using UsersLib.DbControllers;
 using UsersLib.Entity;
-using UsersLib.Secure.ActiveDirectory;
+using UsersLib.Service.ActiveDirectory;
 
 namespace Proxynet.Controllers
 {

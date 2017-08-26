@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using UsersLib.Entity;
 
 namespace UsersLib.DbEntity
 {
@@ -14,6 +15,6 @@ namespace UsersLib.DbEntity
 
         public virtual ICollection<DbUser> Users { get; set; }
 
-        public virtual ICollection<DbSite> Sites { get; set; }
+        public virtual ICollection<Site> Sites { get; set; }
     }
 }

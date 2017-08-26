@@ -9,7 +9,7 @@ namespace UsersLib.DbControllers
     {
         public int SaveGroup( string name )
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 DbGroup group = new DbGroup
                 {

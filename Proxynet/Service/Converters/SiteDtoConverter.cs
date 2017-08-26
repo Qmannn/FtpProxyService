@@ -18,10 +18,9 @@ namespace Proxynet.Service.Converters
         {
             return new SiteDto
             {
-                Id = site.Id,
+                Id = site.SiteId,
                 Name = site.Name,
-                Description = site.Description,
-                StorageId = site.StorageId
+                Description = site.Description
             };
         }
 
@@ -30,9 +29,8 @@ namespace Proxynet.Service.Converters
             return new Site
             {
                 Description = site.Description,
-                Id = site.Id,
-                SiteKey = site.Name,
-                StorageId = site.StorageId
+                SiteId = site.Id,
+                SiteKey = site.Name
             };
         }
 
@@ -46,11 +44,7 @@ namespace Proxynet.Service.Converters
             return new Site
             {
                 Name = siteData.Name,
-                Description = siteData.Description,
-                Address = siteData.Address,
-                Port = siteData.Port,
-                Login = siteData.Login,
-                Password = siteData.Password
+                Description = siteData.Description
             };
         }
 

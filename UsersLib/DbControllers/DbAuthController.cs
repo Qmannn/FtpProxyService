@@ -11,7 +11,7 @@ namespace UsersLib.DbControllers
     {
         public UserRole GetUserRole( string login )
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 DbUserRole userRole = dbContext.UserRoles.FirstOrDefault( item => item.Login == login );
                 return userRole?.Role ?? UserRole.Unknown;
@@ -20,7 +20,7 @@ namespace UsersLib.DbControllers
 
         public DateTime? GetAccessTime( string login, string password )
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 DbUserAccess userAccess = dbContext.UserAccess
                     .FirstOrDefault( item => item.Login == login && item.Password == password );
@@ -31,7 +31,7 @@ namespace UsersLib.DbControllers
 
         public void SetAccessTime( string login, string password )
         {
-            using ( FtpProxyDbContext dbContext = new FtpProxyDbContext() )
+            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
                 DbUserAccess userAccess = new DbUserAccess
                 {
