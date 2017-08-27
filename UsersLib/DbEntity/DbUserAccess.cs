@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UsersLib.DbEntity
 {
-    [Table("user_access")]
+    [Table("UserAccess")]
     public class DbUserAccess
     {
         [Key]

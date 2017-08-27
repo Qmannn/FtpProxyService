@@ -1,5 +1,5 @@
-﻿import { Site } from './../Dto/SiteToSaveDto';
-import { ISite } from './../Dto/SiteDto';
+﻿import { HttpResourceService } from './../Core/Services/Resource/HttpResourceService';
+import { ISite } from './../Dto/ISite';
 import { IGroup } from './../Dto/GroupDto';
 import { IUser } from './../Dto/UserDto';
 
@@ -10,108 +10,93 @@ export interface IResourceService {
 
     getSites(success: (users: ISite[]) => any, error: (data: any) => any): void;
     getSite(id: number, success: (users: ISite) => any, error: (data: any) => any): void;
-    getSiteGroups(success: (groups: IGroup[]) => any, error: (data: any) => any): void;
 
     saveUser(user: IUser, success: (user: IUser) => any, error: (data: any) => any): void;
     saveSite(site: ISite, success: (site: ISite) => any, error: (data: any) => any): void;
     saveGroup(name: string, success: (group: IGroup) => any, error: (data: any) => any): void;
-    createSite(site: Site): ng.IPromise<Site>;
 
     updateUsers(success: () => any, error: (data: any) => any): void;
-    updateSites(success: () => any, error: (data: any) => any): void;
+
+    deleteSite(siteId: number): ng.IPromise<void>;
+    deleteGroup(groupId: number): ng.IPromise<void>;
 }
 
 export class ResourceService implements IResourceService {
-    private actionHash: ng.resource.IActionHash;
-    private actionHashArray: ng.resource.IActionHash;
     private resourceBaseUrl: string;
-    private $resource: ng.resource.IResourceService;
+    private _resourceService: HttpResourceService;
 
-    public static $inject: string[] = ['$resource'];
+    public static $inject: string[] = ['HttpResourceService'];
 
-    constructor($resource: ng.resource.IResourceService) {
-        this.$resource = $resource;
-
-        let actionDescAtrray: ng.resource.IActionDescriptor = <ng.resource.IActionDescriptor>{};
-        actionDescAtrray.isArray = true;
-        actionDescAtrray.method = 'POST';
-        let actionDesc: ng.resource.IActionDescriptor = <ng.resource.IActionDescriptor>{};
-        actionDesc.isArray = false;
-        actionDesc.method = 'POST';
-
+    constructor(resourceService: HttpResourceService) {
+        this._resourceService = resourceService;
         this.resourceBaseUrl = '/Proxynet/service/';
-
-        this.actionHash = <ng.resource.IActionHash>{
-            ['save']: actionDesc,
-            ['query']: actionDesc
-        };
-
-        this.actionHashArray = <ng.resource.IActionHash>{
-            ['save']: actionDescAtrray,
-            ['query']: actionDescAtrray
-        };
     }
 
     // GET
 
     public getUsers(success: (users: IUser[]) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'users')
-            .query(success, error);
+        this._resourceService.get(this.resourceBaseUrl + 'users')
+            .then(success, error);
     }
 
     public getUser(id: number, success: (user: IUser) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'users/get-user').get({ 'userId': id })
-            .$promise.then(success, error);
+        this._resourceService.get(this.resourceBaseUrl + 'users/get-user', { params: { 'userId': id } })
+            .then(success, error);
     }
 
     public getGroups(success: (groups: IGroup[]) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'users/get-groups', { method: 'GET' })
-            .query(success, error);
+        this._resourceService.get(this.resourceBaseUrl + 'groups/get-groups')
+            .then(success, error);
     }
 
     public getSites(success: (users: ISite[]) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'sites', { method: 'GET' })
-            .query(success, error);
+        this._resourceService.get(this.resourceBaseUrl + 'sites')
+            .then(success, error);
     }
 
     public getSite(id: number, success: (site: ISite) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'sites/get-site', { 'siteId': id }, this.actionHash)
-            .query(success, error);
+        this._resourceService.get(this.resourceBaseUrl + 'sites/get-site', { params: { 'siteId': id } })
+            .then(success, error);
     }
 
-    public getSiteGroups(success: (groups: IGroup[]) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'sites/get-groups', null, this.actionHashArray)
-            .query(success, error);
-    }
+    // POST
 
     public updateUsers(success: () => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'users/update-users', null, this.actionHash)
-            .query(success, error);
+        this._resourceService.post(this.resourceBaseUrl + 'users/update-users')
+            .then(success, error);
     }
 
     public updateSites(success: () => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'sites/updatesites', null, this.actionHash)
-            .query(success, error);
+        this._resourceService.post(this.resourceBaseUrl + 'sites/updatesites')
+            .then(success, error);
     }
 
-    // SAVE
+    // PUT
 
     public saveUser(user: IUser, success: (user: IUser) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'users/save-user').save(user)
-            .$promise.then(success, error);
+        this._resourceService.put(this.resourceBaseUrl + 'users/save-user', user)
+            .then(success, error);
     }
 
     public saveSite(site: ISite, success: (site: ISite) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'sites/save-site').save(site)
-            .$promise.then(success, error);
+        this._resourceService.put(this.resourceBaseUrl + 'sites/save-site', site)
+            .then(success, error);
     }
 
     public saveGroup(name: string, success: (group: IGroup) => any, error: (data: any) => any): void {
-        this.$resource(this.resourceBaseUrl + 'user/savegroup', { 'name': name }, this.actionHash)
-            .query(success, error);
+        this._resourceService.put(this.resourceBaseUrl + 'groups/save-group', {name: name})
+            .then(success, error);
     }
 
-    public createSite(site: Site): ng.IPromise<Site> {
-        return this.$resource(this.resourceBaseUrl + 'sites/create-site').save(site).$promise;
+    // DELETE
+
+    public deleteSite(siteId: number): ng.IPromise<void> {
+        return this._resourceService
+            .delete(this.resourceBaseUrl + 'sites/delete-site', {params: {siteId: siteId}});
+    }
+
+    public deleteGroup(groupId: number): ng.IPromise<void> {
+        return this._resourceService
+            .delete(this.resourceBaseUrl + 'groups/delete-group', {params: {groupId: groupId}});
     }
 }

@@ -11,7 +11,7 @@ namespace UsersLib.Configuration
         /// <summary>
         /// Группа LDAP 
         /// </summary>
-        public static string LdapGroupName => ConfigurationManager.AppSettings[ "LdapGroupName" ];
+        public static string LdapGroupName => ConfigurationManager.AppSettings["LdapGroupName"];
         /// <summary>
         /// Сервисный аккаунт LDAP
         /// </summary>
@@ -21,25 +21,9 @@ namespace UsersLib.Configuration
         /// </summary>
         public static string LdapServicePassword => ConfigurationManager.AppSettings["LdapServicePassword"];
         /// <summary>
-        /// URL для обращения к хранилищу паролей PASSWORK
+        /// Пароль для шифрования/дешифрования паролей и логинов аккаунтов сайтов
         /// </summary>
-        public static string PassworkApiUrl => ConfigurationManager.AppSettings[ "PassworkApiUrl" ];
-        /// <summary>
-        /// Серкетное слово пользователя PASSWORK
-        /// </summary>
-        public static string PassworkMasterWord => ConfigurationManager.AppSettings[ "PassworkMasterWord" ];
-        /// <summary>
-        /// Серкетное слово пользователя PASSWORK
-        /// </summary>
-        public static string PassworkLogin => ConfigurationManager.AppSettings[ "PassworkLogin" ];
-        /// <summary>
-        /// Серкетное слово пользователя PASSWORK
-        /// </summary>
-        public static string PassworkPassword => ConfigurationManager.AppSettings[ "PassworkPassword" ];
-        /// <summary>
-        /// Серкетное слово пользователя PASSWORK
-        /// </summary>
-        public static string PassworkGroupName => ConfigurationManager.AppSettings[ "PassworkGroupName" ];
+        public static string MasterWord => ConfigurationManager.AppSettings["MasterWord"];
 
     }
 }

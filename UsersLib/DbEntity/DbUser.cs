@@ -16,7 +16,7 @@ namespace UsersLib.DbEntity
 
         public virtual string DisplayName { get; set; }
 
-        public virtual ICollection<DbGroup> UserGroups { get; set; }
+        public virtual ICollection<Group> Groups { get; set; }
         
         public void Fill( User user )
         {

@@ -36,9 +36,9 @@ namespace UsersLib.DbControllers
         {
             using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
             {
-                return dbContext.Users.Include(user => user.UserGroups)
+                return dbContext.Users.Include(user => user.Groups)
                     .ToDictionary(item => new User(item),
-                        item => item.UserGroups.ToList().ConvertAll(group => new Group(group)));
+                        item => item.Groups.ToList());
             }
         }
 
@@ -54,16 +54,6 @@ namespace UsersLib.DbControllers
                 return new List<Group>();
             }
             return GetUserGroups( dbUser.UserId );
-        }
-
-        public List<Group> GetUserGroups( int userId )
-        {
-            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
-            {
-                DbUser dbUser = dbContext.Users.FirstOrDefault( item => item.UserId == userId );
-
-                return dbUser?.UserGroups.Select( item => new Group( item ) ).ToList() ?? new List<Group>();
-            }
         }
 
         public User GetUser( string userLogin )
@@ -102,15 +92,15 @@ namespace UsersLib.DbControllers
             using (UsersLibDbContext dbContext = new UsersLibDbContext())
             {
                 DbUser user = dbContext.Users.Find( userId );
-                List<DbGroup> groups = dbContext.Groups
+                List<Group> groups = dbContext.Groups
                     .Where( item => userGroupIds.Contains( item.Id ) )
                     .ToList();
                 if ( user != null )
                 {
-                    user.UserGroups.Clear();
-                    foreach ( DbGroup userGroup in groups )
+                    user.Groups.Clear();
+                    foreach ( Group userGroup in groups )
                     {
-                        user.UserGroups.Add( userGroup );
+                        user.Groups.Add( userGroup );
                     }
                     dbContext.SaveChanges();
                 }
@@ -130,12 +120,14 @@ namespace UsersLib.DbControllers
             }
         }
 
-        public List<Group> GetUserGroups()
+        public List<Group> GetUserGroups(int userId)
         {
-            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
+            using (UsersLibDbContext dbContext = new UsersLibDbContext())
             {
-                List<DbGroup> dbUserGroups = dbContext.Groups.ToList();
-                return dbUserGroups.ConvertAll( item => new Group( item ) );
+                return dbContext.Users
+                    .Where(item => item.UserId == userId)
+                    .SelectMany(item => item.Groups)
+                    .ToList();
             }
         }
     }

@@ -24,27 +24,21 @@ namespace Proxynet.Service.Converters
             };
         }
 
-        public Site Convert(SiteDto site)
+        public SiteDto Convert(Site site, SecureSiteData secureSiteData)
+        {
+            SiteDto siteData = Convert(site);
+            return ExtendFromSecureData(siteData, secureSiteData);
+        }
+
+        public Site Convert(SiteDto site, SecureSiteData originalSecureSiteData)
         {
             return new Site
             {
                 Description = site.Description,
                 SiteId = site.Id,
-                SiteKey = site.Name
-            };
-        }
-
-        public List<SiteDto> Convert(List<Site> sites)
-        {
-            return sites.ConvertAll(Convert);
-        }
-
-        public Site ConvertFromCreateData(SiteToSaveDto siteData)
-        {
-            return new Site
-            {
-                Name = siteData.Name,
-                Description = siteData.Description
+                Name = site.Name,
+                Groups = _groupDtoConverter.Convert(site.Groups),
+                SecureSiteData = ConvertSecureSiteData(site, originalSecureSiteData)
             };
         }
 
@@ -58,6 +52,46 @@ namespace Proxynet.Service.Converters
                 result.Add(site);
             }
             return result;
+        }
+
+        public SiteDto Convert(Site site, List<Group> groups, SecureSiteData secureSiteData)
+        {
+            SiteDto siteData = Convert(site);
+            siteData.Groups = _groupDtoConverter.Convert(groups);
+            return ExtendFromSecureData(siteData, secureSiteData);
+        }
+
+        private SiteDto ExtendFromSecureData(SiteDto site, SecureSiteData secureSiteData)
+        {
+            site.Address = secureSiteData?.Url;
+            site.Port = secureSiteData?.Port ?? 0;
+            return site;
+        }
+
+        private SecureSiteData ConvertSecureSiteData(SiteDto site, SecureSiteData originalSecureSiteData)
+        {
+            string login = site.Login;
+            string password = site.Password;
+            bool secureDataChanged = !String.IsNullOrEmpty(site.Login) 
+                || !String.IsNullOrEmpty(site.Password);
+            if (originalSecureSiteData != null)
+            {
+                login = secureDataChanged
+                    ? site.Login
+                    : originalSecureSiteData.Login;
+                password = secureDataChanged
+                    ? site.Password
+                    : originalSecureSiteData.Password;
+            }
+            return new SecureSiteData
+            {
+                Login = login,
+                Password = password,
+                Port = site.Port,
+                Url = site.Address,
+                SiteId = site.Id,
+                NeedToEncrypt = secureDataChanged
+            };
         }
     }
 }

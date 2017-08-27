@@ -6,13 +6,10 @@ namespace Proxynet.Service.Converters
 {
     public interface ISiteDtoConverter
     {
-        SiteDto Convert( Site site );
-        Site Convert( SiteDto site );
-
-        Site ConvertFromCreateData(SiteToSaveDto siteData);
-
-        List<SiteDto> Convert( List<Site> sites );
-
-        List<SiteDto> ConvertFromSitesWithGroups( Dictionary<Site, List<Group>> users );
+        SiteDto Convert(Site site);
+        SiteDto Convert(Site site, SecureSiteData secureSiteData);
+        Site Convert(SiteDto site, SecureSiteData originalSecureSiteData);
+        List<SiteDto> ConvertFromSitesWithGroups(Dictionary<Site, List<Group>> sites);
+        SiteDto Convert(Site site, List<Group> groups, SecureSiteData secureSiteData);
     }
 }

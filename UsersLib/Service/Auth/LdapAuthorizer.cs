@@ -10,24 +10,39 @@ namespace UsersLib.Service.Auth
 {
     public sealed class LdapAuthorizer : ILdapAuthorizer
     {
+        private readonly IDbAuthController _dbAuthController;
+
+        public LdapAuthorizer(IDbAuthController dbAuthController)
+        {
+            _dbAuthController = dbAuthController;
+        }
+
         public bool ValidateCredentials(string userName, string password, UserRole roleRequred = UserRole.Admin)
         {
-            return true;
-            IDbAuthController dbAuthController = new DbAuthController();
-            UserRole userRole = dbAuthController.GetUserRole(userName);
+            UserRole userRole = _dbAuthController.GetUserRole(userName);
             if (roleRequred != UserRole.Unknown && roleRequred != userRole)
             {
                 return false;
             }
-
             string passwordHash = GetPasswordHashString(password);
-            DateTime? accessTime = dbAuthController.GetAccessTime(userName, passwordHash);
-
+            DateTime? accessTime = _dbAuthController.GetAccessTime(userName, passwordHash);
             if (accessTime.HasValue && accessTime.Value.AddHours(1) > DateTime.Now)
             {
                 return true;
             }
+            return TryAuthorize(userName, password);
+        }
 
+        private string GetPasswordHashString(string password)
+        {
+            SHA256 hasher = SHA256.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(password);
+            string hash = Encoding.UTF8.GetString(hasher.ComputeHash(bytes));
+            return hash;
+        }
+
+        private bool TryAuthorize(string userName, string password)
+        {
             try
             {
                 using (PrincipalContext context = new PrincipalContext(
@@ -37,7 +52,7 @@ namespace UsersLib.Service.Auth
                     bool isAuthorized = context.ValidateCredentials(userName, password);
                     if (isAuthorized)
                     {
-                        dbAuthController.SetAccessTime(userName, passwordHash);
+                        _dbAuthController.SetAccessTime(userName, GetPasswordHashString(password));
                     }
                     return isAuthorized;
                 }
@@ -46,14 +61,6 @@ namespace UsersLib.Service.Auth
             {
                 return false;
             }
-        }
-
-        private string GetPasswordHashString(string password)
-        {
-            SHA256 hasher = SHA256.Create();
-            byte[] bytes = Encoding.UTF8.GetBytes(password);
-            string hash = Encoding.UTF8.GetString(hasher.ComputeHash(bytes));
-            return hash;
         }
     }
 }

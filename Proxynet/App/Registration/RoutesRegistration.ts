@@ -8,8 +8,8 @@ export class RoutesRegistrator extends RegistratorBase {
     }
 
     private setRoutes($routeProvider: ng.route.IRouteProvider): void {
-        const baseUrl: string = AppConfig.AppBaseUrl();
-        const templateBaseUrl: string = AppConfig.RouteBaseUrl();
+        const baseUrl: string = AppConfig.appBaseUrl;
+        const templateBaseUrl: string = AppConfig.routeBaseUrl;
         $routeProvider
             .when(baseUrl,
             {
@@ -28,6 +28,10 @@ export class RoutesRegistrator extends RegistratorBase {
                 templateUrl: templateBaseUrl + '/Sites/Sites.html'
             })
             .when(baseUrl + 'site/:siteid',
+            {
+                templateUrl: templateBaseUrl + '/SiteEdit/SiteEdit.html'
+            })
+            .when(baseUrl + 'site',
             {
                 templateUrl: templateBaseUrl + '/SiteEdit/SiteEdit.html'
             })

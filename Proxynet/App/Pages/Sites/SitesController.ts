@@ -1,67 +1,52 @@
-﻿import { ISiteSaver } from './../../Core/Services/Savers/SiteSaver';
+﻿import { AppConfig } from './../../AppConfig';
 import { IResourceService } from './../../services/app.services.resource';
 import { PageControllerBase } from './../PageControllerBase';
 import { IGroup } from './../../Dto/GroupDto';
-import { ISite } from './../../Dto/SiteDto';
-import { Site } from './../../Dto/SiteToSaveDto';
+import { ISite } from './../../Dto/ISite';
 import { IScope } from 'angular';
 'use strict';
 
 interface ISIteScope extends IScope {
-    newSiteData: Site;
     sites: ISite[];
-    groups: IGroup[];
+    createSiteLink: string;
 
-    saveNewSite(): void;
+    deleteSite(site: ISite): void;
 }
 
 export class SitesController extends PageControllerBase {
 
     private resourceService: IResourceService;
     private _scope: ISIteScope;
-    private _siteSaver: ISiteSaver;
 
     public static $inject: string[] = [
         '$scope',
-        'app.services.resource',
-        'sitesaver'];
+        'app.services.resource'];
 
-    constructor($scope: ISIteScope, resourceService: IResourceService, siteSaver: ISiteSaver) {
+    constructor($scope: ISIteScope, resourceService: IResourceService) {
         super();
         this.resourceService = resourceService;
         this._scope = $scope;
-        this._siteSaver = siteSaver;
 
         this.initScope();
     }
 
     private initScope(): void {
-        this.clearSiteData();
         this.getSites();
         this.getGroups();
+        this._scope.createSiteLink = AppConfig.appName + '#/site';
 
         this.bindMethidsToScope();
     }
 
-    private clearSiteData(): void {
-        this._scope.newSiteData = new Site();
-    }
-
     private bindMethidsToScope(): void {
-        this._scope.saveNewSite = () => this.saveNewSite();
-    }
-
-    public updateSites(): void {
-        this.resourceService.updateSites((): void => {
-            this.getSites();
-        }, () => this.onError);
+        this._scope.deleteSite = (site: ISite) => this.deleteSite(site);
     }
 
     private getSites(): void {
         this.resourceService.getSites((sites: ISite[]): void => {
             this._scope.sites = sites;
             _.forEach(this._scope.sites, (site: ISite): void => {
-                site.editLink = '/site/' + site.id;
+                site.editLink = AppConfig.appName + '#/site/' + site.id;
             });
         }, () => this.onError);
     }
@@ -72,9 +57,9 @@ export class SitesController extends PageControllerBase {
         }, this.onError);
     }
 
-    private saveNewSite(): void {
-        if ( this._siteSaver.validateSiteData( this._scope.newSiteData ) ) {
-            this._siteSaver.saveSite( this._scope.newSiteData );
-        }
+    private deleteSite(site: ISite): void {
+        this.resourceService.deleteSite(site.id).then(() => {
+            _.remove(this._scope.sites, (item: ISite) => item.id === site.id);
+        });
     }
 }

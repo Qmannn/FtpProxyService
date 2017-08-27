@@ -4,7 +4,7 @@
             <h2>Аккаунты сайтов</h2>
         </div>
         <div class="col-lg-2">
-            <button data-target="#addSiteModal" data-toggle="modal" class="btn btn-success">+</button>
+            <a href="{{createSiteLink}}" class="btn btn-success">+ Добавить аккаунт</a>
         </div>
     </div>
     <table class="table">
@@ -32,43 +32,9 @@
                 </div>
             </td>
             <td>
-                <a href="#{{site.editLink}}" class="btn btn-default">Изменить</a>
+                <a href="{{site.editLink}}" class="btn btn-default">Изменить</a>
+                <button class="btn btn-default" ng-click="deleteSite(site)">Удалить</button>
             </td>
         </tr>
     </table>
-
-    <div id="addSiteModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Заголовок модального окна -->
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Добавление аккаунта</h4>
-                </div>
-                <!-- Основное содержимое модального окна -->
-                <div class="modal-body">
-                    <label for="new-site-name">Название</label>
-                    <input id="new-site-name" type="text" class="form-control" placeholder="Название аккаунта" ng-model="newSiteData.name" />
-                    <label for="address">Адрес</label>
-                    <input id="address" type="text" class="form-control" placeholder="site.ru or 192.168.1.1 (IP)" ng-model="newSiteData.address"
-                    />
-                    <label for="login">Логин</label>
-                    <input id="login" type="text" class="form-control" placeholder="login" ng-model="newSiteData.login" />
-                    <label for="password">Пароль</label>
-                    <input id="password" type="text" class="form-control" placeholder="password" ng-model="newSiteData.password" />
-                    <label for="port">Порт</label>
-                    <input id="port" type="text" class="form-control" placeholder="Port: default 21" ng-model="newSiteData.port" />
-                    <label for="groups-select">Группы</label>
-                    <select id="groups-select" ng-model="newSiteData.groupIds" multiple="multiple" class="selectpicker form-control" data-live-search="true">
-                        <option ng-repeat="g in groups" value="{{g.id}}">{{g.name}}</option>
-                    </select>
-                </div>
-                <!-- Футер модального окна -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveNewSite()">Сохранить</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>

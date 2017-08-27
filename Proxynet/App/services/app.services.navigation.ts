@@ -44,8 +44,8 @@ class Pages {
     constructor() {
         this.pages = new Array<IPageInfo>();
 
-        this.pages.push(new PageInfo('Пользователи', AppConfig.AppBaseUrl() + 'users', Page.UsersList, true));
-        this.pages.push(new PageInfo('Аккаунты сайтов', AppConfig.AppBaseUrl() + 'sites', Page.SiteList, true));
+        this.pages.push(new PageInfo('Пользователи', AppConfig.appBaseUrl + 'users', Page.UsersList, true));
+        this.pages.push(new PageInfo('Аккаунты сайтов', AppConfig.appBaseUrl + 'sites', Page.SiteList, true));
     }
 
     public getPageInfo(page: Page): IPageInfo {

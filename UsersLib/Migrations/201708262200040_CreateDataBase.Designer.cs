@@ -7,13 +7,13 @@ namespace UsersLib.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddSecureSiteData : IMigrationMetadata
+    public sealed partial class CreateDataBase : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddSecureSiteData));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CreateDataBase));
         
         string IMigrationMetadata.Id
         {
-            get { return "201708260809477_AddSecureSiteData"; }
+            get { return "201708262200040_CreateDataBase"; }
         }
         
         string IMigrationMetadata.Source

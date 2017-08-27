@@ -10,19 +10,24 @@
     @(Scripts.Render("~/bundles/systemjs"))
 </head>
 <body>
-    <div class="navbar navbar-default navbar-fixed-top" ng-controller="NavbarController as ctrl">
-        <div class="container">
-            @if ( Request.IsAuthenticated )
-            {
-                <ul class="nav navbar-nav">
-                    <li ng-repeat="page in ctrl.getPages()" ng-click="ctrl.setPage(page.page)" ng-class="page.isActive ? 'active' : ''"><a href="">{{page.name}}</a></li>
-                </ul>
-            }
-            <div class="navbar-collapse collapse">
-                @Html.Partial( "_LoginPartial" )
-            </div>
+<div ng-controller="PreloaderController">
+    <div ng-show="showPreloader">
+        <div id="ftpProxyPreloader"></div>
+    </div>
+</div>
+<div class="navbar navbar-default navbar-fixed-top" ng-controller="NavbarController as ctrl">
+    <div class="container">
+        @if (Request.IsAuthenticated)
+        {
+            <ul class="nav navbar-nav">
+                <li ng-repeat="page in ctrl.getPages()" ng-click="ctrl.setPage(page.page)" ng-class="page.isActive ? 'active' : ''"><a href="">{{page.name}}</a></li>
+            </ul>
+        }
+        <div class="navbar-collapse collapse">
+            @Html.Partial("_LoginPartial")
         </div>
     </div>
+</div>
 <div class="container body-content">
     <br/>
     @RenderBody()
@@ -31,15 +36,15 @@
         <p>&copy; @DateTime.Now.Year - FTP Proxy admin UI</p>
     </footer>
 </div>
-    @(Scripts.Render("~/bundles/jquery"))
-    @(Scripts.Render("~/bundles/angular"))
-    @(Scripts.Render("~/bundles/lodash"))
-    @(Scripts.Render("~/bundles/app"))
-    @(Scripts.Render("~/bundles/bootstrap"))
-    @(RenderSection("scripts", false))
-    <script>
-        System.import('app.module');
-    </script>
-    @(Scripts.Render("~/bundles/templates"))
+@(Scripts.Render("~/bundles/jquery"))
+@(Scripts.Render("~/bundles/angular"))
+@(Scripts.Render("~/bundles/lodash"))
+@(Scripts.Render("~/bundles/app"))
+@(Scripts.Render("~/bundles/bootstrap"))
+@(RenderSection("scripts", false))
+<script>
+    System.import('app.module');
+</script>
+@(Scripts.Render("~/bundles/templates"))
 </body>
 </html>

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using UsersLib.DbEntity;
 
 namespace UsersLib.Entity
 {
@@ -15,7 +14,7 @@ namespace UsersLib.Entity
 
         public virtual string Name { get; set; }
 
-        public virtual ICollection<DbGroup> Groups { get; set; }
+        public virtual ICollection<Group> Groups { get; set; }
 
         public virtual SecureSiteData SecureSiteData { get; set; }
     }

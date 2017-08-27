@@ -4,7 +4,7 @@ using UsersLib.Entity;
 
 namespace UsersLib.DbEntity
 {
-    [Table("user_role")]
+    [Table("UserRole")]
     public class DbUserRole
     {
         [Key]

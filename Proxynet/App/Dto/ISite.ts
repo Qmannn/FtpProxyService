@@ -5,4 +5,8 @@ export interface ISite {
         id: number;
         groups: IGroup[];
         editLink: string;
+        address: string;
+        port: number;
+        login: string;
+        password: string;
 }

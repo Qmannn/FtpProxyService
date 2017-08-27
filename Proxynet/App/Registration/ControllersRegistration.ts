@@ -1,3 +1,4 @@
+import { PreloaderController } from './../Pages/Preloader/PreloaderController';
 import { UsersController } from './../Pages/Users/UsersController';
 import { UserController } from './../Pages/UserEdit/UserEditController';
 import { SitesController } from './../Pages/Sites/SitesController';
@@ -12,5 +13,6 @@ export class ControllersRegistrator extends RegistratorBase {
         this._angular.module('app.pageControllers').controller('SitesController', SitesController);
         this._angular.module('app.pageControllers').controller('UserController', UserController);
         this._angular.module('app.pageControllers').controller('UsersController', UsersController);
+        this._angular.module('app.pageControllers').controller('PreloaderController', PreloaderController);
     }
 }

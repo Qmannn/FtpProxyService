@@ -18,7 +18,16 @@ namespace Proxynet.Models
         [JsonProperty( "groups" )]
         public List<GroupDto> Groups { get; set; }
 
-        [JsonIgnore]
-        public string StorageId { get; set; }
+        [JsonProperty("address")]
+        public string Address { get; set; }
+
+        [JsonProperty("port")]
+        public int Port { get; set; }
+
+        [JsonProperty("password")]
+        public string Password { get; set; }
+
+        [JsonProperty("login")]
+        public string Login { get; set; }
     }
 }

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using UsersLib.Configuration;
 using UsersLib.DbControllers;
 using UsersLib.Entity;
-using UsersLib.Service.ActiveDirectory;
 
-namespace UsersLib.Secure.ActiveDirectory
+namespace UsersLib.Service.ActiveDirectory
 {
     public class UsersUpdater : IUsersUpdater
     {

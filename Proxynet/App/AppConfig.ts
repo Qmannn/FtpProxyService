@@ -1,9 +1,5 @@
-export module AppConfig {
-    export function AppBaseUrl(): string {
-        return '/';
-    }
-
-    export function RouteBaseUrl(): string {
-        return 'App/Pages';
-    }
+export class AppConfig {
+    public static appBaseUrl: string = '/';
+    public static routeBaseUrl: string = 'App/Pages';
+    public static appName: string = 'Proxynet';
 }

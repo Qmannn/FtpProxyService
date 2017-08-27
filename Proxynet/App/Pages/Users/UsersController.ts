@@ -1,5 +1,4 @@
-﻿import { INavigationService } from './../../services/app.services.navigation';
-import { IResourceService } from './../../services/app.services.resource';
+﻿import { IResourceService } from './../../services/app.services.resource';
 import { IUser } from './../../Dto/UserDto';
 
 'use strict';
@@ -15,14 +14,13 @@ class Filter {
 
 export class UsersController {
     public users: IUser[];
-
     public filter: Filter;
 
     private resourceService: IResourceService;
 
-    public static $inject: string[] = ['app.services.navigation', 'app.services.resource'];
+    public static $inject: string[] = ['app.services.resource'];
 
-    constructor(nav: INavigationService, resourceService: IResourceService) {
+    constructor(resourceService: IResourceService) {
         this.resourceService = resourceService;
         this.filter = new Filter();
         this.getUsers();

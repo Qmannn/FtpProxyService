@@ -1,29 +1,18 @@
-﻿using UsersLib.DbEntity;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using UsersLib.DbEntity;
 
 namespace UsersLib.Entity
 {
     public class Group
     {
-        public Group()
-        {
-        }
-        public Group( DbGroup dbGroup )
-        {
-            Id = dbGroup.Id;
-            Name = dbGroup.Name;
-        }
+        [Key]
+        public virtual int Id { get; set; }
 
-        public int Id { get; set; }
+        public virtual string Name { get; set; }
 
-        public string Name { get; set; }
+        public virtual ICollection<DbUser> Users { get; set; }
 
-        public DbGroup ConvertToDbGroup()
-        {
-            return new DbGroup
-            {
-                Name = Name,
-                Id = Id
-            };
-        }
+        public virtual ICollection<Site> Sites { get; set; }
     }
 }

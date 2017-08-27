@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using Proxynet.Models;
 using Proxynet.Service.Converters;
+using Proxynet.Service.Finders;
 using UsersLib.DbControllers;
 using UsersLib.Entity;
 using UsersLib.Service.ActiveDirectory;
@@ -14,24 +15,21 @@ namespace Proxynet.Controllers
     public class UserApiController : BaseApiController
     {
         private readonly IDbUserController _dbUserController;
-        private readonly IDbGroupController _dbGroupController;
         private readonly IUsersUpdater _usersUpdater;
 
         private readonly IUserDtoConverter _userDtoConverter;
-        private readonly IGroupDtoConverter _userGroupDtoConverter;
+        private readonly IGroupDtoConverter _groupDtoConverter;
 
         public UserApiController(
             IDbUserController dbUserController, 
-            IDbGroupController dbGroupController, 
             IUsersUpdater usersUpdater, 
             IUserDtoConverter userDtoConverter, 
-            IGroupDtoConverter userGroupDtoConverter)
+            IGroupDtoConverter groupDtoConverter)
         {
             _dbUserController = dbUserController;
-            _dbGroupController = dbGroupController;
             _usersUpdater = usersUpdater;
             _userDtoConverter = userDtoConverter;
-            _userGroupDtoConverter = userGroupDtoConverter;
+            _groupDtoConverter = groupDtoConverter;
         }
 
         [HttpGet]
@@ -55,21 +53,11 @@ namespace Proxynet.Controllers
             List<Group> groups = _dbUserController.GetUserGroups(user.Id);
 
             UserDto userDto = _userDtoConverter.Convert(user);
-            userDto.Groups = _userGroupDtoConverter.Convert(groups);
+            userDto.Groups = _groupDtoConverter.Convert(groups);
             return Ok(userDto);
         }
 
-        [HttpGet]
-        [Route("get-groups")]
-        public IHttpActionResult GetGroups()
-        {
-            List<Group> userGroups = _dbUserController.GetUserGroups();
-            List<GroupDto> userGroupsDto = userGroups.ConvertAll(_userGroupDtoConverter.Convert);
-
-            return Ok(userGroupsDto);
-        }
-
-        [HttpPost]
+        [HttpPut]
         [Route("save-user")]
         public IHttpActionResult SaveUser(UserDto user)
         {
@@ -79,31 +67,12 @@ namespace Proxynet.Controllers
             }
 
             User userToSave = _userDtoConverter.Convert(user);
-            List<Group> userGroups = _userGroupDtoConverter.Convert(user.Groups);
+            List<Group> userGroups = _groupDtoConverter.Convert(user.Groups);
 
             _dbUserController.SaveUser(userToSave);
             _dbUserController.SaveUserGroups(userToSave.Id, userGroups.Select(item => item.Id).ToList());
 
             return Ok(user);
-        }
-
-        [HttpPost]
-        [Route("save-group")]
-        public IHttpActionResult SaveGroup(string name)
-        {
-            if (String.IsNullOrEmpty(name))
-            {
-                return NotFound();
-            }
-
-            // TODO group saver
-            GroupDto groupDto = new GroupDto
-            {
-                Name = name,
-                Id = _dbGroupController.SaveGroup(name)
-            };
-
-            return Ok(groupDto);
         }
 
         [HttpPost]

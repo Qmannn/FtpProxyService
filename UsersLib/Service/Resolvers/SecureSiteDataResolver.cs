@@ -23,6 +23,7 @@ namespace UsersLib.Service.Resolvers
                 return null;
             }
             secureSiteData.Password = _cryptoService.DecryptData(secureSiteData.Password);
+            secureSiteData.Login = _cryptoService.DecryptData(secureSiteData.Login);
             return secureSiteData;
         }
     }

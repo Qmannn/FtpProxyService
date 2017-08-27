@@ -195,6 +195,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
+    <Compile Include="Controllers\GroupApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SiteApiController.cs" />
     <Compile Include="Controllers\UserApiController.cs" />
@@ -204,7 +205,6 @@
     <Compile Include="Models\EditUserViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\SiteDto.cs" />
-    <Compile Include="Models\SiteToSaveDto.cs" />
     <Compile Include="Models\UserDto.cs" />
     <Compile Include="Models\GroupDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -214,6 +214,14 @@
     <Compile Include="Service\Converters\SiteDtoConverter.cs" />
     <Compile Include="Service\Converters\UserDtoConverter.cs" />
     <Compile Include="Service\Converters\GroupDtoConverter.cs" />
+    <Compile Include="Service\Finders\GroupDataFinder.cs" />
+    <Compile Include="Service\Finders\IGroupDataFinder.cs" />
+    <Compile Include="Service\Finders\ISiteDataFinder.cs" />
+    <Compile Include="Service\Finders\SiteDataFinder.cs" />
+    <Compile Include="Service\Removers\DataRemover.cs" />
+    <Compile Include="Service\Removers\IDataRemover.cs" />
+    <Compile Include="Service\Savers\GroupSaver.cs" />
+    <Compile Include="Service\Savers\IGroupSaver.cs" />
     <Compile Include="Service\Savers\ISiteSaver.cs" />
     <Compile Include="Service\Savers\SiteSaver.cs" />
     <Compile Include="Startup.cs" />

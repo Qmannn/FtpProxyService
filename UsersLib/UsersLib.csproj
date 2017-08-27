@@ -77,13 +77,9 @@
     <Compile Include="Dependency\Ninject\Modules\ServiceNinjectModule.cs" />
     <Compile Include="Dependency\Ninject\NinjectDependencyResolver.cs" />
     <Compile Include="Dependency\Ninject\NinjectKernelFactory.cs" />
-    <Compile Include="Migrations\201708260809477_AddSecureSiteData.cs" />
-    <Compile Include="Migrations\201708260809477_AddSecureSiteData.Designer.cs">
-      <DependentUpon>201708260809477_AddSecureSiteData.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708260901195_RemoveSiteDto.cs" />
-    <Compile Include="Migrations\201708260901195_RemoveSiteDto.Designer.cs">
-      <DependentUpon>201708260901195_RemoveSiteDto.cs</DependentUpon>
+    <Compile Include="Migrations\201708262200040_CreateDataBase.cs" />
+    <Compile Include="Migrations\201708262200040_CreateDataBase.Designer.cs">
+      <DependentUpon>201708262200040_CreateDataBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Service\Checkers\IUserChecker.cs" />
     <Compile Include="Service\Checkers\Results\IUserCheckerResult.cs" />
@@ -99,7 +95,6 @@
     <Compile Include="DbControllers\IDbUserController.cs" />
     <Compile Include="DbControllers\IDbAuthController.cs" />
     <Compile Include="DbEntity\DbUser.cs" />
-    <Compile Include="DbEntity\DbGroup.cs" />
     <Compile Include="DbEntity\DbUserAccess.cs" />
     <Compile Include="DbEntity\DbUserRole.cs" />
     <Compile Include="Entity\SecureSiteData.cs" />
@@ -112,18 +107,6 @@
     <Compile Include="Service\Factories\UsersLIbEntityFactoryImpl.cs" />
     <Compile Include="Service\Factories\UsersLIbEntityFactory.cs" />
     <Compile Include="Service\Factories\IUsersLIbEntityFactory.cs" />
-    <Compile Include="Migrations\201704301537435_InitDataBase.cs" />
-    <Compile Include="Migrations\201704301537435_InitDataBase.Designer.cs">
-      <DependentUpon>201704301537435_InitDataBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705021835416_AddPropertyStorageId.cs" />
-    <Compile Include="Migrations\201705021835416_AddPropertyStorageId.Designer.cs">
-      <DependentUpon>201705021835416_AddPropertyStorageId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708012116432_ExtendSite.cs" />
-    <Compile Include="Migrations\201708012116432_ExtendSite.Designer.cs">
-      <DependentUpon>201708012116432_ExtendSite.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DbContextSettings\UsersLibDbContext.cs" />
@@ -143,23 +126,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201704301537435_InitDataBase.resx">
-      <DependentUpon>201704301537435_InitDataBase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705021835416_AddPropertyStorageId.resx">
-      <DependentUpon>201705021835416_AddPropertyStorageId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708012116432_ExtendSite.resx">
-      <DependentUpon>201708012116432_ExtendSite.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708260809477_AddSecureSiteData.resx">
-      <DependentUpon>201708260809477_AddSecureSiteData.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708260901195_RemoveSiteDto.resx">
-      <DependentUpon>201708260901195_RemoveSiteDto.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201708262200040_CreateDataBase.resx">
+      <DependentUpon>201708262200040_CreateDataBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

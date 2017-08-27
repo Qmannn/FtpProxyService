@@ -1,29 +1,83 @@
-<div ng-controller="SiteController as ctrl">
+<div ng-controller="SiteController">
+    <h2>
+        <span ng-if="!isNewSite">Изменение</span>
+        <span ng-if="isNewSite">Создание</span> аккаунта <span ng-if="!isNewSite">{{site.name}} #{{site.id}}</span></h2>
 
     <div class="row">
-        <div class="col-md-8">
-            <button ng-click="ctrl.saveSite()" class="btn btn-primary">Сохранить</button>
+        <div class="col-xs-6">
+            <form name="siteForm" ng-submit="submitForm()" novalidate>
+                <div class="form-horizontal">
+                    <div class="form-group" ng-class="{ 'has-error' : siteForm.siteName.$invalid }">
+                        <label for="name" class="col-xs-2 control-label">Название:</label>
+                        <div class="col-xs-10">
+                            <input name="siteName" required="required" ng-model="site.name" pattern="[a-zA-z1-9]+" type="text" class="form-control" id="name" placeholder="Название">
+                        </div>
+                        <div class="alert alert-warning" ng-show="siteForm.siteName.$invalid">
+                            Название должно содержать только символы латинского алфавита и цифры без пробелов
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword" class="col-xs-2 control-label">Описание:</label>
+                        <div class="col-xs-10">
+                            <input type="text" ng-model="site.description" class="form-control" placeholder="Описание" id="description" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="url" class="col-xs-2 control-label">URL:</label>
+                        <div class="col-xs-10">
+                            <input ng-model="site.address" type="text" class="form-control" placeholder="URL" id="url" />
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error' : siteForm.port.$invalid }">
+                        <label for="port" class="col-xs-2 control-label">Порт:</label>
+                        <div class="col-xs-10">
+                            <input name="port" ng-model="site.port" min="1" max="65536" type="number" class="form-control" placeholder="Порт" id="port"
+                            />
+                        </div>
+                        <div class="alert alert-warning" ng-show="siteForm.port.$invalid">
+                            Порт может находить в диапазоне от <strong>1</strong> до <strong>65536</strong>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-    </div>
-    <h2>Редактирование аккаунта {{ctrl.site.name}} #{{ctrl.site.id}}</h2>
 
-    <div class="row">
-        <label for="name" class="col-md-1">Описание</label>
-        <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Имя" id="name" ng-model="ctrl.site.description" />
+        <div class="col-xs-6">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="alert alert-danger col-xs-offset-2 col-xs-10" role="alert" ng-show="!isNewSite">
+                        <b>Внимание:</b> для редактируемого ресурса уже сохранены логин и пароль. Оставьте поля пустыми,
+                        чтобы не перезаписывать их.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login" class="col-xs-2 control-label">Логин:</label>
+                    <div class="col-xs-10">
+                        <input ng-model="site.login" type="text" class="form-control" placeholder="Логин" id="login" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-xs-2 control-label">Пароль:</label>
+                    <div class="col-xs-10">
+                        <input ng-model="site.password" type="text" class="form-control" placeholder="Пароль" id="password" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <br/>
+
+    <br />
     <div class="row">
         <div class="col-lg-5">
             <h3>Состоит в гурппах:</h3>
             <table class="table">
-                <tr ng-repeat="group in ctrl.site.groups">
+                <tr ng-repeat="group in site.groups">
                     <td>
                         {{group.name}}
                     </td>
                     <td class="text-right">
-                        <button class="btn btn-danger" ng-click="ctrl.removeGroup(group)">Удалить</button>
+                        <button class="btn btn-danger" ng-click="removeGroup(group)">Удалить</button>
                     </td>
                 </tr>
             </table>
@@ -31,12 +85,13 @@
         <div class="col-lg-5">
             <h3>Доступные группы:</h3>
             <table class="table">
-                <tr ng-repeat="group in ctrl.getAllowedToSiteGroups()">
+                <tr ng-repeat="group in getAllowedToSiteGroups()">
                     <td>
                         {{group.name}}
                     </td>
                     <td class="text-right">
-                        <button class="btn btn-info" ng-click="ctrl.addGroup(group)">Добавить</button>
+                        <button class="btn btn-info" ng-click="addGroup(group)">Добавить</button>
+                        <button class="btn btn-info" ng-click="deleteGroup(group)">Удалить группу</button>
                     </td>
                 </tr>
                 <tr>
@@ -49,7 +104,7 @@
         </div>
     </div>
     <div class="row">
-        <button ng-click="ctrl.saveSite()" class="btn btn-primary">Сохранить</button>
+        <button ng-click="saveSite()" ng-disabled="!siteForm.$valid" class="btn btn-primary">Сохранить</button>
     </div>
 
     <div id="addGroupModal" class="modal fade">
@@ -62,12 +117,12 @@
                 </div>
                 <!-- Основное содержимое модального окна -->
                 <div class="modal-body">
-                    <input type="text" class="form-control" placeholder="Название группы" ng-model="ctrl.newGroupName" />
+                    <input type="text" class="form-control" placeholder="Название группы" ng-model="newGroupName" />
                 </div>
                 <!-- Футер модального окна -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="ctrl.addNewGroup(ctrl.newGroupName)">Добавить</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addNewGroup(newGroupName)">Добавить</button>
                 </div>
             </div>
         </div>
