@@ -1,3 +1,4 @@
+import { NotificationService } from './../Core/Services/Notifications/NotificationsService';
 import { HttpResourceService } from './../Core/Services/Resource/HttpResourceService';
 import { PreloaderService } from './../Core/Services/Preloader/PreloaderService';
 import { ResourceService } from './../services/app.services.resource';
@@ -11,5 +12,6 @@ export class ServiceRegistrator extends RegistratorBase {
         this._angular.module('app.services').service('HttpResourceService', HttpResourceService);
         this._angular.module('app.services').service('app.services.resource', ResourceService);
         this._angular.module('app.services').service('PreloaderService', PreloaderService);
+        this._angular.module('app.services').service('NotificationService', NotificationService);
     }
 }

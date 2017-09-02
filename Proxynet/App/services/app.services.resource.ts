@@ -15,8 +15,6 @@ export interface IResourceService {
     saveSite(site: ISite, success: (site: ISite) => any, error: (data: any) => any): void;
     saveGroup(name: string, success: (group: IGroup) => any, error: (data: any) => any): void;
 
-    updateUsers(success: () => any, error: (data: any) => any): void;
-
     deleteSite(siteId: number): ng.IPromise<void>;
     deleteGroup(groupId: number): ng.IPromise<void>;
 }
@@ -56,18 +54,6 @@ export class ResourceService implements IResourceService {
 
     public getSite(id: number, success: (site: ISite) => any, error: (data: any) => any): void {
         this._resourceService.get(this.resourceBaseUrl + 'sites/get-site', { params: { 'siteId': id } })
-            .then(success, error);
-    }
-
-    // POST
-
-    public updateUsers(success: () => any, error: (data: any) => any): void {
-        this._resourceService.post(this.resourceBaseUrl + 'users/update-users')
-            .then(success, error);
-    }
-
-    public updateSites(success: () => any, error: (data: any) => any): void {
-        this._resourceService.post(this.resourceBaseUrl + 'sites/updatesites')
             .then(success, error);
     }
 

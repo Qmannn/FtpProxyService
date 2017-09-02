@@ -1,48 +1,42 @@
-﻿import { IResourceService } from './../../services/app.services.resource';
+﻿import { Filter } from './Filter';
+import { IUsersScope } from './IUsersScope';
+import { PageControllerBase } from './../PageControllerBase';
+import { IResourceService } from './../../services/app.services.resource';
 import { IUser } from './../../Dto/UserDto';
 
-'use strict';
-class Filter {
-    public login: string;
-    public name: string;
+export class UsersController extends PageControllerBase {
+    private _resourceService: IResourceService;
+    private _scope: IUsersScope;
 
-    constructor() {
-        this.login = '';
-        this.name = '';
+    public static $inject: string[] = ['app.services.resource', '$scope'];
+
+    constructor(resourceService: IResourceService, $scope: IUsersScope) {
+        super();
+
+        this._resourceService = resourceService;
+        this._scope = $scope;
+
+        this.initScope();
     }
-}
 
-export class UsersController {
-    public users: IUser[];
-    public filter: Filter;
-
-    private resourceService: IResourceService;
-
-    public static $inject: string[] = ['app.services.resource'];
-
-    constructor(resourceService: IResourceService) {
-        this.resourceService = resourceService;
-        this.filter = new Filter();
+    private initScope(): void {
+        this._scope.filter = new Filter();
         this.getUsers();
-    }
 
-    public updateUsers(): void {
-        this.resourceService.updateUsers((): void => {
-            this.getUsers();
-        }, () => undefined);
+        this._scope.getFilteredUsers = () => this.getFilteredUsers();
     }
 
     private getUsers(): void {
-        this.resourceService.getUsers((users: IUser[]): void => {
-            this.users = users;
-        }, () => undefined);
+        this._resourceService.getUsers((users: IUser[]): void => {
+            this._scope.users = users;
+        }, this.onError);
     }
 
-    public getFilteredUsers(): IUser[] {
-        return _.filter(this.users,
+    private getFilteredUsers(): IUser[] {
+        return _.filter(this._scope.users,
             (user: IUser): boolean => {
-                return user.login.toUpperCase().indexOf(this.filter.login.toUpperCase()) >= 0 ||
-                    this.filter.login === '';
+                return user.login.toUpperCase().indexOf(this._scope.filter.login.toUpperCase()) >= 0 ||
+                    this._scope.filter.login === '';
             });
     }
 }

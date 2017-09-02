@@ -1,10 +1,10 @@
-<div ng-controller="UsersController as ctrl">
+<div ng-controller="UsersController">
     <div class="row">
         <div class="col-lg-10">
             <h2>Пользователи</h2>
         </div>
         <div class="col-lg-2">
-            <button class="btn btn-primary" ng-click="ctrl.updateUsers()">Синхронизировать</button>
+            <button class="btn btn-primary" ng-click="alert('СОздать')">+ Создать пользователя</button>
         </div>
     </div>
     <table class="table">
@@ -15,7 +15,7 @@
                         <label for="login">Логин</label>
                     </div>  
                     <div class="col-md-8">
-                        <input type="text" class="form-control" placeholder="Логин" id="login" ng-model="ctrl.filter.login" />
+                        <input type="text" class="form-control" placeholder="Логин" id="login" ng-model="filter.login" />
                     </div>
                 </div>
             </th>
@@ -25,7 +25,7 @@
                 Дейтсвия
             </th>
         </tr>
-        <tr ng-repeat="user in ctrl.getFilteredUsers()">
+        <tr ng-repeat="user in getFilteredUsers()">
             <td class="left center-block">{{user.login}}</td>
             <td>{{user.name}}</td>
             <td>

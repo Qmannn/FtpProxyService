@@ -1,17 +1,28 @@
+import { NotificationService } from './../Notifications/NotificationsService';
 import { PreloaderService } from './../Preloader/PreloaderService';
+import { NotificationType } from '../Notifications/NotificationType';
 export class HttpResourceService {
     private _httpService: ng.IHttpService;
     private _preloaderService: PreloaderService;
+    private _notificationService: NotificationService;
 
-    public static $inject: string[] = ['$http', 'PreloaderService'];
-    constructor(httpService: ng.IHttpService, preloaderService: PreloaderService) {
+    public static $inject: string[] = ['$http', 'PreloaderService', 'NotificationService'];
+    constructor(httpService: ng.IHttpService, preloaderService: PreloaderService, notificationService: NotificationService) {
         this._httpService = httpService;
         this._preloaderService = preloaderService;
+        this._notificationService = notificationService;
     }
 
     private wrapPromise<TResult>(promise: ng.IHttpPromise<TResult>): ng.IPromise<TResult> {
         return promise
-            .then((result: ng.IHttpPromiseCallbackArg<TResult>): TResult => result.data)
+            .catch((result: ng.IHttpPromiseCallbackArg<TResult>): TResult => {
+                this._notificationService.showNotification('Ошибка', NotificationType.Error);
+                return result.data;
+            })
+            .then((result: ng.IHttpPromiseCallbackArg<TResult>): TResult => {
+                this._notificationService.showNotification('Успех', NotificationType.Success);
+                return result.data;
+            })
             .finally(() => {
                 this._preloaderService.showPreloader(false);
             });
