@@ -230,7 +230,9 @@
     <Compile Include="Service\Savers\IUserSaver.cs" />
     <Compile Include="Service\Savers\SiteSaver.cs" />
     <Compile Include="Service\Savers\UserSaver.cs" />
+    <Compile Include="Service\Validators\ISiteValidator.cs" />
     <Compile Include="Service\Validators\IUserValidator.cs" />
+    <Compile Include="Service\Validators\SiteValidator.cs" />
     <Compile Include="Service\Validators\UserValidator.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

@@ -55,6 +55,7 @@ namespace Proxynet
             container.RegisterType<IUserDataFinder, UserDataFinder>(new ContainerControlledLifetimeManager());
             container.RegisterType<IUserAccountDtoConverter, UserAccountDtoConverter>(new ContainerControlledLifetimeManager());
             container.RegisterType<IUserValidator, UserValidator>(new ContainerControlledLifetimeManager());
+            container.RegisterType<ISiteValidator, SiteValidator>(new ContainerControlledLifetimeManager());
             
             // Set resolvers
             DependencyResolver.SetResolver(new Unity.Mvc5.UnityDependencyResolver(container));

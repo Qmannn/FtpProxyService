@@ -1,22 +1,27 @@
-﻿import { ISiteEditScope } from './ISiteEditScope';
+﻿import { NotificationService } from './../../Core/Services/Notifications/NotificationsService';
+import { ISiteEditScope } from './ISiteEditScope';
 import { Site } from './../../Dto/Site';
 import { ISite } from './../../Dto/ISite';
 import { IGroup } from './../../Dto/GroupDto';
 import { IResourceService } from '../../services/app.services.resource';
+import { NotificationType } from '../../Core/Services/Notifications/NotificationType';
 
 export class SiteController {
     private resourceService: IResourceService;
     private _scope: ISiteEditScope;
     private _routeParams: ng.route.IRouteParamsService;
+    private _notificationService: NotificationService;
 
-    public static $inject: string[] = ['$routeParams', 'app.services.resource', '$scope'];
+    public static $inject: string[] = ['$routeParams', 'app.services.resource', '$scope', 'NotificationService'];
 
     constructor(routeParams: ng.route.IRouteParamsService,
         resourceService: IResourceService,
-        $scope: ISiteEditScope) {
+        $scope: ISiteEditScope,
+        notificationService: NotificationService) {
         this.resourceService = resourceService;
         this._scope = $scope;
         this._routeParams = routeParams;
+        this._notificationService = notificationService;
 
         this.initScope();
     }
@@ -78,15 +83,31 @@ export class SiteController {
     }
 
     private saveSite(): void {
-        if (this._scope.siteForm.$valid) {
-            this.resourceService.saveSite(this._scope.site,
-                (site: ISite): void => {
-                    this._scope.site = site;
-                    this.onSaveSucefull();
-                    this._scope.isNewSite = false;
-                },
-                this.onError);
+        if (!this._scope.siteForm.$valid) {
+            return;
         }
+        this.validateSite(this._scope.site).then((checkSuccess: boolean): void => {
+                if (checkSuccess) {
+                    this.saveCurrentSite();
+                } else {
+                    this._notificationService
+                        .showNotification('Сайт с таким названием уже существует', NotificationType.Error);
+                }
+        });
+    }
+
+    private validateSite(site: ISite): ng.IPromise<boolean> {
+        return this.resourceService.checkSiteName(site.name, site.id);
+    }
+
+    private saveCurrentSite(): void {
+        this.resourceService.saveSite(this._scope.site,
+            (site: ISite): void => {
+                this._scope.site = site;
+                this.onSaveSucefull();
+                this._scope.isNewSite = false;
+            },
+            this.onError);
     }
 
     private addNewGroup(name: string): void {

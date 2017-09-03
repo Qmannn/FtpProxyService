@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using Proxynet.Models;
 using Proxynet.Service.Finders;
 using Proxynet.Service.Removers;
 using Proxynet.Service.Savers;
+using Proxynet.Service.Validators;
 
 namespace Proxynet.Controllers
 {
@@ -14,17 +16,20 @@ namespace Proxynet.Controllers
         private readonly ISiteDataFinder _siteDataFinder;
         private readonly IGroupDataFinder _groupDataFinder;
         private readonly IDataRemover _dataRemover;
+        private readonly ISiteValidator _siteValidator;
 
         public SiteApiController(
             ISiteSaver siteSaver,
             ISiteDataFinder siteDataFinder,
             IGroupDataFinder groupDataFinder, 
-            IDataRemover dataRemover)
+            IDataRemover dataRemover, 
+            ISiteValidator siteValidator)
         {
             _siteSaver = siteSaver;
             _siteDataFinder = siteDataFinder;
             _groupDataFinder = groupDataFinder;
             _dataRemover = dataRemover;
+            _siteValidator = siteValidator;
         }
 
         [HttpGet]
@@ -73,6 +78,19 @@ namespace Proxynet.Controllers
         {
             _dataRemover.RemoveSite(siteId);
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("check-site-name")]
+        public IHttpActionResult CheckSiteName(string siteName, int siteId)
+        {
+            if (String.IsNullOrEmpty(siteName))
+            {
+                return Ok(false);
+            }
+
+            bool siteNameIsValid = _siteValidator.ValidateSiteName(siteName, siteId);
+            return Ok(siteNameIsValid);
         }
     }
 }

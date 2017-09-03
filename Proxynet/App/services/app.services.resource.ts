@@ -8,6 +8,7 @@ export interface IResourceService {
     getUser(id: number, success: (users: IUser) => any, error: (data: any) => any): void;
     getGroups(success: (groups: IGroup[]) => any, error: (data: any) => any): void;
     checkUserLogin(login: string, userId: number): ng.IPromise<boolean>;
+    checkSiteName(siteName: string, siteId: number): ng.IPromise<boolean>;
 
     getSites(success: (users: ISite[]) => any, error: (data: any) => any): void;
     getSite(id: number, success: (users: ISite) => any, error: (data: any) => any): void;
@@ -62,6 +63,11 @@ export class ResourceService implements IResourceService {
     public checkUserLogin(login: string, userId: number): ng.IPromise<boolean> {
         return this._resourceService
             .get<boolean>(this.resourceBaseUrl + 'users/check-user-name', { params: { 'login': login, 'userId': userId } });
+    }
+
+    public checkSiteName(siteName: string, siteId: number): ng.IPromise<boolean> {
+        return this._resourceService
+            .get<boolean>(this.resourceBaseUrl + 'sites/check-site-name', { params: { 'siteName': siteName, 'siteId': siteId } });
     }
 
     // PUT
