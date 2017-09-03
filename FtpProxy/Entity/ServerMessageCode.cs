@@ -4,6 +4,7 @@
     {
         Unauthorized = 530,
         Success = 200,
-        UnknownCommand = 501
+        UnknownCommand = 501,
+        Unavailable = 421
     }
 }

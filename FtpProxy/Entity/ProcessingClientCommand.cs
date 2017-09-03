@@ -42,5 +42,9 @@
         /// Завершение работы
         /// </summary>
         public const string Quit = "QUIT";
+        /// <summary>
+        /// Переподключение
+        /// </summary>
+        public const string Rein = "REIN";
     }
 }

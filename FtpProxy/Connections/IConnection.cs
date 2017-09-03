@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using FtpProxy.Entity;
@@ -13,6 +14,14 @@ namespace FtpProxy.Connections
 
         string UserLogin { get; set; }
 
+        event Connection.ConectionEventHandler ConnectionClosed;
+
+        Stream AciveStream { get; }
+
+        bool DataEncryptionEnabled { get; }
+
+        object ConnectionOperationLocker { get; }
+
         string RemoteServerIdentifier { get; set; }
 
         string Password { get; set; }
@@ -20,6 +29,10 @@ namespace FtpProxy.Connections
         bool UserChanged { get; set; }
 
         bool DataAvailable { get; }
+
+        IPAddress RemoteIpAddress { get; }
+
+        IPAddress IpAddress { get; }
 
         bool IsConnected { get; }
 
@@ -33,6 +46,8 @@ namespace FtpProxy.Connections
 
         IFtpMessage SendWithResponce(IFtpMessage ftpMessage);
 
+        IPEndPoint LocalEndPoint { get; }
+
         void SendCommand( string command );
 
         IFtpMessage GetMessage();
@@ -43,7 +58,7 @@ namespace FtpProxy.Connections
 
         void SetUpSecureConnectionAsServer(X509Certificate certificate);
 
-        void CopyDataTo( Connection targetConnection );
+        void CopyDataTo( IConnection targetConnection );
 
         void CloseConnection();
 

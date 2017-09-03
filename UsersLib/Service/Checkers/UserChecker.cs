@@ -5,6 +5,7 @@ using UsersLib.DbControllers;
 using UsersLib.Entity;
 using UsersLib.Service.Auth;
 using UsersLib.Service.Checkers.Results;
+using UsersLib.Service.Log;
 using UsersLib.Service.Resolvers;
 
 namespace UsersLib.Service.Checkers
@@ -16,21 +17,31 @@ namespace UsersLib.Service.Checkers
         private readonly IDbAuthController _dbAuthController;
         private readonly IAuthorizer _authorizer;
         private readonly ISecureSiteDataResolver _secureSiteDataResolver;
+        private readonly IAccessLogger _accessLogger;
 
         public UserChecker(IDbUserController dbUserController, 
             IDbSiteController dbSiteController, 
             IAuthorizer ldapAuthorizer, 
             ISecureSiteDataResolver secureSiteDataResolver, 
-            IDbAuthController dbAuthController)
+            IDbAuthController dbAuthController, 
+            IAccessLogger accessLogger)
         {
             _dbUserController = dbUserController;
             _dbSiteController = dbSiteController;
             _authorizer = ldapAuthorizer;
             _secureSiteDataResolver = secureSiteDataResolver;
             _dbAuthController = dbAuthController;
+            _accessLogger = accessLogger;
         }
 
         public IUserCheckerResult Check(string userLogin, string userPass, string siteKey)
+        {
+            IUserCheckerResult checkerResult = CheckUser(userLogin, userPass, siteKey);
+            _accessLogger.LogAssess(userLogin, checkerResult != null, siteKey, "FtpUser");
+            return checkerResult;
+        }
+
+        public IUserCheckerResult CheckUser(string userLogin, string userPass, string siteKey)
         {
             if (!_authorizer.ValidateCredentials(userLogin, userPass, UserRoleKind.Unknown))
             {
@@ -48,12 +59,7 @@ namespace UsersLib.Service.Checkers
             List<Group> userGroups = _dbUserController.GetUserGroups(userId);
             List<Group> siteGroups = _dbSiteController.GetSiteGroups(site.SiteId);
 
-            if (userGroups == null || userGroups.Count == 0)
-            {
-                return null;
-            }
-
-            if (siteGroups == null || siteGroups.Count == 0)
+            if (userGroups.Count == 0 || siteGroups.Count == 0)
             {
                 return null;
             }

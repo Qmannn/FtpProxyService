@@ -96,6 +96,8 @@ namespace FtpProxy.Service
                 case ProcessingClientCommand.Pasv:
                 case ProcessingClientCommand.Epsv:
                     return PassiveDataConnection(clientCommand);
+                case ProcessingClientCommand.Rein:
+                    return Unavailable(clientCommand);
             }
 
             // отправка команд на удаленный сервер
@@ -318,6 +320,12 @@ namespace FtpProxy.Service
             }
 
             return new FtpMessage("200 PBSZ command successful", _clientConnection.Encoding);
+        }
+
+        private FtpMessage Unavailable(IFtpMessage clientMessage)
+        {
+            string message = String.Format("{0} unavailable", clientMessage.CommandName);
+            return new FtpMessage(ServerMessageCode.Unavailable, message);
         }
 
         #endregion FTPCommands

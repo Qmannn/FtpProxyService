@@ -4,6 +4,8 @@ namespace FtpProxy.Connections
 {
     public interface IDataConnection
     {
-        DataConnectionType DataConnectionType { get; set; }
+        DataConnectionType DataConnectionType { get; }
+
+        IConnection Connection { get; set; }
     }
 }

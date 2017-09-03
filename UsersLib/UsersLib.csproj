@@ -72,17 +72,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbContextSettings\DbInitializer.cs" />
+    <Compile Include="DbControllers\DbLogController.cs" />
+    <Compile Include="DbControllers\IDbLogController.cs" />
     <Compile Include="Dependency\DependencyResolver.cs" />
     <Compile Include="Dependency\IDependencyResolver.cs" />
     <Compile Include="Dependency\Ninject\INinjectKernelFactory.cs" />
     <Compile Include="Dependency\Ninject\Modules\ServiceNinjectModule.cs" />
     <Compile Include="Dependency\Ninject\NinjectDependencyResolver.cs" />
     <Compile Include="Dependency\Ninject\NinjectKernelFactory.cs" />
+    <Compile Include="Entity\AccessLog.cs" />
     <Compile Include="Entity\UserAccount.cs" />
     <Compile Include="Entity\UserRole.cs" />
     <Compile Include="Migrations\201709021740026_UserAccounts.cs" />
     <Compile Include="Migrations\201709021740026_UserAccounts.Designer.cs">
       <DependentUpon>201709021740026_UserAccounts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709031106224_Logs.cs" />
+    <Compile Include="Migrations\201709031106224_Logs.Designer.cs">
+      <DependentUpon>201709031106224_Logs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709031128001_Logs_Improve.cs" />
+    <Compile Include="Migrations\201709031128001_Logs_Improve.Designer.cs">
+      <DependentUpon>201709031128001_Logs_Improve.cs</DependentUpon>
     </Compile>
     <Compile Include="Service\Auth\UserAuthorizer.cs" />
     <Compile Include="Service\Checkers\IUserChecker.cs" />
@@ -98,7 +109,6 @@
     <Compile Include="DbControllers\IDbSiteController.cs" />
     <Compile Include="DbControllers\IDbUserController.cs" />
     <Compile Include="DbControllers\IDbAuthController.cs" />
-    <Compile Include="DbEntity\DbUserAccess.cs" />
     <Compile Include="Entity\SecureSiteData.cs" />
     <Compile Include="Entity\Site.cs" />
     <Compile Include="Entity\User.cs" />
@@ -115,6 +125,8 @@
     <Compile Include="Service\Auth\IAuthorizer.cs" />
     <Compile Include="Service\Finders\ISiteSecureDataFinder.cs" />
     <Compile Include="Service\Finders\SiteSecureDataFinder.cs" />
+    <Compile Include="Service\Log\AccessLogger.cs" />
+    <Compile Include="Service\Log\IAccessLogger.cs" />
     <Compile Include="Service\Resolvers\ISecureSiteDataResolver.cs" />
     <Compile Include="Service\Resolvers\SecureSiteDataResolver.cs" />
     <Compile Include="Service\Savers\ISiteSaver.cs" />
@@ -129,6 +141,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201709021740026_UserAccounts.resx">
       <DependentUpon>201709021740026_UserAccounts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709031106224_Logs.resx">
+      <DependentUpon>201709031106224_Logs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709031128001_Logs_Improve.resx">
+      <DependentUpon>201709031128001_Logs_Improve.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

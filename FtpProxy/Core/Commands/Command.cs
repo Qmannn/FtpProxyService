@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FtpProxy.Connections;
 using FtpProxy.Entity;
 
 namespace FtpProxy.Core.Commands
@@ -9,6 +10,16 @@ namespace FtpProxy.Core.Commands
 
         protected readonly IExecutorState ExecutorState;
         protected readonly IFtpMessage FtpMessage;
+
+        protected IConnection ClientConnection
+        {
+            get { return ExecutorState.ClientConnection; }
+        }
+
+        protected IConnection ServerConnection
+        {
+            get { return ExecutorState.ServerConnection; }
+        }
 
         protected Command(IExecutorState executorState, IFtpMessage ftpMessage)
         {
@@ -25,17 +36,66 @@ namespace FtpProxy.Core.Commands
             return ExecutorState;
         }
 
-        public virtual ICommand GetNextCommand()
+        public virtual ICommand GetNextCommand(IExecutorState executorState)
         {
-            IFtpMessage ftpMessage = ExecutorState.ClientConnection.GetMessage();
+            IFtpMessage ftpMessage = executorState.ClientConnection.GetMessage();
             return ftpMessage != null
-                ? ExecutorState.CommandFactory.CreateCommand(ftpMessage, ExecutorState)
+                ? executorState.CommandFactory.CreateCommand(ftpMessage, executorState)
                 : null;
         }
 
         protected void AddError(string error)
         {
             _errors.Add(error);
+        }
+
+        protected void SendToServer(IFtpMessage ftpMessage)
+        {
+            SendMessage(ExecutorState.ServerConnection, ftpMessage);
+        }
+
+        protected void SendToClient(IFtpMessage ftpMessage)
+        {
+            SendMessage(ExecutorState.ClientConnection, ftpMessage);
+        }
+
+        protected IFtpMessage GetServerResponce()
+        {
+            return GetResponce(ExecutorState.ServerConnection);
+        }
+
+        protected IFtpMessage GetClientResponce()
+        {
+            return GetResponce(ExecutorState.ClientConnection);
+        }
+
+        protected IFtpMessage SendWithResponceServer(IFtpMessage ftpMessage)
+        {
+            SendToServer(ftpMessage);
+            return GetServerResponce();
+        }
+
+        protected IFtpMessage SendWithResponceClient(IFtpMessage ftpMessage)
+        {
+            SendToClient(ftpMessage);
+            return GetServerResponce();
+        }
+
+        private void SendMessage(IConnection connection, IFtpMessage message)
+        {
+            if (connection != null && message != null)
+            {
+                connection.SendMessage(message);
+            }
+        }
+
+        private IFtpMessage GetResponce(IConnection connection)
+        {
+            if (connection == null)
+            {
+                return null;
+            }
+            return connection.GetMessage();
         }
     }
 }

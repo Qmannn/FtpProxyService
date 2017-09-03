@@ -1,7 +1,6 @@
 ﻿using System.Net.Sockets;
 using FtpProxy.Connections;
 using FtpProxy.Core.Factory;
-using FtpProxy.Entity;
 
 namespace FtpProxy.Core
 {
@@ -13,5 +12,16 @@ namespace FtpProxy.Core
         public IDataConnection ServerDataConnection { get; set; }
         public TcpListener DataConnectionListener { get; set; }
         public ICommandFactory CommandFactory { get; set; }
+        public void CloseConnections()
+        {
+            if (ClientConnection != null && ClientConnection.IsConnected)
+            {
+                ClientConnection.CloseConnection();
+            }
+            if (ServerConnection != null && ServerConnection.IsConnected)
+            {
+                ServerConnection.CloseConnection();
+            }
+        }
     }
 }

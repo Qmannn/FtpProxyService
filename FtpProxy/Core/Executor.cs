@@ -1,7 +1,9 @@
-﻿using FtpProxy.Connections;
+﻿using System;
+using FtpProxy.Connections;
 using FtpProxy.Core.Commands;
 using FtpProxy.Core.Dependency;
 using FtpProxy.Core.Factory;
+using FtpProxy.Log;
 using Microsoft.Practices.Unity;
 
 namespace FtpProxy.Core
@@ -28,9 +30,16 @@ namespace FtpProxy.Core
         {
             do
             {
-                _executingCommand.Execute();
+                try
+                {
+                    _executingCommand.Execute();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log.Error(ex.Message, ex);
+                }
                 State = _executingCommand.GetExecutorState();
-            } while ((_executingCommand = _executingCommand.GetNextCommand()) != null);
+            } while ((_executingCommand = _executingCommand.GetNextCommand(State)) != null);
         }
 
         private ICommand GetFirstCommand()

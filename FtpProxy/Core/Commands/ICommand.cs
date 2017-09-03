@@ -6,6 +6,6 @@ namespace FtpProxy.Core.Commands
     {
         void Execute();
         IExecutorState GetExecutorState();
-        ICommand GetNextCommand();
+        ICommand GetNextCommand(IExecutorState executorState);
     }
 }

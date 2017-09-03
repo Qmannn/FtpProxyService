@@ -7,10 +7,12 @@ namespace FtpProxy.Core
     public interface IExecutorState
     {
         IConnection ClientConnection { get; }
-        IDataConnection ClientDataConnection { get; }
-        TcpListener DataConnectionListener { get; }
+        IDataConnection ClientDataConnection { get; set; }
+        TcpListener DataConnectionListener { get; set; }
         IConnection ServerConnection { get; }
-        IDataConnection ServerDataConnection { get; }
+        IDataConnection ServerDataConnection { get; set; }
         ICommandFactory CommandFactory { get; }
+
+        void CloseConnections();
     }
 }

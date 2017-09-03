@@ -1,5 +1,4 @@
 ﻿using System.Data.Entity;
-using UsersLib.DbEntity;
 using UsersLib.Entity;
 
 namespace UsersLib.DbContextSettings
@@ -11,7 +10,7 @@ namespace UsersLib.DbContextSettings
         {
             // ReSharper disable once UnusedVariable
             var instance = System.Data.Entity.SqlServer.SqlProviderServices.Instance;
-            Database.SetInitializer<UsersLibDbContext>(new DbInitializer());
+            Database.SetInitializer(new DbInitializer());
         }
 
         public DbSet<User> Users { get; set; }
@@ -22,7 +21,7 @@ namespace UsersLib.DbContextSettings
 
         public DbSet<UserRole> UserRole { get; set; }
 
-        public DbSet<DbUserAccess> UserAccess { get; set; }
+        public DbSet<AccessLog> AccessLog { get; set; }
 
         public DbSet<SecureSiteData> SecureSiteData { get; set; }
 

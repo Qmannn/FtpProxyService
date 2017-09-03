@@ -86,16 +86,29 @@
   <ItemGroup>
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Connections\Connection.cs" />
+    <Compile Include="Connections\DataConnection.cs" />
     <Compile Include="Connections\IConnection.cs" />
     <Compile Include="Connections\IDataConnection.cs" />
-    <Compile Include="Core\CommandDispatcher.cs" />
+    <Compile Include="Core\Builders\IServerConnectionBuilder.cs" />
+    <Compile Include="Core\Builders\ServerConnectionBuilder.cs" />
+    <Compile Include="Core\Commands\ActiveDataConnectionCommand.cs" />
     <Compile Include="Core\Commands\AuthCommand.cs" />
     <Compile Include="Core\Commands\Command.cs" />
+    <Compile Include="Core\Commands\PassCommand.cs" />
+    <Compile Include="Core\Commands\PassiveDataConnectionCommand.cs" />
+    <Compile Include="Core\Commands\PbszCommand.cs" />
     <Compile Include="Core\Commands\ProtCommand.cs" />
     <Compile Include="Core\Commands\UnauthorizedCommand.cs" />
+    <Compile Include="Core\Commands\UnavailableCommand.cs" />
     <Compile Include="Core\Commands\UserCommand.cs" />
     <Compile Include="Core\Commands\WelcomeCommand.cs" />
+    <Compile Include="Core\DataConnection\DataConnectionExecutorState.cs" />
+    <Compile Include="Core\DataConnection\DataOperationExecutor.cs" />
+    <Compile Include="Core\DataConnection\IDataOperationExecutor.cs" />
+    <Compile Include="Core\Factory\ConnectionFactory.cs" />
     <Compile Include="Core\Factory\ICommandFactory.cs" />
+    <Compile Include="Core\Factory\IConnectionFactory.cs" />
+    <Compile Include="Core\Factory\IRemoteCommandFactory.cs" />
     <Compile Include="Core\Factory\LocalCommandFactory.cs" />
     <Compile Include="Core\Commands\OtherCommand.cs" />
     <Compile Include="Core\Commands\ICommand.cs" />
@@ -104,7 +117,8 @@
     <Compile Include="Core\Executor.cs" />
     <Compile Include="Core\ExecutorState.cs" />
     <Compile Include="Core\Factory\RemoteCommandFactory.cs" />
-    <Compile Include="Core\ICommandDispatcher.cs" />
+    <Compile Include="Core\Helpers\CommandExecutorHelper.cs" />
+    <Compile Include="Core\Helpers\ICommandExecutorHelper.cs" />
     <Compile Include="Core\IExecutorState.cs" />
     <Compile Include="Entity\FtpMessage.cs" />
     <Compile Include="Entity\ConnectionDataType.cs" />
@@ -123,6 +137,7 @@
     <Compile Include="Service\CommandExecutorHelper.cs" />
     <Compile Include="Service\Handlers\ClientHandler.cs" />
     <Compile Include="Service\Resolvers\CommandArgsResolver.cs" />
+    <Compile Include="Service\Resolvers\ICommandArgsResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FixedSslLib\FixedSslLib.csproj">

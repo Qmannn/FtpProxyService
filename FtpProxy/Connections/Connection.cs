@@ -46,20 +46,26 @@ namespace FtpProxy.Connections
         }
 
         public string UserLogin { get; set; }
+
+        public object ConnectionOperationLocker
+        {
+            get { return _connectionOperationLocker; }
+        }
+
         public string RemoteServerIdentifier { get; set; }
         public string Password { get; set; }
 
         /// <summary>
         /// Текущий активный стрим (SSl или Network)
         /// </summary>
-        private Stream AciveStream
+        public Stream AciveStream
         {
             get { return (Stream)_sslStream ?? _controlStream; }
         }
 
         private readonly object _activeStreamLocker = new object();
 
-        public readonly object ConnectionOperationLocker = new object();
+        private readonly object _connectionOperationLocker = new object();
 
         public DataConnectionType DataConnectionType { get; set; }
 
@@ -373,7 +379,7 @@ namespace FtpProxy.Connections
             }
         }
 
-        public void CopyDataTo(Connection targetConnection)
+        public void CopyDataTo(IConnection targetConnection)
         {
             lock (_activeStreamLocker)
             {

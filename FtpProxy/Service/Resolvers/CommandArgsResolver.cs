@@ -9,7 +9,7 @@ namespace FtpProxy.Service.Resolvers
     /// <summary>
     /// Выделяет необходиме компоненты из аргументов FTP команды
     /// </summary>
-    public class CommandArgsResolver
+    public class CommandArgsResolver : ICommandArgsResolver
     {
         public string ResolveUserLogin( string args )
         {

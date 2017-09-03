@@ -5,9 +5,9 @@ using FtpProxy.Connections;
 using FtpProxy.Entity;
 using FtpProxy.Log;
 
-namespace FtpProxy.Service
+namespace FtpProxy.Core.Helpers
 {
-    public class CommandExecutorHelper
+    public class CommandExecutorHelper : ICommandExecutorHelper
     {
         #region Public
 
