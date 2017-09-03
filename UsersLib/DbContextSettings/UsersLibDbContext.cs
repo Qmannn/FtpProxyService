@@ -11,7 +11,7 @@ namespace UsersLib.DbContextSettings
         {
             // ReSharper disable once UnusedVariable
             var instance = System.Data.Entity.SqlServer.SqlProviderServices.Instance;
-            Database.SetInitializer<UsersLibDbContext>( null );
+            Database.SetInitializer<UsersLibDbContext>(new DbInitializer());
         }
 
         public DbSet<User> Users { get; set; }

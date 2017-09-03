@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbContextSettings\DbInitializer.cs" />
     <Compile Include="Dependency\DependencyResolver.cs" />
     <Compile Include="Dependency\IDependencyResolver.cs" />
     <Compile Include="Dependency\Ninject\INinjectKernelFactory.cs" />
