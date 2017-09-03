@@ -202,28 +202,36 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\EditUserViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\SiteDto.cs" />
+    <Compile Include="Models\UserAccountDto.cs" />
     <Compile Include="Models\UserDto.cs" />
     <Compile Include="Models\GroupDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Converters\ISiteDtoConverter.cs" />
+    <Compile Include="Service\Converters\IUserAccountDtoConverter.cs" />
     <Compile Include="Service\Converters\IUserDtoConverter.cs" />
     <Compile Include="Service\Converters\IGroupDtoConverter.cs" />
     <Compile Include="Service\Converters\SiteDtoConverter.cs" />
+    <Compile Include="Service\Converters\UserAccountDtoConverter.cs" />
     <Compile Include="Service\Converters\UserDtoConverter.cs" />
     <Compile Include="Service\Converters\GroupDtoConverter.cs" />
     <Compile Include="Service\Finders\GroupDataFinder.cs" />
     <Compile Include="Service\Finders\IGroupDataFinder.cs" />
     <Compile Include="Service\Finders\ISiteDataFinder.cs" />
+    <Compile Include="Service\Finders\IUserDataFinder.cs" />
     <Compile Include="Service\Finders\SiteDataFinder.cs" />
+    <Compile Include="Service\Finders\UserDataFinder.cs" />
     <Compile Include="Service\Removers\DataRemover.cs" />
     <Compile Include="Service\Removers\IDataRemover.cs" />
     <Compile Include="Service\Savers\GroupSaver.cs" />
     <Compile Include="Service\Savers\IGroupSaver.cs" />
     <Compile Include="Service\Savers\ISiteSaver.cs" />
+    <Compile Include="Service\Savers\IUserSaver.cs" />
     <Compile Include="Service\Savers\SiteSaver.cs" />
+    <Compile Include="Service\Savers\UserSaver.cs" />
+    <Compile Include="Service\Validators\IUserValidator.cs" />
+    <Compile Include="Service\Validators\UserValidator.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1017,6 +1025,7 @@
     <Content Include="Scripts\jquery-3.1.1.slim.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.bootstrap-growl.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -1055,9 +1064,7 @@
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Test\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\UsersLib\UsersLib.csproj">
       <Project>{d43a2089-791d-4073-b302-f8306f249c28}</Project>

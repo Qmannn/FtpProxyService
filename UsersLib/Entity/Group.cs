@@ -11,7 +11,7 @@ namespace UsersLib.Entity
 
         public virtual string Name { get; set; }
 
-        public virtual ICollection<DbUser> Users { get; set; }
+        public virtual ICollection<User> Users { get; set; }
 
         public virtual ICollection<Site> Sites { get; set; }
     }

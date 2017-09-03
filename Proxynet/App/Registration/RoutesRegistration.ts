@@ -23,6 +23,10 @@ export class RoutesRegistrator extends RegistratorBase {
             {
                 templateUrl: templateBaseUrl + '/UserEdit/UserEdit.html'
             })
+            .when(baseUrl + 'user',
+            {
+                templateUrl: templateBaseUrl + '/UserEdit/UserEdit.html'
+            })
             .when(baseUrl + 'sites',
             {
                 templateUrl: templateBaseUrl + '/Sites/Sites.html'

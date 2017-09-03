@@ -4,7 +4,7 @@
             <h2>Пользователи</h2>
         </div>
         <div class="col-lg-2">
-            <button class="btn btn-primary" ng-click="alert('СОздать')">+ Создать пользователя</button>
+            <a href="{{createUserLink}}" class="btn btn-success">+ Создать пользователя</a>
         </div>
     </div>
     <table class="table">
@@ -12,21 +12,19 @@
             <th class="col-lg-3">
                 <div class="row">
                     <div class="col-md-2 text-center">
-                        <label for="login">Логин</label>
+                        <label for="login">Имя</label>
                     </div>  
                     <div class="col-md-8">
-                        <input type="text" class="form-control" placeholder="Логин" id="login" ng-model="filter.login" />
+                        <input type="text" class="form-control input-sm" placeholder="Имя" id="login" ng-model="filter.name" />
                     </div>
                 </div>
             </th>
-            <th class="col-lg-3">Имя</th>
             <th>Группы</th>
             <th class="col-lg-2">
                 Дейтсвия
             </th>
         </tr>
         <tr ng-repeat="user in getFilteredUsers()">
-            <td class="left center-block">{{user.login}}</td>
             <td>{{user.name}}</td>
             <td>
                 <div>
@@ -41,7 +39,8 @@
                 </div>
             </td>
             <td>
-                <a href="Proxynet/#/user/{{user.id}}" class="btn btn-default">Изменить</a>
+                <a href="{{user.editLink}}" class="btn btn-info">Изменить</a>
+                <button class="btn btn-danger" ng-click="deleteUser(user)">Удалить</button>
             </td>
         </tr>
     </table>

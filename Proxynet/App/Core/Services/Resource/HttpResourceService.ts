@@ -13,14 +13,18 @@ export class HttpResourceService {
         this._notificationService = notificationService;
     }
 
-    private wrapPromise<TResult>(promise: ng.IHttpPromise<TResult>): ng.IPromise<TResult> {
+    private wrapPromise<TResult>(promise: ng.IHttpPromise<TResult>, hideNotifications?: boolean): ng.IPromise<TResult> {
         return promise
             .catch((result: ng.IHttpPromiseCallbackArg<TResult>): TResult => {
                 this._notificationService.showNotification('Ошибка', NotificationType.Error);
+                // tslint:disable-next-line:no-console
+                console.log(result);
                 return result.data;
             })
             .then((result: ng.IHttpPromiseCallbackArg<TResult>): TResult => {
-                this._notificationService.showNotification('Успех', NotificationType.Success);
+                if (!hideNotifications) {
+                    this._notificationService.showNotification('Успех', NotificationType.Success);
+                }
                 return result.data;
             })
             .finally(() => {
@@ -30,7 +34,7 @@ export class HttpResourceService {
 
     public get<TResult>(url: string, config?: ng.IRequestShortcutConfig): ng.IPromise<TResult> {
         this._preloaderService.showPreloader(true);
-        return this.wrapPromise(this._httpService.get(url, config));
+        return this.wrapPromise(this._httpService.get(url, config), true);
     }
 
     public post<TResult>(url: string, data?: any, config?: ng.IRequestShortcutConfig): ng.IPromise<TResult> {

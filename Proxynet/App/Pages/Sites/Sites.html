@@ -9,12 +9,10 @@
     </div>
     <table class="table">
         <tr>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Группы</th>
-            <th>
-                Дейтсвия
-            </th>
+            <th class="col-lg-2">Название</th>
+            <th class="col-lg-3">Описание</th>
+            <th class="col-lg-5">Группы</th>
+            <th class="col-lg-2">Дейтсвия</th>
         </tr>
         <tr ng-repeat="site in sites">
             <td class="left center-block">{{site.name}}</td>
@@ -32,8 +30,8 @@
                 </div>
             </td>
             <td>
-                <a href="{{site.editLink}}" class="btn btn-default">Изменить</a>
-                <button class="btn btn-default" ng-click="deleteSite(site)">Удалить</button>
+                <a href="{{site.editLink}}" class="btn btn-info">Изменить</a>
+                <button class="btn btn-danger" ng-click="deleteSite(site)">Удалить</button>
             </td>
         </tr>
     </table>

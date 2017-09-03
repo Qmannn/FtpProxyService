@@ -9,8 +9,8 @@ using Proxynet.Service.Finders;
 using Proxynet.Service.Removers;
 using UsersLib.DbControllers;
 using Proxynet.Service.Savers;
+using Proxynet.Service.Validators;
 using Unity.WebApi;
-using UsersLib.Service.ActiveDirectory;
 using UsersLib.Service.Auth;
 using UsersLib.Service.Factories;
 
@@ -28,12 +28,15 @@ namespace Proxynet
                 new InjectionFactory(o => HttpContext.Current.GetOwinContext().Authentication));
             container.RegisterType<UsersLib.Service.Savers.ISiteSaver>(
                 new InjectionFactory(o => UsersLIbEntityFactory.Instance.CreateSiteSaver()));
-            container.RegisterType<ILdapAuthorizer>(
+            container.RegisterType<UsersLib.Service.Savers.IUserSaver>(
+                new InjectionFactory(o => UsersLIbEntityFactory.Instance.CreateUserSaver()));
+            container.RegisterType<IAuthorizer>(
                 new InjectionFactory(o => UsersLIbEntityFactory.Instance.CreateAuthorizer()));
+            container.RegisterType<IDbAuthController>(
+                new InjectionFactory(o => UsersLIbEntityFactory.Instance.CreateDbAuthController()));
 
             // UsersLib
             //TODO получать сущности из фабрики UsersLIbEntityFactory
-            container.RegisterType<IUsersUpdater, UsersUpdater>(new ContainerControlledLifetimeManager());
             container.RegisterType<IDbUserController, DbUserController>(new ContainerControlledLifetimeManager());
             container.RegisterType<IDbSiteController, DbSiteController>(new ContainerControlledLifetimeManager());
             container.RegisterType<IDbGroupController, DbGroupController>(new ContainerControlledLifetimeManager());
@@ -48,6 +51,10 @@ namespace Proxynet
             container.RegisterType<ISiteDataFinder, SiteDataFinder>(new ContainerControlledLifetimeManager());
             container.RegisterType<IDataRemover, DataRemover>(new ContainerControlledLifetimeManager());
             container.RegisterType<IGroupSaver, GroupSaver>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IUserSaver, UserSaver>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IUserDataFinder, UserDataFinder>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IUserAccountDtoConverter, UserAccountDtoConverter>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IUserValidator, UserValidator>(new ContainerControlledLifetimeManager());
             
             // Set resolvers
             DependencyResolver.SetResolver(new Unity.Mvc5.UnityDependencyResolver(container));

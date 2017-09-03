@@ -77,10 +77,13 @@
     <Compile Include="Dependency\Ninject\Modules\ServiceNinjectModule.cs" />
     <Compile Include="Dependency\Ninject\NinjectDependencyResolver.cs" />
     <Compile Include="Dependency\Ninject\NinjectKernelFactory.cs" />
-    <Compile Include="Migrations\201708262200040_CreateDataBase.cs" />
-    <Compile Include="Migrations\201708262200040_CreateDataBase.Designer.cs">
-      <DependentUpon>201708262200040_CreateDataBase.cs</DependentUpon>
+    <Compile Include="Entity\UserAccount.cs" />
+    <Compile Include="Entity\UserRole.cs" />
+    <Compile Include="Migrations\201709021740026_UserAccounts.cs" />
+    <Compile Include="Migrations\201709021740026_UserAccounts.Designer.cs">
+      <DependentUpon>201709021740026_UserAccounts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Service\Auth\UserAuthorizer.cs" />
     <Compile Include="Service\Checkers\IUserChecker.cs" />
     <Compile Include="Service\Checkers\Results\IUserCheckerResult.cs" />
     <Compile Include="Service\Checkers\Results\UserCheckerResult.cs" />
@@ -94,14 +97,12 @@
     <Compile Include="DbControllers\IDbSiteController.cs" />
     <Compile Include="DbControllers\IDbUserController.cs" />
     <Compile Include="DbControllers\IDbAuthController.cs" />
-    <Compile Include="DbEntity\DbUser.cs" />
     <Compile Include="DbEntity\DbUserAccess.cs" />
-    <Compile Include="DbEntity\DbUserRole.cs" />
     <Compile Include="Entity\SecureSiteData.cs" />
     <Compile Include="Entity\Site.cs" />
     <Compile Include="Entity\User.cs" />
     <Compile Include="Entity\Group.cs" />
-    <Compile Include="Entity\UserRole.cs" />
+    <Compile Include="Entity\UserRoleKind.cs" />
     <Compile Include="Service\Cryptography\CryptoService.cs" />
     <Compile Include="Service\Cryptography\ICryptoService.cs" />
     <Compile Include="Service\Factories\UsersLIbEntityFactoryImpl.cs" />
@@ -110,24 +111,23 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DbContextSettings\UsersLibDbContext.cs" />
-    <Compile Include="Service\ActiveDirectory\IUsersUpdater.cs" />
-    <Compile Include="Service\ActiveDirectory\UsersUpdater.cs" />
-    <Compile Include="Service\Auth\ILdapAuthorizer.cs" />
-    <Compile Include="Service\Auth\LdapAuthorizer.cs" />
+    <Compile Include="Service\Auth\IAuthorizer.cs" />
     <Compile Include="Service\Finders\ISiteSecureDataFinder.cs" />
     <Compile Include="Service\Finders\SiteSecureDataFinder.cs" />
     <Compile Include="Service\Resolvers\ISecureSiteDataResolver.cs" />
     <Compile Include="Service\Resolvers\SecureSiteDataResolver.cs" />
     <Compile Include="Service\Savers\ISiteSaver.cs" />
+    <Compile Include="Service\Savers\IUserSaver.cs" />
     <Compile Include="Service\Savers\SiteSaver.cs" />
+    <Compile Include="Service\Savers\UserSaver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201708262200040_CreateDataBase.resx">
-      <DependentUpon>201708262200040_CreateDataBase.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201709021740026_UserAccounts.resx">
+      <DependentUpon>201709021740026_UserAccounts.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,11 +15,12 @@ namespace UsersLib.Dependency.Ninject.Modules
             Bind<IUserChecker>().To<UserChecker>();
             Bind<IDbUserController>().To<DbUserController>();
             Bind<IDbSiteController>().To<DbSiteController>();
-            Bind<ILdapAuthorizer>().To<LdapAuthorizer>();
+            Bind<IAuthorizer>().To<UserAuthorizer>();
             Bind<ISecureSiteDataResolver>().To<SecureSiteDataResolver>();
             Bind<ICryptoService>().To<CryptoService>();
             Bind<IDbAuthController>().To<DbAuthController>();
             Bind<ISiteSaver>().To<SiteSaver>();
+            Bind<IUserSaver>().To<UserSaver>();
         }
     }
 }

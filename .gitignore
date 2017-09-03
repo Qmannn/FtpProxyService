@@ -21,3 +21,4 @@ obj
 /Proxynet/node_modules
 /Proxynet/build
 /Proxynet/.vscode
+/Proxynet/Proxynet.csproj.user

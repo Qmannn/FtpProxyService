@@ -1,29 +1,71 @@
-<div ng-controller="UserController as ctrl">
-
+<div ng-controller="UserController">
+    <h2>
+        <span ng-if="!isNewUser">Изменение</span>
+        <span ng-if="isNewUser">Создание</span> пользователя <span ng-if="!isNewUser">{{user.name}} #{{user.id}}</span></h2>
+    </h2>
     <div class="row">
-        <div class="col-md-8">
-            <button ng-click="ctrl.saveUser()" class="btn btn-primary">Сохранить</button>
+        <div class="col-xs-6">
+            <form name="userSettingsForm">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="name" class="col-xs-2">Имя</label>
+                        <div class="col-xs-10">
+                            <input type="text" name="user_name" class="form-control" pattern=".{3,}" ng-required="true" placeholder="Имя" id="name" ng-model="user.name"
+                            />
+                        </div>
+                            <div class="alert alert-warning" ng-show="userSettingsForm.user_name.$invalid">
+                                Минимальная длина - 3 символа
+                            </div>
+                    </div>
+                </div>
+            </form>
         </div>
-    </div>
-    <h2>Редактирование пользователя {{ctrl.user.login}} #{{ctrl.user.id}}</h2>
+        <div>
+            <div class="col-xs-6">
+                <form name="userForm" ng-submit="submitForm()" novalidate>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-xs-offset-2 col-xs-10">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" ng-model="user.account.needSaveAccount"> Изменить данные</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : userForm.user_login.$invalid && user.account.needSaveAccount }">
+                            <label for="user_login" class="col-xs-2">Логин</label>
+                            <div class="col-xs-10">
+                                <input type="text" name="user_login" pattern="[a-zA-Z1-9]+" required="required" class="form-control" ng-disabled="!user.account.needSaveAccount"
+                                    placeholder="Логин" id="user_login" ng-model="user.account.login" />
+                            </div>
+                            <div class="alert alert-warning" ng-show="userForm.user_login.$invalid && user.account.needSaveAccount">
+                                Логин может содержать только символы латинского алфавита и цифры без пробелов
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user_password" class="col-xs-2">Пароль</label>
+                            <div class="col-xs-10">
+                                <input type="password" class="form-control" ng-required="user.account.needSaveAccount" ng-disabled="!user.account.needSaveAccount"
+                                    placeholder="Пароль" id="user_password" ng-model="user.account.password" />
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="row">
-        <label for="name" class="col-md-1">Имя</label>
-        <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Имя" id="name" ng-model="ctrl.user.name" />
+                </form>
+            </div>
         </div>
+
     </div>
     <br/>
     <div class="row">
         <div class="col-lg-5">
             <h3>Состоит в гурппах:</h3>
             <table class="table">
-                <tr ng-repeat="group in ctrl.user.groups">
+                <tr ng-repeat="group in user.groups">
                     <td>
                         {{group.name}}
                     </td>
                     <td class="text-right">
-                        <button class="btn btn-danger" ng-click="ctrl.removeGroup(group)">Удалить</button>
+                        <button class="btn btn-danger" ng-click="removeGroup(group)">Удалить</button>
                     </td>
                 </tr>
             </table>
@@ -31,12 +73,12 @@
         <div class="col-lg-5">
             <h3>Доступные группы:</h3>
             <table class="table">
-                <tr ng-repeat="group in ctrl.getAllowedToUserGroups()">
+                <tr ng-repeat="group in getAllowedToUserGroups()">
                     <td>
                         {{group.name}}
                     </td>
                     <td class="text-right">
-                        <button class="btn btn-info" ng-click="ctrl.addGroup(group)">Добавить</button>
+                        <button class="btn btn-info" ng-click="addGroup(group)">Добавить</button>
                     </td>
                 </tr>
                 <tr>
@@ -49,7 +91,7 @@
         </div>
     </div>
     <div class="row">
-        <button ng-click="ctrl.saveUser()" class="btn btn-primary">Сохранить</button>
+        <button ng-click="saveUser()" ng-disabled="(!userForm.$valid && user.account.needSaveAccount) || !userSettingsForm.$valid" class="btn btn-primary">Сохранить</button>
     </div>
 
     <div id="addGroupModal" class="modal fade">
@@ -62,12 +104,12 @@
                 </div>
                 <!-- Основное содержимое модального окна -->
                 <div class="modal-body">
-                    <input type="text" class="form-control" placeholder="Название группы" ng-model="ctrl.newGroupName" />
+                    <input type="text" class="form-control" placeholder="Название группы" ng-model="newGroupName" />
                 </div>
                 <!-- Футер модального окна -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="ctrl.addNewGroup(ctrl.newGroupName)">Добавить</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addNewGroup(newGroupName)">Добавить</button>
                 </div>
             </div>
         </div>

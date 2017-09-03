@@ -4,5 +4,6 @@
     {
         void RemoveGroup(int groupId);
         void RemoveSite(int siteId);
+        void RemoveUser(int userId);
     }
 }

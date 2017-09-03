@@ -3,7 +3,7 @@ namespace UsersLib.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class CreateDataBase : DbMigration
+    public partial class UserAccounts : DbMigration
     {
         public override void Up()
         {
@@ -42,14 +42,37 @@ namespace UsersLib.Migrations
                 .Index(t => t.SiteId);
             
             CreateTable(
-                "dbo.User",
+                "dbo.Users",
                 c => new
                     {
                         UserId = c.Int(nullable: false, identity: true),
-                        Login = c.String(),
                         DisplayName = c.String(),
                     })
                 .PrimaryKey(t => t.UserId);
+            
+            CreateTable(
+                "dbo.UserAccounts",
+                c => new
+                    {
+                        UserId = c.Int(nullable: false),
+                        Login = c.String(),
+                        Password = c.String(),
+                        NeedChangePassword = c.Boolean(nullable: false),
+                    })
+                .PrimaryKey(t => t.UserId)
+                .ForeignKey("dbo.Users", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.UserRoles",
+                c => new
+                    {
+                        UserId = c.Int(nullable: false),
+                        Role = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => new { t.UserId, t.Role })
+                .ForeignKey("dbo.Users", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
             
             CreateTable(
                 "dbo.UserAccess",
@@ -58,15 +81,6 @@ namespace UsersLib.Migrations
                         Login = c.String(nullable: false, maxLength: 128),
                         AccessTime = c.DateTime(nullable: false),
                         Password = c.String(),
-                    })
-                .PrimaryKey(t => t.Login);
-            
-            CreateTable(
-                "dbo.UserRole",
-                c => new
-                    {
-                        Login = c.String(nullable: false, maxLength: 128),
-                        Role = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Login);
             
@@ -84,37 +98,42 @@ namespace UsersLib.Migrations
                 .Index(t => t.Group_Id);
             
             CreateTable(
-                "dbo.DbUserGroups",
+                "dbo.UserGroups",
                 c => new
                     {
-                        DbUser_UserId = c.Int(nullable: false),
+                        User_UserId = c.Int(nullable: false),
                         Group_Id = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => new { t.DbUser_UserId, t.Group_Id })
-                .ForeignKey("dbo.User", t => t.DbUser_UserId, cascadeDelete: true)
+                .PrimaryKey(t => new { t.User_UserId, t.Group_Id })
+                .ForeignKey("dbo.Users", t => t.User_UserId, cascadeDelete: true)
                 .ForeignKey("dbo.Groups", t => t.Group_Id, cascadeDelete: true)
-                .Index(t => t.DbUser_UserId)
+                .Index(t => t.User_UserId)
                 .Index(t => t.Group_Id);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.DbUserGroups", "Group_Id", "dbo.Groups");
-            DropForeignKey("dbo.DbUserGroups", "DbUser_UserId", "dbo.User");
+            DropForeignKey("dbo.UserRoles", "UserId", "dbo.Users");
+            DropForeignKey("dbo.UserAccounts", "UserId", "dbo.Users");
+            DropForeignKey("dbo.UserGroups", "Group_Id", "dbo.Groups");
+            DropForeignKey("dbo.UserGroups", "User_UserId", "dbo.Users");
             DropForeignKey("dbo.SecureSiteDatas", "SiteId", "dbo.Sites");
             DropForeignKey("dbo.SiteGroups", "Group_Id", "dbo.Groups");
             DropForeignKey("dbo.SiteGroups", "Site_SiteId", "dbo.Sites");
-            DropIndex("dbo.DbUserGroups", new[] { "Group_Id" });
-            DropIndex("dbo.DbUserGroups", new[] { "DbUser_UserId" });
+            DropIndex("dbo.UserGroups", new[] { "Group_Id" });
+            DropIndex("dbo.UserGroups", new[] { "User_UserId" });
             DropIndex("dbo.SiteGroups", new[] { "Group_Id" });
             DropIndex("dbo.SiteGroups", new[] { "Site_SiteId" });
+            DropIndex("dbo.UserRoles", new[] { "UserId" });
+            DropIndex("dbo.UserAccounts", new[] { "UserId" });
             DropIndex("dbo.SecureSiteDatas", new[] { "SiteId" });
-            DropTable("dbo.DbUserGroups");
+            DropTable("dbo.UserGroups");
             DropTable("dbo.SiteGroups");
-            DropTable("dbo.UserRole");
             DropTable("dbo.UserAccess");
-            DropTable("dbo.User");
+            DropTable("dbo.UserRoles");
+            DropTable("dbo.UserAccounts");
+            DropTable("dbo.Users");
             DropTable("dbo.SecureSiteDatas");
             DropTable("dbo.Sites");
             DropTable("dbo.Groups");

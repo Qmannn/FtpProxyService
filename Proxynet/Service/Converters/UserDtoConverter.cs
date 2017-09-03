@@ -22,8 +22,7 @@ namespace Proxynet.Service.Converters
         {
             return new UserDto
             {
-                Id = user.Id,
-                Login = user.Login,
+                Id = user.UserId,
                 Name = user.DisplayName
             };
         }
@@ -33,8 +32,7 @@ namespace Proxynet.Service.Converters
             return new User
             {
                 DisplayName = user.Name,
-                Id = user.Id,
-                Login = user.Login
+                UserId = user.Id
             };
         }
 

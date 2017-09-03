@@ -11,9 +11,9 @@ namespace Proxynet.Controllers
     public class AccountController : Controller
     {
         private readonly IAuthenticationManager _auth;
-        private readonly ILdapAuthorizer _ldapAuthorizer;
+        private readonly IAuthorizer _ldapAuthorizer;
 
-        public AccountController( IAuthenticationManager auth, ILdapAuthorizer ldapAuthorizer )
+        public AccountController( IAuthenticationManager auth, IAuthorizer ldapAuthorizer )
         {
             _auth = auth;
             _ldapAuthorizer = ldapAuthorizer;

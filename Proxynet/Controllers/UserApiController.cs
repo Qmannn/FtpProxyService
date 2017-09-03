@@ -1,59 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Http;
 using Proxynet.Models;
-using Proxynet.Service.Converters;
 using Proxynet.Service.Finders;
-using UsersLib.DbControllers;
-using UsersLib.Entity;
-using UsersLib.Service.ActiveDirectory;
+using Proxynet.Service.Removers;
+using Proxynet.Service.Savers;
+using Proxynet.Service.Validators;
 
 namespace Proxynet.Controllers
 {
     [RoutePrefix("service/users")]
     public class UserApiController : BaseApiController
     {
-        private readonly IDbUserController _dbUserController;
-        private readonly IUsersUpdater _usersUpdater;
+        private readonly IUserSaver _userSaver;
+        private readonly IUserDataFinder _userDataFinder;
+        private readonly IDataRemover _dataRemover;
+        private readonly IUserValidator _userValidator;
 
-        private readonly IUserDtoConverter _userDtoConverter;
-        private readonly IGroupDtoConverter _groupDtoConverter;
-
-        public UserApiController(
-            IDbUserController dbUserController, 
-            IUsersUpdater usersUpdater, 
-            IUserDtoConverter userDtoConverter, 
-            IGroupDtoConverter groupDtoConverter)
+        public UserApiController( IUserSaver userSaver, 
+            IUserDataFinder userDataFinder, 
+            IDataRemover dataRemover, 
+            IUserValidator userValidator)
         {
-            _dbUserController = dbUserController;
-            _usersUpdater = usersUpdater;
-            _userDtoConverter = userDtoConverter;
-            _groupDtoConverter = groupDtoConverter;
+            _userSaver = userSaver;
+            _userDataFinder = userDataFinder;
+            _dataRemover = dataRemover;
+            _userValidator = userValidator;
         }
 
         [HttpGet]
         [Route("")]
         public IHttpActionResult GetUsers()
         {
-            Dictionary<User, List<Group>> users = _dbUserController.GetUsersByGroups();
-
-            return Ok(_userDtoConverter.ConvertFromUsersWithGroups(users));
+            List<UserDto> users = _userDataFinder.GetUsersWithGroups();
+            return Ok(users);
         }
 
         [HttpGet]
         [Route("get-user")]
         public IHttpActionResult GetUser(int userId)
         {
-            User user = _dbUserController.GetUser(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            List<Group> groups = _dbUserController.GetUserGroups(user.Id);
-
-            UserDto userDto = _userDtoConverter.Convert(user);
-            userDto.Groups = _groupDtoConverter.Convert(groups);
+            UserDto userDto = _userDataFinder.GetUser(userId);
             return Ok(userDto);
         }
 
@@ -61,26 +48,34 @@ namespace Proxynet.Controllers
         [Route("save-user")]
         public IHttpActionResult SaveUser(UserDto user)
         {
-            if (user == null || user.Id == 0)
+            if (user == null )
             {
                 return NotFound();
             }
-
-            User userToSave = _userDtoConverter.Convert(user);
-            List<Group> userGroups = _groupDtoConverter.Convert(user.Groups);
-
-            _dbUserController.SaveUser(userToSave);
-            _dbUserController.SaveUserGroups(userToSave.Id, userGroups.Select(item => item.Id).ToList());
-
-            return Ok(user);
+            int savedUserId = _userSaver.SaveUser(user);
+            UserDto userDto = _userDataFinder.GetUser(savedUserId);
+            return Ok(userDto);
         }
 
-        [HttpPost]
-        [Route("update-users")]
-        public IHttpActionResult UpdateUsers()
+        [HttpDelete]
+        [Route("delete-user")]
+        public IHttpActionResult DeleteSite(int userId)
         {
-            _usersUpdater.Update();
+            _dataRemover.RemoveUser(userId);
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("check-user-name")]
+        public IHttpActionResult CheckUserName(string login, int userId)
+        {
+            if (String.IsNullOrEmpty(login))
+            {
+                return Ok(false);
+            }
+
+            bool loginIsValid = _userValidator.ValidateUserName(login, userId);
+            return Ok(loginIsValid);
         }
     }
 }

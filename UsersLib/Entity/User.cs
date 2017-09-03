@@ -1,35 +1,20 @@
-﻿using UsersLib.DbEntity;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using UsersLib.DbEntity;
 
 namespace UsersLib.Entity
 {
     public class User
     {
-        public User()
-        {
+        [Key]
+        public virtual int UserId { get; set; }
 
-        }
+        public virtual string DisplayName { get; set; }
 
-        public User( DbUser dbUser )
-        {
-            Id = dbUser.UserId;
-            Login = dbUser.Login;
-            DisplayName = dbUser.DisplayName;
-        }
+        public virtual ICollection<Group> Groups { get; set; }
 
-        public int Id { get; set; }
+        public virtual UserAccount UserAccount { get; set; }
 
-        public string Login { get; set; }
-
-        public string DisplayName { get; set; }
-
-        public DbUser ConvertToDbUser()
-        {
-            return new DbUser
-            {
-                UserId = Id,
-                Login = Login,
-                DisplayName = DisplayName
-            };
-        }
+        public virtual ICollection<UserRole> UserRoles { get; set; } 
     }
 }

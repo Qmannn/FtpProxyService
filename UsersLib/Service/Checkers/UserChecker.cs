@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UsersLib.Checkers.Results;
 using UsersLib.DbControllers;
@@ -14,33 +13,39 @@ namespace UsersLib.Service.Checkers
     {
         private readonly IDbUserController _dbUserController;
         private readonly IDbSiteController _dbSiteController;
-        private readonly ILdapAuthorizer _ldapAuthorizer;
+        private readonly IDbAuthController _dbAuthController;
+        private readonly IAuthorizer _authorizer;
         private readonly ISecureSiteDataResolver _secureSiteDataResolver;
 
-        public UserChecker(IDbUserController dbUserController, IDbSiteController dbSiteController, ILdapAuthorizer ldapAuthorizer, ISecureSiteDataResolver secureSiteDataResolver)
+        public UserChecker(IDbUserController dbUserController, 
+            IDbSiteController dbSiteController, 
+            IAuthorizer ldapAuthorizer, 
+            ISecureSiteDataResolver secureSiteDataResolver, 
+            IDbAuthController dbAuthController)
         {
             _dbUserController = dbUserController;
             _dbSiteController = dbSiteController;
-            _ldapAuthorizer = ldapAuthorizer;
+            _authorizer = ldapAuthorizer;
             _secureSiteDataResolver = secureSiteDataResolver;
+            _dbAuthController = dbAuthController;
         }
 
         public IUserCheckerResult Check(string userLogin, string userPass, string siteKey)
         {
-            if (!_ldapAuthorizer.ValidateCredentials(userLogin, userPass, UserRole.Unknown))
+            if (!_authorizer.ValidateCredentials(userLogin, userPass, UserRoleKind.Unknown))
             {
                 return null;
             }
 
-            User user = _dbUserController.GetUser(userLogin);
+            int userId = _dbAuthController.GetUserId(userLogin);
+
             Site site = _dbSiteController.GetSite(siteKey);
-
-            if (user == null || site == null)
+            if (site == null)
             {
                 return null;
             }
 
-            List<Group> userGroups = _dbUserController.GetUserGroups(user.Id);
+            List<Group> userGroups = _dbUserController.GetUserGroups(userId);
             List<Group> siteGroups = _dbSiteController.GetSiteGroups(site.SiteId);
 
             if (userGroups == null || userGroups.Count == 0)

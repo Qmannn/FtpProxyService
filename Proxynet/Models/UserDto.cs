@@ -18,5 +18,8 @@ namespace Proxynet.Models
 
         [JsonProperty("groups")]
         public List<GroupDto> Groups { get; set; }
+
+        [JsonProperty("account")]
+        public UserAccountDto Account { get; set; }
     }
 }

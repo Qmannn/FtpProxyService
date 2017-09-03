@@ -7,6 +7,7 @@ export interface IResourceService {
     getUsers(success: (users: IUser[]) => any, error: (data: any) => any): void;
     getUser(id: number, success: (users: IUser) => any, error: (data: any) => any): void;
     getGroups(success: (groups: IGroup[]) => any, error: (data: any) => any): void;
+    checkUserLogin(login: string, userId: number): ng.IPromise<boolean>;
 
     getSites(success: (users: ISite[]) => any, error: (data: any) => any): void;
     getSite(id: number, success: (users: ISite) => any, error: (data: any) => any): void;
@@ -16,6 +17,7 @@ export interface IResourceService {
     saveGroup(name: string, success: (group: IGroup) => any, error: (data: any) => any): void;
 
     deleteSite(siteId: number): ng.IPromise<void>;
+    deleteUser(userId: number): ng.IPromise<void>;
     deleteGroup(groupId: number): ng.IPromise<void>;
 }
 
@@ -57,6 +59,11 @@ export class ResourceService implements IResourceService {
             .then(success, error);
     }
 
+    public checkUserLogin(login: string, userId: number): ng.IPromise<boolean> {
+        return this._resourceService
+            .get<boolean>(this.resourceBaseUrl + 'users/check-user-name', { params: { 'login': login, 'userId': userId } });
+    }
+
     // PUT
 
     public saveUser(user: IUser, success: (user: IUser) => any, error: (data: any) => any): void {
@@ -70,7 +77,7 @@ export class ResourceService implements IResourceService {
     }
 
     public saveGroup(name: string, success: (group: IGroup) => any, error: (data: any) => any): void {
-        this._resourceService.put(this.resourceBaseUrl + 'groups/save-group', {name: name})
+        this._resourceService.put(this.resourceBaseUrl + 'groups/save-group', { name: name })
             .then(success, error);
     }
 
@@ -78,11 +85,16 @@ export class ResourceService implements IResourceService {
 
     public deleteSite(siteId: number): ng.IPromise<void> {
         return this._resourceService
-            .delete(this.resourceBaseUrl + 'sites/delete-site', {params: {siteId: siteId}});
+            .delete(this.resourceBaseUrl + 'sites/delete-site', { params: { siteId: siteId } });
+    }
+
+    public deleteUser(userId: number): ng.IPromise<void> {
+        return this._resourceService
+            .delete(this.resourceBaseUrl + 'users/delete-user', { params: { userId: userId } });
     }
 
     public deleteGroup(groupId: number): ng.IPromise<void> {
         return this._resourceService
-            .delete(this.resourceBaseUrl + 'groups/delete-group', {params: {groupId: groupId}});
+            .delete(this.resourceBaseUrl + 'groups/delete-group', { params: { groupId: groupId } });
     }
 }

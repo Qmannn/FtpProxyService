@@ -1,47 +1,56 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using UsersLib.DbContextSettings;
-using UsersLib.DbEntity;
 using UsersLib.Entity;
 
 namespace UsersLib.DbControllers
 {
     public class DbAuthController : IDbAuthController
     {
-        public UserRole GetUserRole( string login )
+        public List<UserRoleKind> GetUserRoles(int userId)
         {
-            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
+            using (UsersLibDbContext dbContext = new UsersLibDbContext())
             {
-                DbUserRole userRole = dbContext.UserRoles.FirstOrDefault( item => item.Login == login );
-                return userRole?.Role ?? UserRole.Unknown;
+                return dbContext.UserRole.Where(item => item.UserId == userId)
+                    .Select(item => item.Role).ToList();
             }
         }
 
-        public DateTime? GetAccessTime( string login, string password )
+        public UserAccount GetUserAccount(string login, string password)
         {
-            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
+            using (UsersLibDbContext dbContext = new UsersLibDbContext())
             {
-                DbUserAccess userAccess = dbContext.UserAccess
-                    .FirstOrDefault( item => item.Login == login && item.Password == password );
-
-                return userAccess?.AccessTime;
+                return dbContext.UserAccount
+                    .FirstOrDefault(item => item.Login == login && item.Password == password);
             }
         }
 
-        public void SetAccessTime( string login, string password )
+        public UserAccount GetUserAccount(int userId)
         {
-            using ( UsersLibDbContext dbContext = new UsersLibDbContext() )
+            using (UsersLibDbContext dbContext = new UsersLibDbContext())
             {
-                DbUserAccess userAccess = new DbUserAccess
-                {
-                    AccessTime = DateTime.Now,
-                    Password = password,
-                    Login = login
-                };
+                return dbContext.UserAccount
+                    .FirstOrDefault(item => item.UserId == userId);
+            }
+        }
 
-                dbContext.UserAccess.AddOrUpdate( userAccess );
+        public UserAccount SaveUserAccount(UserAccount userAccount)
+        {
+            using (UsersLibDbContext dbContext = new UsersLibDbContext())
+            {
+                dbContext.UserAccount.AddOrUpdate(userAccount);
                 dbContext.SaveChanges();
+                return userAccount;
+            }
+        }
+
+        public int GetUserId(string login)
+        {
+            using (UsersLibDbContext dbContext = new UsersLibDbContext())
+            {
+                return dbContext.UserAccount.FirstOrDefault(item => item.Login == login)?.UserId ?? 0;
             }
         }
     }

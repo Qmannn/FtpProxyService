@@ -1,4 +1,5 @@
 ﻿using UsersLib.Checkers;
+using UsersLib.DbControllers;
 using UsersLib.Service.Auth;
 using UsersLib.Service.Checkers;
 using UsersLib.Service.Savers;
@@ -9,6 +10,8 @@ namespace UsersLib.Service.Factories
     {
         IUserChecker CreateUserChecker();
         ISiteSaver CreateSiteSaver();
-        ILdapAuthorizer CreateAuthorizer();
+        IUserSaver CreateUserSaver();
+        IAuthorizer CreateAuthorizer();
+        IDbAuthController CreateDbAuthController();
     }
 }
