@@ -188,13 +188,19 @@ namespace FtpProxy.Service
         /// </summary>
         public void Close()
         {
-            if (_clientConnection != null && _clientConnection.IsConnected)
+            lock ( _clientConnection.ConnectionOperationLocker )
             {
-                _clientConnection.CloseConnection();
+                if (_clientConnection != null && _clientConnection.IsConnected)
+                {
+                    _clientConnection.CloseConnection();
+                }
             }
-            if (_serverConnection != null && _serverConnection.IsConnected)
+            lock ( _serverConnection.ConnectionOperationLocker )
             {
-                _serverConnection.CloseConnection();
+                if ( _serverConnection != null && _serverConnection.IsConnected )
+                {
+                    _serverConnection.CloseConnection();
+                }
             }
         }
 
