@@ -14,5 +14,6 @@ export class Site implements ISite {
 
     constructor() {
         this.groups = [];
+        this.id = 0;
     }
 }

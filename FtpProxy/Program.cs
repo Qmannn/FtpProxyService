@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Net;
+using FtpProxy.Configuration;
 using FtpProxy.Log;
 
 namespace FtpProxy
@@ -12,7 +13,7 @@ namespace FtpProxy
         {
             Logger.InitLogger();
 
-            _worker = new FtpProxyWorker( 26000 );
+            _worker = new FtpProxyWorker( Config.ListeningPort );
             _worker.Start();
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 
 namespace FtpProxy.Configuration
 {
@@ -20,6 +21,11 @@ namespace FtpProxy.Configuration
         public static string LoginSeparator
         {
             get { return ConfigurationManager.AppSettings[ "userLoginSiteSeparator" ]; }
+        }
+
+        public static int ListeningPort
+        {
+            get { return Convert.ToInt32( ConfigurationManager.AppSettings[ "listeningPort" ] ); }
         }
     }
 }

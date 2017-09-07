@@ -1,4 +1,5 @@
-﻿import { HttpResourceService } from './../Core/Services/Resource/HttpResourceService';
+﻿import { AppConfig } from './../AppConfig';
+import { HttpResourceService } from './../Core/Services/Resource/HttpResourceService';
 import { ISite } from './../Dto/ISite';
 import { IGroup } from './../Dto/GroupDto';
 import { IUser } from './../Dto/UserDto';
@@ -30,7 +31,7 @@ export class ResourceService implements IResourceService {
 
     constructor(resourceService: HttpResourceService) {
         this._resourceService = resourceService;
-        this.resourceBaseUrl = '/Proxynet/service/';
+        this.resourceBaseUrl = AppConfig.resourceBaseUrl;
     }
 
     // GET
