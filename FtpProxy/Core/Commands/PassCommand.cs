@@ -38,7 +38,7 @@ namespace FtpProxy.Core.Commands
                  || String.IsNullOrEmpty(ClientConnection.RemoteServerIdentifier))
             {
                 //TODO ctor
-                SendToClient(new FtpMessage("503 неверная последовательность команд", ClientConnection.Encoding));
+                SendToClient(new FtpMessage("530 неверная последовательность команд", ClientConnection.Encoding));
                 return;
             }
 
