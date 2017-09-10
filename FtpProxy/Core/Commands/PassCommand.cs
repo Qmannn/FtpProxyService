@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Authentication;
+using FtpProxy.Connections;
 using FtpProxy.Core.Builders;
 using FtpProxy.Core.Factory;
 using FtpProxy.Entity;
@@ -90,6 +91,14 @@ namespace FtpProxy.Core.Commands
 
         public override IExecutorState GetExecutorState()
         {
+            IConnection serverConnection = _serverConnectionBuilder.GetResult();
+
+            // Если не удалось установить соедиение с севрером - вернем то же состояние без изменений
+            if (serverConnection == null)
+            {
+                return base.GetExecutorState();
+            }
+
             IExecutorState executorState = new ExecutorState
             {
                 ClientConnection = ClientConnection,
@@ -98,6 +107,7 @@ namespace FtpProxy.Core.Commands
             };
             executorState.ClientConnection.ConnectionClosed += executorState.CloseConnections;
             executorState.ServerConnection.ConnectionClosed += executorState.CloseConnections;
+
             return executorState;
         }
     }

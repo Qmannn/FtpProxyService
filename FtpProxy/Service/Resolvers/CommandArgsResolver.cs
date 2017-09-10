@@ -15,13 +15,13 @@ namespace FtpProxy.Service.Resolvers
         {
             if ( String.IsNullOrEmpty( args ) )
             {
-                throw new ArgumentException("UserName is null or empty");
+                return string.Empty;
             }
 
             List<string> argsParts = args.Split( Config.LoginSeparator.First() ).ToList();
             if ( argsParts.Count < 2 )
             {
-                throw new ArgumentException("UserName not contains remote site key");
+                return string.Empty;
             }
             
             StringBuilder loginBuilder = new StringBuilder();
@@ -37,13 +37,13 @@ namespace FtpProxy.Service.Resolvers
         {
             if( String.IsNullOrEmpty( args ) )
             {
-                throw new ArgumentException("Site identifier is null");
+                return string.Empty;
             }
 
             List<string> argsParts = args.Split( Config.LoginSeparator.First() ).ToList();
             if( argsParts.Count < 2 )
             {
-                throw new ArgumentException("Login not contains site key");
+                return string.Empty;
             }
 
             return argsParts.Last();
@@ -53,7 +53,7 @@ namespace FtpProxy.Service.Resolvers
         {
             if ( String.IsNullOrEmpty( args ) )
             {
-                throw new ArgumentException("User password is null or empty");
+                return string.Empty;
             }
 
             return args;

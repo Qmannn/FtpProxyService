@@ -91,7 +91,7 @@ namespace FtpProxy.Core.DataConnection
                 {
                     _clientDataConnection.SetUpSecureConnectionAsServer();
                 }
-                _serverDataConnection.Connect();
+                // _serverDataConnection.Connect();
                 if (state.ServerConnection.DataEncryptionEnabled)
                 {
                     _serverDataConnection.SetUpSecureConnectionAsClient();

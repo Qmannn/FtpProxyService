@@ -8,7 +8,7 @@ namespace FtpProxy.Entity
 {
     public class FtpMessage : IFtpMessage
     {
-        private static readonly Regex CommandFinder = new Regex( @"(\r\n|^)(\d\d\d)\s" );
+        private static readonly Regex CommandFinder = new Regex(@"(\r\n|^)(\d\d\d)\s");
 
         private readonly byte[] _bytes;
 
@@ -22,19 +22,19 @@ namespace FtpProxy.Entity
             get
             {
                 int commandCode;
-                if ( !Int32.TryParse( CommandName, out commandCode ) )
+                if (!Int32.TryParse(CommandName, out commandCode))
                 {
                     return ServerCommandType.Unknown;
                 }
-                if ( commandCode < 200 )
+                if (commandCode < 200)
                 {
                     return ServerCommandType.Waiting;
                 }
-                if ( commandCode < 300 )
+                if (commandCode < 300)
                 {
                     return ServerCommandType.Success;
                 }
-                if ( commandCode < 400 )
+                if (commandCode < 400)
                 {
                     return ServerCommandType.WaitingForClient;
                 }
@@ -49,46 +49,46 @@ namespace FtpProxy.Entity
             get { return _encoding; }
         }
 
-        public FtpMessage( byte[] bytes, Encoding encoding )
+        public FtpMessage(byte[] bytes, Encoding encoding)
         {
             _bytes = bytes;
             _encoding = encoding;
             Init();
         }
 
-        public FtpMessage( string command, Encoding encoding = null )
+        public FtpMessage(string command, Encoding encoding = null)
         {
             _encoding = encoding ?? Encoding.UTF8;
-            _bytes = _encoding.GetBytes( String.Format( "{0}\r\n", command ) );
+            _bytes = _encoding.GetBytes(String.Format("{0}\r\n", command));
             Init();
         }
 
         public FtpMessage(ServerMessageCode messageCode, string messageText, Encoding encoding = null)
-            : this(String.Format("{0} {1}", (int) messageCode, messageText), encoding)
+            : this(String.Format("{0} {1}", (int)messageCode, messageText), encoding)
         {
         }
 
         private void Init()
         {
-            string command = Encoding.GetString( _bytes );
-            string[] commandParts = command.Split( ' ' );
+            string command = Encoding.GetString(_bytes);
+            string[] commandParts = command.Split(' ');
 
-            Match commandName = CommandFinder.Match( command );
-            if( String.IsNullOrEmpty( commandName.Value ) || commandName.Groups.Count != 3 )
+            Match commandName = CommandFinder.Match(command);
+            if (String.IsNullOrEmpty(commandName.Value) || commandName.Groups.Count != 3)
             {
-                CommandName = commandParts.First().Trim( '\n', '\r' );
+                CommandName = commandParts.First().Trim('\n', '\r');
             }
             else
             {
-                CommandName = commandName.Groups[ 2 ].Value;
+                CommandName = commandName.Groups[2].Value;
             }
             CommandName = CommandName.ToUpper();
             Args = String.Empty;
-            if ( commandParts.Length > 1 )
+            if (commandParts.Length > 1)
             {
-                Args = String.Join( " ", commandParts.Skip( 1 ) );
+                Args = String.Join(" ", commandParts.Skip(1));
             }
-            Args = Args.Trim( '\n', '\r' );
+            Args = Args.Trim('\n', '\r');
         }
 
         public string CommandName { get; private set; }
@@ -97,7 +97,7 @@ namespace FtpProxy.Entity
 
         public override string ToString()
         {
-            return String.Format( "{0} {1}", CommandName, Args );
+            return String.Format("{0} {1}", CommandName, Args);
         }
 
         #region Static members
@@ -108,25 +108,63 @@ namespace FtpProxy.Entity
         /// <param name="commandBytes"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static bool IsFullServerCommand( byte[] commandBytes, Encoding encoding )
+        public static bool IsFullServerCommand(byte[] commandBytes, Encoding encoding)
         {
-            if ( commandBytes == null || commandBytes.Length == 0 )
+            if (commandBytes == null || commandBytes.Length == 0)
             {
                 return false;
             }
-            string commandText = encoding.GetString( commandBytes );
-            List<string> commandLines = commandText.Split( '\n' ).ToList();
-            commandLines.RemoveAll( String.IsNullOrEmpty );
-            if ( commandLines.Count == 0 )
+            string commandText = encoding.GetString(commandBytes);
+            List<string> commandLines = commandText.Split('\n').ToList();
+            commandLines.RemoveAll(String.IsNullOrEmpty);
+            if (commandLines.Count == 0)
             {
                 return false;
             }
             string lastCommandLine = commandLines.Last();
-            if ( Regex.Match( lastCommandLine, "^(?<code>[0-9]{3}) (?<message>.*)$" ).Success )
+            if (Regex.Match(lastCommandLine, "^(?<code>[0-9]{3}) (?<message>.*)$").Success)
             {
                 return true;
             }
             return false;
+        }
+
+        public static List<FtpMessage> GetMessages(byte[] commandBytes, Encoding encoding, ConnectionType connectionType)
+        {
+            List<FtpMessage> ftpMessages = new List<FtpMessage>();
+            if (commandBytes == null || commandBytes.Length == 0)
+            {
+                return ftpMessages;
+            }
+            string commandText = encoding.GetString(commandBytes);
+            List<string> commands = commandText.Split(new[] {"\r\n"}, StringSplitOptions.None)
+                .Where(item => !String.IsNullOrEmpty(item)).ToList();
+
+            List<string> fullCommands = new List<string>();
+            if (connectionType == ConnectionType.Server)
+            {
+                StringBuilder fullCommandBuffer = new StringBuilder();
+                foreach (string command in commands)
+                {
+                    fullCommandBuffer.Append(command);
+                    fullCommandBuffer.Append("\r\n");
+                    if (Regex.Match(command, "^(?<code>[0-9]{3}) (?<message>.*)$").Success)
+                    {
+                        fullCommands.Add(fullCommandBuffer.ToString());
+                        fullCommandBuffer.Clear();
+                    }
+                }
+                if (fullCommandBuffer.Length > 0)
+                {
+                    fullCommands.Add(fullCommandBuffer.ToString());
+                }
+            }
+            else
+            {
+                fullCommands = commands;
+            }
+            ftpMessages.AddRange(fullCommands.Select(command => new FtpMessage(command, encoding)));
+            return ftpMessages;
         }
 
         #endregion

@@ -79,8 +79,8 @@ namespace FtpProxy.Core.Commands
                 return;
             }
 
-            //// Открываем соединение данных с сервером
-            //_dataConnection.Connection.Connect();
+            // Открываем соединение данных с сервером
+            _dataConnection.Connection.Connect();
             //if (ServerConnection.DataEncryptionEnabled)
             //{
             //    _dataConnection.Connection.SetUpSecureConnectionAsClient();

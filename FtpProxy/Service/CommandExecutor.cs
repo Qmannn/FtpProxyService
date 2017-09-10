@@ -195,11 +195,14 @@ namespace FtpProxy.Service
                     _clientConnection.CloseConnection();
                 }
             }
-            lock ( _serverConnection.ConnectionOperationLocker )
+            if (_serverConnection != null)
             {
-                if ( _serverConnection != null && _serverConnection.IsConnected )
+                lock (_serverConnection.ConnectionOperationLocker)
                 {
-                    _serverConnection.CloseConnection();
+                    if (_serverConnection != null && _serverConnection.IsConnected)
+                    {
+                        _serverConnection.CloseConnection();
+                    }
                 }
             }
         }

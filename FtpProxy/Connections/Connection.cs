@@ -35,6 +35,9 @@ namespace FtpProxy.Connections
         private readonly IPAddress _ipAddress;
         private readonly int _port;
         private readonly string _urlAddress;
+        
+        // TODO придумать что-то получше
+        private readonly Queue<FtpMessage> _messageQueue = new Queue<FtpMessage>(); 
 
         private Dictionary<ConnectionDataType, string> _connectionData;
         /// <summary>
@@ -318,6 +321,11 @@ namespace FtpProxy.Connections
 
         public IFtpMessage GetMessage()
         {
+            if (_messageQueue.Count > 0)
+            {
+                return _messageQueue.Dequeue();
+            }
+
             if (!IsConnected)
             {
                 return null;
@@ -337,19 +345,21 @@ namespace FtpProxy.Connections
                             if ((char)buffer[count - 1] == '\n'
                                  && (char)buffer[count - 2] == '\r')
                             {
-                                if (ConnectionType == ConnectionType.Client)
+                                if (ConnectionType == ConnectionType.Client || FtpMessage.IsFullServerCommand(ms.ToArray(), Encoding))
                                 {
-                                    break;
-                                }
-                                if (FtpMessage.IsFullServerCommand(ms.ToArray(), Encoding))
-                                {
+                                    foreach (FtpMessage ftpMessage in FtpMessage.GetMessages(ms.ToArray(), Encoding, ConnectionType))
+                                    {
+                                        _messageQueue.Enqueue(ftpMessage);
+                                    }
                                     break;
                                 }
                             }
                         }
                     }
-
-                    return new FtpMessage(ms.ToArray(), Encoding);
+                    if (_messageQueue.Count > 0)
+                    {
+                        return _messageQueue.Dequeue();
+                    }
                 }
             }
             catch (Exception ex)

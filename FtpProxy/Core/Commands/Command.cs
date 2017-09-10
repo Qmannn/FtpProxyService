@@ -44,11 +44,6 @@ namespace FtpProxy.Core.Commands
                 : null;
         }
 
-        protected void AddError(string error)
-        {
-            _errors.Add(error);
-        }
-
         protected void SendToServer(IFtpMessage ftpMessage)
         {
             SendMessage(ExecutorState.ServerConnection, ftpMessage);
@@ -78,7 +73,7 @@ namespace FtpProxy.Core.Commands
         protected IFtpMessage SendWithResponceClient(IFtpMessage ftpMessage)
         {
             SendToClient(ftpMessage);
-            return GetServerResponce();
+            return GetClientResponce();
         }
 
         private void SendMessage(IConnection connection, IFtpMessage message)

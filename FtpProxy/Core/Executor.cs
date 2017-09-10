@@ -23,6 +23,7 @@ namespace FtpProxy.Core
                 ClientConnection = clientConnection,
                 CommandFactory = localCommandFactory
             };
+            clientConnection.ConnectionClosed += State.CloseConnections;
             _executingCommand = GetFirstCommand();
         }
 
