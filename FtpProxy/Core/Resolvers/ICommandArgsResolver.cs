@@ -1,4 +1,4 @@
-﻿namespace FtpProxy.Service.Resolvers
+﻿namespace FtpProxy.Core.Resolvers
 {
     public interface ICommandArgsResolver
     {

@@ -10,6 +10,7 @@ namespace FtpProxy.Core
 {
     public class Executor
     {
+        private bool _isExecuting;
         private ICommand _executingCommand;
 
         private IExecutorState State { get; set; }
@@ -25,6 +26,7 @@ namespace FtpProxy.Core
             };
             clientConnection.ConnectionClosed += State.CloseConnections;
             _executingCommand = GetFirstCommand();
+            _isExecuting = true;
         }
 
         public void StartExecuting(object obj)
@@ -40,7 +42,36 @@ namespace FtpProxy.Core
                     Logger.Log.Error(ex.Message, ex);
                 }
                 State = _executingCommand.GetExecutorState();
-            } while ((_executingCommand = _executingCommand.GetNextCommand(State)) != null);
+            } while ((_executingCommand = _executingCommand.GetNextCommand(State)) != null && _isExecuting);
+        }
+
+        public void StopExecuting()
+        {
+            _isExecuting = false;
+            if (State == null)
+            {
+                return;
+            }
+
+            if (State.ClientConnection != null)
+            {
+                State.ClientConnection.CloseConnection();
+            }
+
+            if (State.ServerConnection != null)
+            {
+                State.ServerConnection.CloseConnection();
+            }
+
+            if (State.ClientDataConnection != null && State.ClientDataConnection.Connection != null)
+            {
+                State.ClientDataConnection.Connection.CloseConnection();
+            }
+
+            if (State.ServerDataConnection != null && State.ServerDataConnection.Connection != null)
+            {
+                State.ServerDataConnection.Connection.CloseConnection();
+            }
         }
 
         private ICommand GetFirstCommand()

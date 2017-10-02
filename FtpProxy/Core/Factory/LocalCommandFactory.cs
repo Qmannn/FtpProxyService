@@ -1,7 +1,7 @@
 ﻿using FtpProxy.Core.Builders;
 using FtpProxy.Core.Commands;
+using FtpProxy.Core.Resolvers;
 using FtpProxy.Entity;
-using FtpProxy.Service.Resolvers;
 using UsersLib.Service.Checkers;
 
 namespace FtpProxy.Core.Factory

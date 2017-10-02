@@ -2,7 +2,7 @@
 using FtpProxy.Core.DataConnection;
 using FtpProxy.Core.Factory;
 using FtpProxy.Core.Helpers;
-using FtpProxy.Service.Resolvers;
+using FtpProxy.Core.Resolvers;
 using Microsoft.Practices.Unity;
 using UsersLib.Service.Checkers;
 using UsersLib.Service.Factories;

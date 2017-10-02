@@ -1,6 +1,6 @@
 ﻿using FtpProxy.Connections;
+using FtpProxy.Core.Resolvers;
 using FtpProxy.Entity;
-using FtpProxy.Service.Resolvers;
 
 namespace FtpProxy.Core.Commands
 {

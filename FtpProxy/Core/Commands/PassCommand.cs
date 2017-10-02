@@ -3,9 +3,9 @@ using System.Security.Authentication;
 using FtpProxy.Connections;
 using FtpProxy.Core.Builders;
 using FtpProxy.Core.Factory;
+using FtpProxy.Core.Resolvers;
 using FtpProxy.Entity;
 using FtpProxy.Log;
-using FtpProxy.Service.Resolvers;
 using UsersLib.Service.Checkers;
 using UsersLib.Service.Checkers.Results;
 
