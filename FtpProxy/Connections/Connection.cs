@@ -122,7 +122,7 @@ namespace FtpProxy.Connections
             {
                 lock (_controlClientLocker)
                 {
-                    return _controlClient != null && _controlClient.Available > 0;
+                    return _controlClient != null && _controlClient.Client.Poll( 1000, SelectMode.SelectRead );
                 }
             }
         }
@@ -209,7 +209,7 @@ namespace FtpProxy.Connections
         {
             _controlClient = client;
             _controlStream = _controlClient.GetStream();
-            Encoding = Encoding.UTF8;
+            Encoding = Encoding.Default;
             ConnectionType = connectionType;
         }
 
@@ -217,7 +217,7 @@ namespace FtpProxy.Connections
         {
             _ipAddress = ipAddress;
             _port = port;
-            Encoding = Encoding.UTF8;
+            Encoding = Encoding.Default;
             ConnectionType = connectionType;
         }
 
@@ -225,7 +225,7 @@ namespace FtpProxy.Connections
         {
             _urlAddress = urlAddress;
             _port = port;
-            Encoding = Encoding.UTF8;
+            Encoding = Encoding.Default;
             ConnectionType = connectionType;
         }
 
